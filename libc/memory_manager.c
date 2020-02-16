@@ -67,7 +67,7 @@ uint8_t* kmalloc (uint32_t size)
 
 void kfree (uint32_t size, uint32_t addr)
 {
-  uint32_t byte = memory_mapped_base - addr;
+  uint32_t byte = (uint32_t) memory_mapped_base - addr;
   fill (byte, size, 0);
 
 }

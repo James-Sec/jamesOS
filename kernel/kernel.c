@@ -14,10 +14,10 @@ void entry ()
   isr_install();
   asm volatile ("sti");
   //init_timer(100);
-  //init_keyboard();
+  init_keyboard();
   //asm volatile ("int $1");
   char s[10];
-  itoa (s, s);
+  itoa ((int) s, s);
   kprint (s);
 
   memory_manager_init();
