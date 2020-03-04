@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include "../libc/memory_manager.h"
 #include "../libc/string.h"
+#include "../drivers/pci.h"
 
 void entry ()
 {
@@ -21,6 +22,8 @@ void entry ()
   kprint (s);
 
   memory_manager_init();
+
+  pci_brute ();
 
   /*
   uint8_t* ptr = kmalloc (160);

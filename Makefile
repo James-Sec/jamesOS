@@ -3,13 +3,16 @@ all:os-image
 os-image:boot/boot_sector.bin kernel/kernel.bin
 	cat $^ > $@
 
-kernel/kernel.bin:kernel/kernel_entry.o kernel/kernel.o libc/mem.o libc/string.o drivers/ports.o drivers/screen.o cpu/idt.o cpu/isr.o cpu/interrupt.o cpu/timer.o drivers/keyboard.o libc/memory_manager.o
+kernel/kernel.bin:kernel/kernel_entry.o kernel/kernel.o libc/mem.o libc/string.o drivers/ports.o drivers/screen.o cpu/idt.o cpu/isr.o cpu/interrupt.o cpu/timer.o drivers/keyboard.o libc/memory_manager.o drivers/pci.o
 	i686-elf-ld --oformat binary -Ttext 0x1000 -o $@ $^
 
 libc/memory_manager.o:libc/memory_manager.c
 	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
 
 drivers/keyboard.o:drivers/keyboard.c
+	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
+
+drivers/pci.o:drivers/pci.c
 	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
 
 cpu/timer.o:cpu/timer.c
