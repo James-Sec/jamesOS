@@ -1,69 +1,48 @@
-all:os-image
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.h)
 
-os-image:boot/boot_sector.bin kernel/kernel.bin
-	cat $^ > $@
+# Nice syntax for file extension replacement
+OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o} 
 
-kernel/kernel.bin:kernel/kernel_entry.o kernel/kernel.o libc/mem.o libc/string.o drivers/ports.o drivers/screen.o cpu/idt.o cpu/isr.o cpu/interrupt.o cpu/timer.o drivers/keyboard.o libc/memory_manager.o drivers/pci.o
-	i686-elf-ld --oformat binary -Ttext 0x1000 -o $@ $^
+CC = i686-elf-gcc
+GDB = i686-elf-gdb
 
-libc/memory_manager.o:libc/memory_manager.c
-	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
+# -g: Use debugging symbols in gcc
+CFLAGS = -g
 
-drivers/keyboard.o:drivers/keyboard.c
-	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
+# First rule is run by default
+os-image.bin: boot/boot_sector.bin kernel.bin
+	cat $^ > os-image.bin
 
-drivers/pci.o:drivers/pci.c
-	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
+# '--oformat binary' deletes all symbols as a collateral, so we don't need
+# to 'strip' them manually on this case
+kernel.bin: kernel/kernel_entry.o ${OBJ}
+	i686-elf-ld -o $@ -Ttext 0x1000 $^ --oformat binary
 
-cpu/timer.o:cpu/timer.c
-	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
+run: os-image.bin
+	qemu-system-i386 -fda os-image.bin
+	#sudo qemu-system-i386 -net nic -netdev tap,id=br0 -nic model=rtl8139 -fda os-image.bin
 
-cpu/interrupt.o:cpu/interrupt.asm
-	nasm -f elf -o $@ $^
+## Used for debugging purposes
+#kernel.elf: boot/kernel_entry.o ${OBJ}
+#	i686-elf-ld -o $@ -Ttext 0x1000 $^ 
+#
+## Open the connection to qemu and load our kernel-object file with symbols
+#debug: os-image.bin kernel.elf
+#	qemu-system-i686 -s -fda os-image.bin -d guest_errors,int &
+#	${GDB} -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 
-cpu/isr.o:cpu/isr.c
-	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
+# Generic rules for wildcards
+# To make an object, always compile from its .c
+%.o: %.c ${HEADERS}
+	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
 
-cpu/idt.o:cpu/idt.c
-	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
+%.o: %.asm
+	nasm $< -f elf -o $@
 
-drivers/screen.o:drivers/screen.c
-	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
+%.bin: %.asm
+	nasm $< -f bin -o $@
 
-drivers/ports.o:drivers/ports.c
-	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
-
-libc/string.o:libc/string.c
-	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
-libc/mem.o:libc/mem.c
-	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
-
-
-kernel/kernel.o:kernel/kernel.c
-	i686-elf-gcc -ffreestanding -c -o $@ $^ #-fno-pie
-
-kernel/kernel_entry.o:kernel/kernel_entry.asm
-	nasm -f elf -o $@ $^
-
-
-boot/boot_sector.bin:boot/boot_sector.asm
-	nasm -f bin -o $@ $^
-
-run:all
-	truncate -s 1200K os-image
-	qemu-system-i386 os-image
-
-clear_kernel:
-	rm kernel/*.bin kernel/*.o
-clear_boot:
-	rm boot/*.bin
-clear_drivers:
-	rm drivers/*.o
-
-clear:
-	rm -f kernel/*.bin kernel/*.o
-	rm -f boot/*.bin
-	rm -f drivers/*.o
-	rm -f cpu/*.o
-	rm -f libc/*.o
-	rm -f os-image
+clean:
+	rm -rf *.bin *.dis *.o os-image.bin *.elf
+	rm -rf kernel/*.o boot/*.bin drivers/*.o boot/*.o cpu/*.o
