@@ -1,4 +1,4 @@
-#include "memory_manager.h"
+#include "../include/memory_manager.h"
 
 uint8_t *bitset_base = (uint8_t*) BITSET_BASE;
 uint8_t *bitset_limit = (uint8_t*) BITSET_LIMIT;

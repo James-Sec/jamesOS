@@ -1,4 +1,4 @@
-#include "mem.h"
+#include "../include/mem.h"
 void memcpy (char *source, char *dest, int nbytes) 
 {
   int i;

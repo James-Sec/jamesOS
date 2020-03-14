@@ -1,4 +1,4 @@
-#include "screen.h"
+#include "../include/screen.h"
 
 int print_char (char character, char attributeint, int offset);
 void set_cursor_offset (int offset);

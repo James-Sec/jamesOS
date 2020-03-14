@@ -6,9 +6,9 @@
 #define WHITE_ON_BLACK 0x0f
 #define RED_ON_WHITE 0xf4
 
-#include "../libc/mem.h"
+#include "mem.h"
 #include "ports.h"
-#include "../cpu/types.h"
+#include "types.h"
 
 //Screen device I/O ports
 #define PORT_SCREEN_CTRL 0x3d4

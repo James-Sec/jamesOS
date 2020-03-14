@@ -1,12 +1,11 @@
-#include "../drivers/screen.h"
-#include "../drivers/keyboard.h"
-#include "../cpu/isr.h"
-#include "../cpu/types.h"
-#include "../cpu/timer.h"
-#include <stdint.h>
-#include "../libc/memory_manager.h"
-#include "../libc/string.h"
-#include "../drivers/pci.h"
+#include "../include/screen.h"
+#include "../include/keyboard.h"
+#include "../include/isr.h"
+#include "../include/types.h"
+#include "../include/timer.h"
+#include "../include/memory_manager.h"
+#include "../include/string.h"
+#include "../include/pci.h"
 
 void entry ()
 {

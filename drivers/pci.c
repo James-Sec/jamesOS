@@ -1,4 +1,4 @@
-#include "pci.h"
+#include "../include/pci.h"
 
 uint32_t pci_read_data (uint8_t bus, uint8_t device, uint8_t offset)
 {

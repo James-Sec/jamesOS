@@ -1,10 +1,9 @@
 #ifndef KMALLOC_H
 #define KMALLOC_H
-#include "../cpu/types.h"
+#include "types.h"
 #include "mem.h"
-#include <stdint.h>
-#include "../libc/string.h"
-#include "../drivers/screen.h"
+#include "string.h"
+#include "screen.h"
 
 #define BITSET_BASE 0x10c800
 #define BITSET_LIMIT 0x100000

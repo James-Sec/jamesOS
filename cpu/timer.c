@@ -1,4 +1,4 @@
-#include "timer.h"
+#include "../include/timer.h"
 
 uint32_t tick = 0;
 

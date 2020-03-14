@@ -1,12 +1,10 @@
 #ifndef ISR_H
 #define ISR_H
 #include "types.h"
-#include <stdint.h>
-
 #include "idt.h"
-#include "../drivers/screen.h"
-#include "../libc/string.h"
-#include "../drivers/ports.h"
+#include "screen.h"
+#include "string.h"
+#include "ports.h"
 
 extern void isr0();
 extern void isr1();

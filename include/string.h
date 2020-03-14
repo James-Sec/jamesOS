@@ -1,8 +1,7 @@
 #ifndef STRING_H
 #define STRING_H
 
-#include "../cpu/types.h"
-#include <stdint.h>
+#include "types.h"
 
 void itoa (int n, char s[]);
 void reverse (char s[]);

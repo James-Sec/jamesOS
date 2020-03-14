@@ -5,7 +5,6 @@
 #define KERNEL_CS 0x08
 
 #include "types.h"
-#include <stdint.h>
 
 typedef struct 
 {

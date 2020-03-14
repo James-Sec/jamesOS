@@ -1,4 +1,5 @@
-#include "../cpu/types.h"
+#include "../include/ports.h"
+
 //Read a byte from a port
 uint8_t port_byte_in (uint16_t port)
 {
