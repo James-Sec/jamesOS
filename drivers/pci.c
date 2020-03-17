@@ -35,7 +35,8 @@ uint32_t pci_gen_address (uint8_t bus, uint8_t device, uint8_t offset)
   return address;
 }
 
-void pci_brute () {
+void pci_brute () 
+{
   kprint ("BRUTING PCI DEVICES\n");
   int i, j;
   for (i = 0; i < 256; i++) {

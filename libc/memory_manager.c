@@ -12,6 +12,7 @@ void memory_manager_init ()
 //begin e size sao em bits
 void fill (uint32_t begin, uint32_t size, uint8_t value)
 {
+  /*
   char str [10];
 
   itoa (begin, str);
@@ -23,12 +24,14 @@ void fill (uint32_t begin, uint32_t size, uint8_t value)
   kprint ("(");
   kprint (str);
   kprint (")");
+  */
 
 
 
 
   int i;
-  for (i = begin; i < (size + begin); i++) {
+  for (i = begin; i < (size + begin); i++) 
+  {
     uint32_t byte = i / 8;
     uint32_t offset = i % 8;
 
@@ -69,6 +72,23 @@ void kfree (uint32_t size, uint32_t addr)
 {
   uint32_t byte = (uint32_t) memory_mapped_base - addr;
   fill (byte, size, 0);
-
 }
 
+
+void print_bit_map (uint32_t size)
+{
+  size = (size / 8) + (size % 8 != 0);
+  uint8_t *i = bitset_limit;
+  for (i = bitset_base ; i > (bitset_base - size); i --)
+
+  {
+    int8_t j;
+    for (j = 7 ; j >= 0 ; j--)
+    {
+      if ((*i >> j) & 1)
+        kprint ("1");
+      else
+        kprint ("0");
+    }
+  }
+}

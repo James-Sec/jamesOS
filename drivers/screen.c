@@ -65,7 +65,7 @@ void scroll_screen ()
   for(i = 0 ; i < MAX_ROWS; i++)
   {
     memcpy (vid_addr, vid_addr - (MAX_COLS * 2) , MAX_COLS*2);
-    vid_addr = vid_addr + (MAX_COLS * 2) - 1;
+    vid_addr = vid_addr + (MAX_COLS * 2) ;
   }
   set_cursor_offset (MAX_ROWS * MAX_COLS - MAX_COLS);
 }
