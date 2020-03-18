@@ -18,6 +18,8 @@ void entry ()
   init_keyboard();
 
   memory_manager_init();
-  page_init();
+
+  //page_init();
+
 }
 

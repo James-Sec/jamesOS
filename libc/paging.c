@@ -1,10 +1,14 @@
 #include "../include/paging.h"
+page_directory_t *kernel_direcoty = 0;
+page_directory_t *current_directory = 0;
+
 void alloc_frame (page_t *page, int is_kernel, int is_writable)
 {
-  if (!page->frame)
+  if (page->frame)
     return;
   else
   {
+    char s [10];
     uint32_t idx = (uint32_t)kmalloc (0x1000);
     if (!idx)
       kprint ("No free frames\n");
@@ -13,7 +17,7 @@ void alloc_frame (page_t *page, int is_kernel, int is_writable)
       page->present = 1;
       page->rw = is_writable;
       page->user = is_kernel;
-      page->frame = idx;
+      page->frame = idx >> 12;
     }
   }
 }
@@ -22,7 +26,7 @@ void free_frame (page_t *page)
   if(!page->present)
     return;
   page->present=0;
-  kfree (0x1000, (uint32_t) page->frame << 20);
+  kfree (0x1000, (uint32_t) page->frame << 12);
 } 
 
 void switch_page_directory (page_directory_t *dir)
@@ -36,11 +40,10 @@ void switch_page_directory (page_directory_t *dir)
 
 void page_init ()
 {
-  uint32_t n_frames = 100;
-  page_directory_t *kernel_directory = (page_directory_t*) kmalloc ((sizeof(page_directory_t) & 0xfffff000)+ 0x1000);
-  memset (kernel_directory, 0, sizeof (page_directory_t));
-  register_interrupt_handler (14, page_fault);
-  //switch_page_directory (kernel_directory);
+
+  kernel_directory = (page_directory_t*) kmalloc ((sizeof(page_directory_t) & 0xfffff000)+ 0x1000);
+  current_directory = kernel_directory;
+  //TODO CONTINUE... -> https://github.com/cirosantilli/jamesmolloy-kernel-development-tutorials/blob/master/6_paging/paging.c
 }
 
 
