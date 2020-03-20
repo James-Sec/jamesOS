@@ -18,8 +18,14 @@ void entry ()
   init_keyboard();
 
   memory_manager_init();
-
-  //page_init();
-
+  page_init();
+  uint8_t* ptr = (uint8_t)0x120000;
+  uint32_t a = *ptr;
+  char s[10];
+  itoa (a,s);
+  kprint ("Testing virtual memory: ");
+  kprint (s);
+  kprint ("\n");
+  //asm volatile ("int $14");
 }
 

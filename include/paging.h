@@ -29,6 +29,6 @@ typedef struct page_directory
 
 void page_init ();
 void switch_page_directory (page_directory_t *dir);
-page_t *get_page (uint32_t address, int make, page_directory_t *dir);
+page_t* get_page (uint32_t address, int make, page_directory_t *dir);
 void page_fault (registers_t *regs);
 #endif

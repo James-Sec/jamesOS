@@ -16,7 +16,7 @@ os-image.bin: boot/boot_sector.bin kernel.bin
 
 # '--oformat binary' deletes all symbols as a collateral, so we don't need
 # to 'strip' them manually on this case
-kernel.bin: kernel/kernel_entry.o ${OBJ}
+kernel.bin: kernel/kernel_entry.o ${OBJ} kernel/kernel_end.o
 	i686-elf-ld -o $@ -Ttext 0x1000 $^ --oformat binary
 
 run: os-image.bin
