@@ -11,12 +11,18 @@
 #define MEMORY_MAPPED_BASE 0x171000
 
 
+/*
 void memory_manager_init ();
 uint8_t* kmalloc (uint32_t size);
 void kfree (uint32_t size, uint32_t addr);
 void fill (uint32_t begin, uint32_t size, uint8_t value);
 void print_bit_map (uint32_t size);
-
+*/
+uint32_t kmalloc_int (uint32_t size, uint32_t aling, uint32_t *phys);
+uint32_t kmalloc_a (uint32_t sz);
+uint32_t kmalloc_p (uint32_t sz, uint32_t *phys);
+uint32_t kmalloc_ap (uint32_t sz, uint32_t *phys);
+uint32_t kmalloc (uint32_t sz);
 
 
 #endif

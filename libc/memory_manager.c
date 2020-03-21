@@ -1,5 +1,43 @@
 #include "../include/memory_manager.h"
 
+uint32_t placement_address = 0x1000000;//PODE BUGAR TUDO
+
+uint32_t kmalloc_int (uint32_t size, uint32_t align, uint32_t *phys)
+{
+  if (align == 1 && (placement_address & 0xfffff000))
+  {
+    placement_address &= 0xfffff000;
+    placement_address += 0x1000;
+  }
+  if (phys)
+    *phys = placement_address;
+  uint32_t tmp = placement_address;
+  placement_address += size;
+  return tmp;
+}
+
+uint32_t kmalloc_a (uint32_t sz)
+{
+  return kmalloc_int (sz, 1, 0);
+}
+
+uint32_t kmalloc_p (uint32_t sz, uint32_t *phys)
+{
+  return kmalloc_int (sz, 0, phys);
+}
+
+uint32_t kmalloc_ap (uint32_t sz, uint32_t *phys)
+{
+  return kmalloc_int (sz, 1, phys);
+}
+
+uint32_t kmalloc (uint32_t sz)
+{
+  return kmalloc_int (sz, 0, 0);
+}
+
+
+/*
 uint8_t *bitset_base = (uint8_t*) BITSET_BASE;
 uint8_t *bitset_limit = (uint8_t*) BITSET_LIMIT;
 uint8_t *memory_mapped_base = (uint8_t*) MEMORY_MAPPED_BASE;
@@ -12,19 +50,6 @@ void memory_manager_init ()
 //begin e size sao em bits
 void fill (uint32_t begin, uint32_t size, uint8_t value)
 {
-  /*
-  char str [10];
-
-  itoa (begin, str);
-  kprint ("(");
-  kprint (str);
-  kprint (")");
-
-  itoa (size, str);
-  kprint ("(");
-  kprint (str);
-  kprint (")");
-  */
 
 
 
@@ -92,3 +117,4 @@ void print_bit_map (uint32_t size)
     }
   }
 }
+*/
