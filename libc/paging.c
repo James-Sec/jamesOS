@@ -1,17 +1,17 @@
 #include "../include/paging.h"
 
-// The kernel's page directory
+// a pointer to the kernel's page directory
 page_directory_t *kernel_directory=0;
 
-// The current page directory;
+// a pointer to the current page directory;
 page_directory_t *current_directory=0;
 
-// A bitset of frames - used or free.
+// a poinyrt to a bitset of frames - used or free.
 uint32_t *frames;
+//the number of frames
 uint32_t nframes;
 
-// Defined in kheap.c
-//extern uint32_t placement_address;
+// Defined in memory_manager.c
 extern uint32_t placement_address;
 
 // Macros used in the bitset algorithms.
@@ -109,9 +109,10 @@ void page_init ()
   // assume it is 16MB big.
   uint32_t mem_end_page = 0x1000000;
 
+  //creating the bitset of frames and turn all of those availables
   nframes = mem_end_page / 0x1000;
   frames = (uint32_t*)kmalloc(INDEX_FROM_BIT(nframes));
-  memset(frames, 0, INDEX_FROM_BIT(nframes));
+  memset((uint8_t*)frames, 0, INDEX_FROM_BIT(nframes));
 
   // Let's make a page directory.
   kernel_directory = (page_directory_t*)kmalloc_a(sizeof(page_directory_t));
