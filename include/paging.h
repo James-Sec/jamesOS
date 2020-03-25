@@ -3,7 +3,7 @@
 
 #include "types.h"
 #include "isr.h"
-#include "memory_manager.h"
+#include "kheap.h"
 typedef struct page
 {
   uint32_t present  : 1;

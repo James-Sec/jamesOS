@@ -101,10 +101,7 @@ void free_frame(page_t *page)
     clear_frame(frame);
     page->frame = 0x0;
   }
-}
-
-void page_init ()
-{
+} void page_init () {
   // The size of physical memory. For the moment we
   // assume it is 16MB big.
   uint32_t mem_end_page = 0x1000000;
@@ -126,7 +123,7 @@ void page_init ()
   // by calling kmalloc(). A while loop causes this to be
   // computed on-the-fly rather than once at the start.
   int i = 0;
-  while (i < placement_address)
+  while (i <= HEAP_BASE)
   {
     // Kernel code is readable but not writeable from userspace.
     alloc_frame( get_page(i, 1, kernel_directory), 0, 0);

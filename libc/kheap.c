@@ -1,19 +1,36 @@
-#include "../include/memory_manager.h"
+#include "../include/kheap.h"
+uint8_t *bitset_base = (uint8_t*) BITSET_BASE;
+uint8_t *bitset_limit = (uint8_t*) BITSET_LIMIT;
+uint8_t *heap_base = (uint8_t*) HEAP_BASE;
 
-uint32_t placement_address = 0x1000000;//PODE BUGAR TUDO
+uint32_t placement_address = 0x5000;//end of used memory by kernel text/code
+uint32_t kheap_enable = 0;
 
 uint32_t kmalloc_int (uint32_t size, uint32_t align, uint32_t *phys)
 {
-  if (align == 1 && (placement_address & 0xfffff000))
+  if (!kheap_enable)
   {
-    placement_address &= 0xfffff000;
-    placement_address += 0x1000;
+    if (align == 1 && (placement_address & 0xfffff000))
+    {
+      placement_address &= 0xfffff000;
+      placement_address += 0x1000;
+    }
+    if (phys)
+      *phys = placement_address;
+    uint32_t tmp = placement_address;
+    placement_address += size;
+    return tmp;
   }
-  if (phys)
-    *phys = placement_address;
-  uint32_t tmp = placement_address;
-  placement_address += size;
-  return tmp;
+  else
+  {
+    if ((size < 0x1000) || (align && size % 0x1000))
+    {
+      size += 0x1000;
+      size &= 0xfffff000;
+    }
+    *phys  = kheap_malloc (size);
+    return *phys;
+  }
 }
 
 uint32_t kmalloc_a (uint32_t sz)
@@ -38,22 +55,15 @@ uint32_t kmalloc (uint32_t sz)
 
 
 /*
-uint8_t *bitset_base = (uint8_t*) BITSET_BASE;
-uint8_t *bitset_limit = (uint8_t*) BITSET_LIMIT;
-uint8_t *memory_mapped_base = (uint8_t*) MEMORY_MAPPED_BASE;
-
-void memory_manager_init ()
+*/
+void kheap_init ()
 {
-  memset (bitset_limit, 0 ,bitset_base - bitset_limit);
+  kheap_enable = 1;
+  memset ((uint8_t*)BITSET_LIMIT, 0 ,BITSET_BASE - BITSET_LIMIT);
 }
 
-//begin e size sao em bits
 void fill (uint32_t begin, uint32_t size, uint8_t value)
 {
-
-
-
-
   int i;
   for (i = begin; i < (size + begin); i++) 
   {
@@ -68,7 +78,7 @@ void fill (uint32_t begin, uint32_t size, uint8_t value)
 
 }
 
-uint8_t* kmalloc (uint32_t size)
+uint32_t kheap_malloc (uint32_t size)
 {
   uint8_t *i;
   int count = 0;
@@ -86,16 +96,21 @@ uint8_t* kmalloc (uint32_t size)
       if (count == size)
       {
         fill (begin - size, size, 1);
-        return memory_mapped_base - (begin - size);
+
+        return (uint32_t)(heap_base - (begin - size) - size);
       }
     }
   }
   return 0;
 }
 
+
+//begin e size sao em bits
+
+
 void kfree (uint32_t size, uint32_t addr)
 {
-  uint32_t byte = (uint32_t) memory_mapped_base - addr;
+  uint32_t byte = (uint32_t) HEAP_BASE - addr;
   fill (byte, size, 0);
 }
 
@@ -117,4 +132,3 @@ void print_bit_map (uint32_t size)
     }
   }
 }
-*/
