@@ -9,12 +9,14 @@ uint32_t pci_read_data (uint8_t bus, uint8_t device, uint8_t offset)
 
   /* read in the data */
   /* (offset & 2) * 8) = 0 will choose the first word of the 32 bits register */
-  uint32_t tmp = (uint32_t)((port_dword_in ((uint16_t)0xCFC) >> ((offset & 2) * 8)) & 0xffff);
+  //uint32_t tmp = (uint32_t)((port_dword_in ((uint16_t)0xCFC) >> ((offset & 2) * 8)) & 0xffff);
+  uint32_t tmp = (uint32_t)(port_dword_in ((int16_t)0xCFC));
   return tmp;
 }
 
-void pci_write_data (uint32_t address, uint32_t data)
+void pci_write_data (uint8_t bus, uint8_t device, uint8_t offset, uint32_t data)
 {
+  uint32_t address = pci_gen_address (bus, device, offset);
   // where to write
   port_dword_out ((uint16_t)0xCF8, address);
   // write
@@ -35,23 +37,40 @@ uint32_t pci_gen_address (uint8_t bus, uint8_t device, uint8_t offset)
   return address;
 }
 
+void pci_get_device (uint16_t vendor_id, uint16_t device_id, uint16_t *bus, uint8_t *device) 
+{
+  int i, j;
+  for (i = 0; i < 256; i++) {
+    for (j = 0; j < 32; j++) {
+      uint32_t data = pci_read_data (i, j, 0);
+      uint32_t reg = (device_id << 16) | vendor_id;
+      if (data == reg)
+      {
+        *bus = i;
+        *device = j;
+        kprint ("device found\n");
+        return;
+      }
+    }
+  }
+  kprint ("no device found\n");
+}
+
 void pci_brute () 
 {
   kprint ("BRUTING PCI DEVICES\n");
   int i, j;
   for (i = 0; i < 256; i++) {
     for (j = 0; j < 32; j++) {
-      uint32_t data = pci_read_data (i, j, 0);
-      //if (((data >> 16) & 0x0000ffff) == 0b0000000100000000) {
-      //if ((data & 0xffff) == 0x8086) {
-      if (data !=  65535) {
+      uint32_t data = pci_read_data (i, j, 0x8);
+      if (((data >> 24) & 0x000000ff) == 0x02)
+      {
         char str [10];
-        data = pci_read_data (i, j, 0);
         itoa (data, str);
         kprint (str);
         kprint ("\n");
 
-        data = pci_read_data (i, j, 0x10);
+        data = pci_read_data (i, j, 0x0);
         itoa (data, str);
         kprint (str);
         kprint ("\n");
@@ -60,4 +79,3 @@ void pci_brute ()
   }
   kprint ("DONE\n");
 }
-

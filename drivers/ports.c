@@ -34,7 +34,7 @@ void port_word_out (uint16_t port, uint16_t data)
 // parameter is a 16bit address
 uint32_t port_dword_in (uint16_t port)
 {
-  uint16_t result;
+  uint32_t result;
   __asm__ ("in %%dx, %%eax" : "=a" (result) : "d" (port));
   return result;
 }

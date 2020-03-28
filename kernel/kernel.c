@@ -7,6 +7,7 @@
 #include "../include/string.h"
 #include "../include/pci.h"
 #include "../include/paging.h"
+#include "../include/rtl8139.h"
 
 void entry ()
 {
@@ -18,8 +19,8 @@ void entry ()
   init_keyboard();
   kheap_init();
   page_init();
-  uint8_t* ptr = (uint8_t*)0x172000;
-  uint32_t a = *ptr;
-  //asm volatile ("int $14");
+  rtl8139_init();
+  //pci_brute ();
+
 }
 

@@ -15,14 +15,14 @@
 #include <net/if.h>
 #include <netinet/ether.h>
 
-#define MY_DEST_MAC0	0x00
-#define MY_DEST_MAC1	0x90
-#define MY_DEST_MAC2	0xf5
-#define MY_DEST_MAC3	0xd9
-#define MY_DEST_MAC4	0x67
-#define MY_DEST_MAC5	0xac
+#define MY_DEST_MAC0	0x52
+#define MY_DEST_MAC1	0x55
+#define MY_DEST_MAC2	0x00
+#define MY_DEST_MAC3	0xd1
+#define MY_DEST_MAC4	0x55
+#define MY_DEST_MAC5	0x01
 
-#define DEFAULT_IF	"enp3s0"
+#define DEFAULT_IF	"tap0"
 #define BUF_SIZ		1024
 
 int main(int argc, char *argv[])
