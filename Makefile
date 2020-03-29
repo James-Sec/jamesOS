@@ -24,7 +24,7 @@ run: os-image.bin
 	#qemu-system-i386 -hda hd -netdev tap,helper=/usr/lib/qemu/qemu-bridge-helper,id=os_net0 -device model=rtl8139,netdev=os_net0,id=os_nic0 -fda os-image.bin
 	#qemu-system-i386 -net nic -nic model=rtl8139 -fda os-image.bin
 	#sudo qemu-system-x86_64 -cdrom archlinux-2020.02.01-x86_64.iso -boot d -enable-kvm  -m 1024 -hda hd -netdev tap,id=mynet0,ifname=tap0,script=no,downscript=no -device rtl8139,netdev=mynet0,mac=52:55:00:d1:55:01
-	sudo qemu-system-x86_64 -fda os-image.bin -netdev tap,id=mynet0,ifname=tap0,script=no,downscript=no -device rtl8139,netdev=mynet0,mac=52:55:00:d1:55:01
+	sudo qemu-system-i386 -fda os-image.bin -netdev tap,id=mynet0,ifname=tap0,script=no,downscript=no -device rtl8139,netdev=mynet0,mac=52:55:00:d1:55:01 -object filter-dump,id=f1,netdev=mynet0,file=dump.dat
 
 ## Used for debugging purposes
 #kernel.elf: boot/kernel_entry.o ${OBJ}

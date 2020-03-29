@@ -2,10 +2,12 @@
 #define RTL8139_H
 
 #include <stdint.h>
+#include "isr.h"
 #include "pci.h"
 
 #define VENDOR_ID 0x10EC 
 #define DEVICE_ID 0x8139
 
+void rtl8139_handler (registers_t *regs);
 void rtl8139_init ();
 #endif
