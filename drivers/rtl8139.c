@@ -1,5 +1,4 @@
 #include "../include/rtl8139.h"
-
 void rtl8139_handler (registers_t *regs)
 {
   uint32_t io_base = 49152;
@@ -10,6 +9,7 @@ void rtl8139_handler (registers_t *regs)
   if (status & (1<<0)) {
     kprint("Received packet\n");
   }
+  port_word_out ((uint16_t)(io_base + 0x3E), 0x1);
 }
 
 void rtl8139_init ()
@@ -30,7 +30,7 @@ void rtl8139_init ()
 
   //get io base address
   reg = pci_read_data (bus, device, 0x10);
-  io_base = reg & ~(0x03);
+  io_base = reg & (~0x03);
 
   //turning on the rtl8139
   port_byte_out ((uint16_t)(io_base + 0x52), 0x0);
@@ -47,7 +47,7 @@ void rtl8139_init ()
   port_word_out ((uint16_t)(io_base + 0x3C), 0x0005);
 
   // (1 << 7) is the WRAP bit, 0xf is AB+AM+APM+AAP
-  port_dword_out ((uint16_t)(io_base + 0x44), 0xf | (1 << 7));
+  port_dword_out ((uint16_t)(io_base + 0x44), 0x2 | (1 << 7));
 
   // Sets the RE and TE bits high
   port_byte_out ((uint16_t)(io_base + 0x37), 0x0C);
@@ -58,11 +58,4 @@ void rtl8139_init ()
   kprint ("registered\n");
 
   //port_word_out ((uint16_t)(io_base + 0x3E), 0x1);
-  
-
-  char s[10];
-  itoa (reg & 0xff, s);
-  kprint ("interrupt line: ");
-  kprint (s);
-  kprint ("\n");
 }
