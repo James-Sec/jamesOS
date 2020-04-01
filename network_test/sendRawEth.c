@@ -79,9 +79,9 @@ int main(int argc, char *argv[])
 	tx_len += sizeof(struct ether_header);
 
 	/* Packet data */
-	sendbuf[tx_len++] = 0x0;
-	//sendbuf[tx_len++] = 0xad;
-	//sendbuf[tx_len++] = 0xbe;
+	sendbuf[tx_len++] = 'o';
+	sendbuf[tx_len++] = 'l';
+	sendbuf[tx_len++] = 'a';
 	//sendbuf[tx_len++] = 0xff;
 
 	/* Index of the network device */

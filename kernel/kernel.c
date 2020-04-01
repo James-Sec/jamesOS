@@ -6,6 +6,7 @@
 #include "../include/kheap.h"
 #include "../include/string.h"
 #include "../include/pci.h"
+#include "../include/kheap.h"
 #include "../include/paging.h"
 #include "../include/rtl8139.h"
 
@@ -20,7 +21,6 @@ void entry ()
   kheap_init();
   page_init();
   rtl8139_init();
-  //pci_brute ();
-
+  ethernet_send_packet (0xffff, "ola",3);
 }
 
