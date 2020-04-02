@@ -9,6 +9,7 @@
 #include "../include/kheap.h"
 #include "../include/paging.h"
 #include "../include/rtl8139.h"
+#include "../include/ethernet.h"
 
 void entry ()
 {
@@ -21,6 +22,6 @@ void entry ()
   kheap_init();
   page_init();
   rtl8139_init();
-  ethernet_send_packet (0xffff, "ola",3);
+  ethernet_send_packet (0xffff, "ola",3,0x0008);
 }
 

@@ -2,7 +2,7 @@
 
 uint32_t ethernet_send_packet (uint8_t *dst_mac_addr, uint8_t *data, uint32_t len, uint16_t protocol)
 {
-  ethernet_frame_t *frame = kmalloc (sizeof(ethernet_frame_t) + 3);
+  ethernet_frame_t *frame = (ethernet_frame_t*) kmalloc (sizeof(ethernet_frame_t) + 3);
   frame -> dst_mac_addr[0] = 0x8a;
   frame -> dst_mac_addr[1] = 0x4e;
   frame -> dst_mac_addr[2] = 0xd8;
@@ -20,9 +20,10 @@ uint32_t ethernet_send_packet (uint8_t *dst_mac_addr, uint8_t *data, uint32_t le
   void * frame_data = (void*)frame + sizeof(ethernet_frame_t);
   memcpy(frame_data, data, len);
 
-  frame -> type = 0x0800;
+  frame -> type = htons (0x0800);
 
-  rtl8139_send_packet(frame, sizeof(ethernet_frame_t) + len);
+
+  rtl8139_send_packet((uint8_t*)frame, sizeof(ethernet_frame_t) + len);
 
 
   /*
