@@ -1,6 +1,6 @@
 ;print message in 16-bit real mode
 
-print_string_16b:
+print_string_rm:
 pusha
 
 mov ah, 0x0e

@@ -27,12 +27,12 @@ disk_load:
 
 disk_error_1:
 mov bx, DISK_ERROR_MSG_1
-call print_string_16b
+call print_string_rm
 jmp $
 
 disk_error_2:
 mov bx, DISK_ERROR_MSG_2
-call print_string_16b
+call print_string_rm
 ;mov [0x7e00], al
 ;mov dx, [0x7e00]
 ;call print_hex

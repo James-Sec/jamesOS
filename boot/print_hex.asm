@@ -22,7 +22,7 @@ jmp beginning
 
 end_hex:
 mov bx, MSG ; preparing to print_string
-call print_string_16b
+call print_string_rm
 
 popa
 ret

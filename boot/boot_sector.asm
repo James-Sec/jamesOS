@@ -10,7 +10,7 @@ mov sp, bp
 
 ;printing 16-bit real mode debug message
 mov bx, MSG_REAL_MODE
-call print_string_16b
+call print_string_rm
 
 ;loading the kernel
 call load_kernel
@@ -20,7 +20,7 @@ call switch_to_pm
 
 jmp $
 
-%include "boot/print_string_16b.asm"
+%include "boot/print_string_rm.asm"
 %include "boot/print_string_pm.asm"
 %include "boot/switch_to_protected_mode.asm"
 %include "boot/disk_load.asm"
@@ -30,7 +30,7 @@ jmp $
 load_kernel:
   ;printing load kernel debug message
   mov bx, MSG_LOAD_KERNEL
-  call print_string_16b
+  call print_string_rm
 
   ;now, we will read the kernel from the HD
   mov bx, 0
