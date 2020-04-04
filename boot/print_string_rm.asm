@@ -4,13 +4,13 @@ print_string_rm:
 pusha
 
 mov ah, 0x0e
-loop:
+print_string_rm_loop:
 mov al, [bx]
 cmp al, 0
 je end
 int 0x10
 add bx, 1
-jmp loop
+jmp print_string_rm_loop
 
 end:
 popa
