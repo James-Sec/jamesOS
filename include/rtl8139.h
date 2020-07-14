@@ -5,13 +5,15 @@
 #include "isr.h"
 #include "pci.h"
 #include "kheap.h"
+#include "paging.h"
 
 #define VENDOR_ID 0x10EC 
 #define DEVICE_ID 0x8139
 
-void rtl8139_handler (registers_t *regs);
+extern page_directory_t* kernel_directory;
+
 void rtl8139_init ();
-void rtl8139_send_packet (uint8_t *data, uint32_t len);
+void rtl8139_send_frame (uint8_t *data, uint32_t len);
 
 typedef struct rtl8139_dev
 {

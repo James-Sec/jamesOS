@@ -3,24 +3,16 @@
 uint32_t pci_read_data (uint8_t bus, uint8_t device, uint8_t offset)
 {
   uint32_t address = pci_gen_address (bus, device, offset);
-
-  /* write out the address */
-  port_dword_out ((uint16_t)0xCF8, address);
-
-  /* read in the data */
-  /* (offset & 2) * 8) = 0 will choose the first word of the 32 bits register */
-  //uint32_t tmp = (uint32_t)((port_dword_in ((uint16_t)0xCFC) >> ((offset & 2) * 8)) & 0xffff);
-  uint32_t tmp = (uint32_t)(port_dword_in ((int16_t)0xCFC));
+  port_dword_out ((uint16_t) PCI_CONFIG_ADDR, address);
+  uint32_t tmp = (uint32_t) (port_dword_in ((int16_t) PCI_CONFIG_DATA));
   return tmp;
 }
 
 void pci_write_data (uint8_t bus, uint8_t device, uint8_t offset, uint32_t data)
 {
   uint32_t address = pci_gen_address (bus, device, offset);
-  // where to write
-  port_dword_out ((uint16_t)0xCF8, address);
-  // write
-  port_dword_out ((uint16_t)0xCFC, data);
+  port_dword_out ((uint16_t)PCI_CONFIG_ADDR, address);
+  port_dword_out ((uint16_t)PCI_CONFIG_DATA, data);
 }
 
 uint32_t pci_gen_address (uint8_t bus, uint8_t device, uint8_t offset)
@@ -40,8 +32,10 @@ uint32_t pci_gen_address (uint8_t bus, uint8_t device, uint8_t offset)
 void pci_get_device (uint16_t vendor_id, uint16_t device_id, uint16_t *bus, uint8_t *device) 
 {
   int i, j;
-  for (i = 0; i < 256; i++) {
-    for (j = 0; j < 32; j++) {
+  for (i = 0; i < 256; i++)
+  {
+    for (j = 0; j < 32; j++)
+    {
       uint32_t data = pci_read_data (i, j, 0);
       uint32_t reg = (device_id << 16) | vendor_id;
       if (data == reg)

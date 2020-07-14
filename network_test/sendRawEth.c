@@ -79,8 +79,12 @@ int main(int argc, char *argv[])
 	tx_len += sizeof(struct ether_header);
 
 	/* Packet data */
-	sendbuf[tx_len++] = 'o';
-	sendbuf[tx_len++] = 'l';
+	sendbuf[tx_len++] = 'a';
+	sendbuf[tx_len++] = 'a';
+	sendbuf[tx_len++] = 'a';
+	sendbuf[tx_len++] = 'a';
+	sendbuf[tx_len++] = 'a';
+	sendbuf[tx_len++] = 'a';
 	sendbuf[tx_len++] = 'a';
 	//sendbuf[tx_len++] = 0xff;
 

@@ -1,10 +1,13 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
-#include "types.h"
+
+#define KEYBOARD_SCANCODE 0x60
+
+#include <stdint.h>
 #include "ports.h"
 #include "isr.h"
 #include "string.h"
-#include "screen.h"
+#include "vga.h"
 
-void init_keyboard();
+void keyboard_init ();
 #endif

@@ -1,27 +1,25 @@
-#include "../include/screen.h"
-#include "../include/keyboard.h"
+#include <stdint.h>
+#include "../include/vga.h"
 #include "../include/isr.h"
-#include "../include/types.h"
-#include "../include/timer.h"
-#include "../include/kheap.h"
-#include "../include/string.h"
-#include "../include/pci.h"
+#include "../include/keyboard.h"
 #include "../include/kheap.h"
 #include "../include/paging.h"
 #include "../include/rtl8139.h"
-#include "../include/ethernet.h"
 
 void entry ()
 {
-  clear_screen();
-  kprint ("Welcome to my OS!\n");
-  kprint ("Welcome to JAMES\n");
-  isr_install();
+  clear_screen ();
+  kprint ("Welcome to the James OS!\n\0");
+  isr_install (); 
   asm volatile ("sti");
-  init_keyboard();
-  kheap_init();
-  page_init();
-  rtl8139_init();
-  ethernet_send_packet (0xffff, "ola",3,0x0008);
-}
 
+  keyboard_init();
+
+  kheap_init ();  
+
+  paging_init ();
+
+  rtl8139_init ();
+  char *s = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+  rtl8139_send_frame ((uint8_t*) s, 64);
+}

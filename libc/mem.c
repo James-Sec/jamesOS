@@ -1,5 +1,5 @@
 #include "../include/mem.h"
-void memcpy (char *source, char *dest, int nbytes) 
+void memcpy (uint8_t *source, uint8_t *dest, uint32_t nbytes)
 {
   int i;
   for (i = 0; i < nbytes; i++)
@@ -12,40 +12,35 @@ void memset (uint8_t *dest, uint8_t val, uint32_t len)
     *dest++ = val;
 }
 
-uint16_t flip_short (uint16_t value)
+void memmov (uint8_t *source, uint8_t *dest, uint32_t len)
 {
-    uint32_t first_byte = *((uint8_t*)(&value));
-    uint32_t second_byte = *((uint8_t*)(&value) + 1);
-    return (first_byte << 8) | (second_byte);
+  if (source == dest)
+    return;
+  if (source < dest)
+  {
+    source += len;
+    dest += len;
+    uint32_t i;
+    for (i = 0; i < len; i++)
+      *(--dest) = *(--source);
+  }
+  else
+  {
+    uint32_t i;
+    for (i = 0; i < len; i++)
+      *(dest++) = *(source++);
+  }
 }
 
-uint32_t flip_long (uint32_t value)
+int8_t memcmp (uint8_t *source, uint8_t *targ, uint32_t len)
 {
-    uint32_t first_byte = *((uint8_t*)(&value));
-    uint32_t second_byte = *((uint8_t*)(&value) + 1);
-    uint32_t third_byte = *((uint8_t*)(&value)  + 2);
-    uint32_t fourth_byte = *((uint8_t*)(&value) + 3);
-    return (first_byte << 24) | (second_byte << 16) | (third_byte << 8) | (fourth_byte);
-}
-
-//flip_byte -> its necessary when there are two fields in a bytes
-
-uint16_t htons (uint16_t host_value)
-{
-    return flip_short(host_value);
-}
-
-uint32_t htonl (uint32_t host_value)
-{
-    return flip_long (host_value);
-}
-
-uint16_t ntohs (uint16_t network_value)
-{
-    return flip_short (network_value);
-}
-
-uint32_t ntohl (uint32_t network_value)
-{
-    return flip_long (network_value);
+  uint32_t i;
+  for (i = 0; i < len; i++)
+  {
+    if (*source < *targ)
+      return -1;
+    else if (*(source++) > *(targ++))
+      return 1;
+  }
+  return 0;
 }

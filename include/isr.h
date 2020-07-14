@@ -1,11 +1,13 @@
 #ifndef ISR_H
 #define ISR_H
-#include "types.h"
-#include "idt.h"
-#include "screen.h"
-#include "string.h"
-#include "ports.h"
 
+#include <stdint.h>
+#include "idt.h"
+#include "vga.h"
+#include "ports.h"
+#include "string.h"
+
+// this functions are defined in assembly.asm
 extern void isr0();
 extern void isr1();
 extern void isr2();
@@ -73,20 +75,20 @@ extern void irq15();
 #define IRQ14 46
 #define IRQ15 47
 
+// this struct maps the registers pushed into stack after a interrupt call
 typedef struct 
 {
   uint32_t ds;//Data segment selector
-  uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;//pushed by pusha
+  uint32_t edi, esi, ebp, useless, ebx, edx, ecx, eax;//pushed by pusha
   uint32_t int_no, err_code;
-  uint32_t eip, cs, eflags, useresp, ss;//pushed by processr automatically
+  uint32_t eip, cs, eflags, esp, ss;//pushed by processr automatically
 }registers_t;
-void isr_install();
-void isr_handler (registers_t *r);
-void irq_handler (registers_t *r);
 
-typedef void (*isr_t) (registers_t *r);
+// pointer to a function (interrupt handler)
+typedef void (*isr_t) (registers_t *r); 
 
-void register_interrupt_handler (uint8_t n, isr_t handler);
-
-
+void isr_install(); 
+void isr_handler (registers_t *r); 
+void irq_handler (registers_t *r); 
+void register_interrupt_handler (uint8_t n, isr_t handler); 
 #endif

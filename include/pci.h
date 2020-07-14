@@ -1,8 +1,11 @@
 #ifndef PCI_H
 #define PCI_H
 
+#define PCI_CONFIG_ADDR 0xcf8
+#define PCI_CONFIG_DATA 0xcfc
+
 #include "ports.h"
-#include "screen.h"
+#include "vga.h"
 #include "string.h"
 
 uint32_t pci_read_data (uint8_t bus, uint8_t device, uint8_t offset);
