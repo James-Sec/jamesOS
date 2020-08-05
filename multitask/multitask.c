@@ -6,9 +6,13 @@ uint32_t last_pid = 1;
 extern struct page_directory_t *current_directory;
 uint32_t count = 0;
 
+//TCB MANAGER
+struct tcb_manager mtmg;
+uint8_t multitask_on = 0;
 
 void multitask_init () 
 {
+
   init = (struct tcb *) kmalloc (1024);
   current_task = init;
 
@@ -18,6 +22,14 @@ void multitask_init ()
   init->pid = 1;
   char *s = "init";
   memcpy (s, init->pname, 4);
+
+  //TCB MANAGER
+  mtmg.current = 0;
+  mtmg.list[mtmg.top] = init;
+  mtmg.top = 1;
+  multitask_on = 1;
+  //END
+
 }
 
 struct tcb* create_kernel_task (uint32_t* esp, uint8_t (*func) (void), char *pname)
@@ -31,14 +43,17 @@ struct tcb* create_kernel_task (uint32_t* esp, uint8_t (*func) (void), char *pna
   current_task->next_task = new_task;
   
   //organizing the stack
-
   *esp = esp + 4; //ebp
   *(esp + 1) = 0; //edi
   *(esp + 2) = 0; //esi
   *(esp + 3) = 0; //ebx
   *(esp + 4) = func; //ret
-  
 
+  //TCB MANAGER
+  mtmg.list[mtmg.top] = new_task;
+  mtmg.top++;
+  //END
+  
   return new_task;
 }
 

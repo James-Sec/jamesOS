@@ -10,17 +10,30 @@
 
 extern struct tcb* current_task;
 extern uint32_t task_switch (struct tcb* next_task);
-uint32_t count;
+
+//TCB MANAGER
+extern struct tcb_manager mtmg;
 
 
 void task_function ()
 {
   kprint ("this is a new task: \n");
+
+
+  if (mtmg.current + 1 < mtmg.top)
+    mtmg.current++;
+  else
+    mtmg.current = 0;
+
+  kprintf ("switch to: %d\n", 1, mtmg.current);
+  current_task->next_task = mtmg.list [mtmg.current];
   print_task(0);
+
   int i;
-  for (i = 0; i < 1e8; i++);
+  for (i = 0; i < 1e9; i++);
 
   task_switch (current_task->next_task);
+
   task_function ();
 }
 
@@ -34,6 +47,8 @@ void entry ()
   isr_install (); 
   asm volatile ("sti");
 
+  //pit_init (10);
+
   keyboard_init();
 
   kheap_init ();  
@@ -44,22 +59,22 @@ void entry ()
   char *msg = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
   rtl8139_send_frame ((uint8_t*) msg, 64);
 
-  kprint ("\n\n\n\n\n\n\n");
+  kprint ("\n");
 
   //---------------------------------------------------
 
   asm volatile ("cli");
   multitask_init ();
+
+  //int i;
+  //for (i = 0; i < 10; i++)
+  create_kernel_task ((0x160000) - (0 * 0x1000), task_function, "aa");
+  create_kernel_task ((0x160000) - (1 * 0x1000), task_function, "aa");
+  create_kernel_task ((0x160000) - (2 * 0x1000), task_function, "aa");
   asm volatile ("sti");
 
-  print_task (0);
-
-  uint32_t *stack = 0x170000;
-  struct tcb *nt = create_kernel_task (stack, task_function, "ola");
-
-  task_switch (current_task->next_task);
 
   task_function ();
-
-
+  //int i;
+  //for (i = 0; i < 10; i++)
 }
