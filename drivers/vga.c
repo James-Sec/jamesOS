@@ -87,6 +87,52 @@ void kprint_debug (uint8_t *message, uint8_t color)
   attribute = YELLOW_ON_BLACK;
 }
 
+void kprintf (char *str, int n, ...)
+{
+  char buff [strlen (str)];
+  va_list ap;
+  va_start (ap, n);
+  int i, index = 0;
+  for (i = 0; i < strlen (str); i++)
+  {
+    if (str[i] == '%')
+    {
+      if (str[i+1] != '%')
+      {
+        buff[index] = '\0';
+        kprint (buff);
+        if (str[i+1] == 'd')
+        {
+          char s[10];
+          itoa (va_arg (ap, int), s);
+          kprint (s);
+        }
+        else if (str[i+1] == 's')
+          kprint (va_arg (ap, char*));
+
+        index = 0;
+        ++i;
+      }
+      else
+      {
+        buff[index] = str[i];
+        ++index;
+        ++i;
+      }
+    }
+    else
+    {
+      buff[index] = str[i];
+      ++index;
+    }
+  }
+  if (index > 0)
+  {
+    buff[index] = '\0';
+    kprint (buff);
+  }
+}
+
 void clear_screen()
 {
   uint32_t i;

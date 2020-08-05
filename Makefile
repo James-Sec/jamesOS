@@ -1,9 +1,9 @@
 # list of c source files
-C_SOURCES = $(wildcard kernel/*.c libc/*.c drivers/*.c cpu/*.c) 
+C_SOURCES = $(wildcard kernel/*.c libc/*.c drivers/*.c cpu/*.c multitask/*.c) 
 # header files
 HEADERS = $(wildcard include/*.h)
 # list ofobject files to create
-OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o} 
+OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o multitask/task_switch.o} 
 
 # set cross compiler
 CC = i686-elf-gcc 
@@ -40,4 +40,4 @@ kernel/kernel.bin: kernel/kernel_entry.o ${OBJ}
 # cleaning binary/ELF files
 clean: 
 	rm -rf *.bin *.dat boot/*.bin kernel/*.bin
-	rm -rf kernel/*.o libc/*.o drivers/*.o cpu/*.o
+	rm -rf kernel/*.o libc/*.o drivers/*.o cpu/*.o multitask/*.o

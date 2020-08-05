@@ -172,6 +172,7 @@ void page_fault_handler (registers_t* regs)
   // just for test (it will generate only three page faults)
   static int t = 0; 
   t++;
+  while (1);
   if (t == 3) 
     alloc_frame (get_page (faulting_addr, 1, kernel_directory), 0, 0);
 }

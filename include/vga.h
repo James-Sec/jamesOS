@@ -29,6 +29,7 @@
 #define VGA_DATA_PORT 0x3d5
 
 #include <stdint.h>
+#include <stdarg.h>
 #include "mem.h"
 #include "ports.h"
 
