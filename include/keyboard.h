@@ -8,6 +8,7 @@
 #include "isr.h"
 #include "string.h"
 #include "vga.h"
+#include "multitask.h"
 
 void keyboard_init ();
 #endif

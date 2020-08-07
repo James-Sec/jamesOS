@@ -8,37 +8,22 @@
 #include "../include/multitask.h"
 #include "../include/pit.h"
 
-extern struct tcb* current_task;
+//extern struct tcb* current_task;
 extern uint32_t task_switch (struct tcb* next_task);
 
 //TCB MANAGER
 extern struct tcb_manager mtmg;
 
 
-void task_function ()
-{
-  kprint ("this is a new task: \n");
-
-
-  if (mtmg.current + 1 < mtmg.top)
-    mtmg.current++;
-  else
-    mtmg.current = 0;
-
-  kprintf ("switch to: %d\n", 1, mtmg.current);
-  current_task->next_task = mtmg.list [mtmg.current];
-  print_task(0);
-
-  int i;
-  for (i = 0; i < 1e9; i++);
-
-  task_switch (current_task->next_task);
-
-  task_function ();
-}
-
-
 extern uint32_t function (struct tcb *s);
+
+uint8_t task_function () {
+	while (1) {
+		//kprintf ("%d\n", 1, mtmg.ready_to_run [mtmg.current_rtr]->pid);
+	}
+
+	return 0;
+}
 
 void entry ()
 {
@@ -47,7 +32,7 @@ void entry ()
   isr_install (); 
   asm volatile ("sti");
 
-  //pit_init (10);
+  pit_init (10);
 
   keyboard_init();
 
@@ -68,11 +53,13 @@ void entry ()
 
   //int i;
   //for (i = 0; i < 10; i++)
-  create_kernel_task ((0x160000) - (0 * 0x1000), task_function, "aa");
-  create_kernel_task ((0x160000) - (1 * 0x1000), task_function, "aa");
-  create_kernel_task ((0x160000) - (2 * 0x1000), task_function, "aa");
+  create_kernel_task ((0x120000) + (0 * 0x1000), task_function, "aa");
+  create_kernel_task ((0x120000) + (1 * 0x1000), task_function, "aa");
+  create_kernel_task ((0x120000) + (2 * 0x1000), task_function, "aa");
   asm volatile ("sti");
 
+
+	//schedule ();
 
   task_function ();
   //int i;

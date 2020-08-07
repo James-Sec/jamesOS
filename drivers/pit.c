@@ -10,22 +10,9 @@ extern struct tcb* current_task;
 static void pit_callback (registers_t *regs)
 {
     tick++;
-
     //TCB MANAGER
     if (multitask_on) {
-	    /*
-      kprintf ("current: %d, top: %d\n", 2, mtmg.current, mtmg.top);
-
-      if (mtmg.current + 1 <= mtmg.top)
-        mtmg.current++;
-      else
-        mtmg.current = 0;
-
-      kprintf ("switch to: %d\n", 1, mtmg.current);
-      current_task->next_task = mtmg.list [mtmg.current];
-      task_switch (current_task->next_task);
-      */
-      //task_switch (current_task->next_task);
+			schedule ();
     }
     //END
     

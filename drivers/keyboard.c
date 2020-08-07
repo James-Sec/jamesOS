@@ -35,6 +35,7 @@ static void print_letter (uint8_t scancode)
       break;
     case 0x3:
       kprint_debug ("2", WHITE);
+			change_state ();
       break;
     case 0x4:
       kprint_debug ("3", WHITE);
@@ -204,8 +205,8 @@ static void print_letter (uint8_t scancode)
         kprint_debug ("unknown", WHITE);
       else if (scancode <= 0x39 + 0x80)
       {
-        print_letter(scancode - 0x80);
-        kprint_debug (" released", WHITE);
+        //print_letter(scancode - 0x80);
+        //kprint_debug (" released", WHITE);
       } 
       else
         kprint_debug ("unknown released", WHITE);

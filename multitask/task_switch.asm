@@ -4,7 +4,7 @@ extern task_function
 struc TCB
   .ESP resd 1
   .PAGE_DIR resd 1
-  .NEXT_TASK resd 1
+  ;.NEXT_TASK resd 1
   .PID resd 1
   .PNAME resb 32
 endstruc
