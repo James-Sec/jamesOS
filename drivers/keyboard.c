@@ -39,6 +39,7 @@ static void print_letter (uint8_t scancode)
       break;
     case 0x4:
       kprint_debug ("3", WHITE);
+			to_nr ();
       break;
     case 0x5:
       kprint_debug ("4", WHITE);

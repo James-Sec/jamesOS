@@ -33,5 +33,6 @@ void print_task (struct tcb*);
 struct tcb* create_kernel_task (uint32_t* esp, uint8_t (*func)(void), char *pname);
 void schedule ();
 void change_state ();
+void to_nr ();
 
 #endif

@@ -12,7 +12,9 @@ static void pit_callback (registers_t *regs)
     tick++;
     //TCB MANAGER
     if (multitask_on) {
-			schedule ();
+			if (!(tick % 10))
+				if (mtmg.current_rtr != mtmg.top_rtr)
+					schedule ();
     }
     //END
     

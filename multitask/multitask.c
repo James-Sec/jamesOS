@@ -103,3 +103,13 @@ void change_state () {
 	}
 	asm ("sti");
 }
+
+void to_nr () {
+	if (mtmg.top_rtr - 1 >= 1) {
+		mtmg.not_ready [mtmg.top_nr] = mtmg.ready_to_run [mtmg.top_rtr - 1];
+
+		mtmg.top_nr++;
+		mtmg.top_rtr--;
+	}
+	asm ("sti");
+}
