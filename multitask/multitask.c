@@ -1,23 +1,25 @@
 #include "../include/multitask.h"
 
-struct tcb *init;
+struct tcb *head;
 struct tcb *current_task;
 uint32_t last_pid = 1;
 extern struct page_directory_t *current_directory;
-uint32_t count = 0;
+uint32_t lock_counter = 0;
+extern uint32_t tick;
 
 
 void multitask_init () 
 {
-  init = (struct tcb *) kmalloc (1024);
-  current_task = init;
+  head = (struct tcb *) kmalloc (1024);
+  current_task = head;
 
-  asm volatile ("mov %%esp, %0" : "=r" (init->esp));
-  init->page_dir = current_directory;
-  init->next_task = init;
-  init->pid = 1;
+  asm volatile ("mov %%esp, %0" : "=r" (head->esp));
+  head->page_dir = current_directory;
+  head->next_task = 0;
+  head->pid = 1;
+  head->state = RUNNING;
   char *s = "init";
-  memcpy (s, init->pname, 4);
+  memcpy (s, head->pname, 4);
 }
 
 struct tcb* create_kernel_task (uint32_t* esp, uint8_t (*func) (void), char *pname)
@@ -25,21 +27,81 @@ struct tcb* create_kernel_task (uint32_t* esp, uint8_t (*func) (void), char *pna
   struct tcb *new_task = (struct tcb*) kmalloc (1024);
   new_task->esp = esp;
   new_task->page_dir = current_directory;
-  new_task->next_task = init;
+  new_task->next_task = head;
   new_task->pid = ++last_pid;
+  new_task->state = READY_TO_RUN;
   memcpy (pname, new_task->pname, 32);
-  current_task->next_task = new_task;
+  
+  head = new_task;
   
   //organizing the stack
-
   *esp = esp + 4; //ebp
   *(esp + 1) = 0; //edi
   *(esp + 2) = 0; //esi
   *(esp + 3) = 0; //ebx
   *(esp + 4) = func; //ret
   
-
   return new_task;
+}
+
+void block_task (uint8_t reason)
+{
+  lock_scheduler ();
+  current_task->state = reason;
+  scheduler ();
+  unlock_scheduler ();
+}
+
+void unblock_task (uint32_t pid)
+{
+  lock_scheduler ();
+  struct tcb *tmp;
+  tmp = search_task (pid);
+  current_task->state = READY_TO_RUN;
+  tmp->state = RUNNING;
+  task_switch (tmp);
+  unlock_scheduler ();
+}
+
+void lock_scheduler ()
+{
+  asm volatile ("cli");
+  ++lock_counter;
+}
+
+void unlock_scheduler ()
+{
+  if (--lock_counter == 0)
+    asm volatile ("sti");
+}
+
+void sleep (uint32_t ticks)
+{
+
+}
+
+void sleep_until (uint32_t ticks)
+{
+  
+}
+
+void scheduler () 
+{
+  struct tcb* next;
+  if (current_task->state != BLOCKED)
+    current_task->state = READY_TO_RUN;
+  next = current_task->next_task;
+  while (1)
+  {
+    if (!next)
+      next = head;
+    if (next->state == BLOCKED)
+      next = next->next_task;
+    else 
+      break;
+  }
+  next->state = RUNNING;
+  task_switch (next);
 }
 
 void print_task (struct tcb* tcb)
@@ -61,5 +123,18 @@ void print_task (struct tcb* tcb)
   kprint ("\npage_directory: ");
   itoa ((uint32_t)tcb->page_dir, s);
   kprint (s);
+  kprintf ("\ncurrent state: %d", 1, tcb->state);
+
+  struct tcb *it = current_task->next_task;
+  kprintf ("\ncurrent task->next_task: %d\n", 1, head);
   kprint ("\n--------------\n");
+}
+
+struct tcb* search_task (uint32_t pid)
+{
+  struct tcb* it;
+  for (it = head; it != 0; it = it->next_task)
+    if (it->pid == pid)
+      return it;
+  return 0;
 }

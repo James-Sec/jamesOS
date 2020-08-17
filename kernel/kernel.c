@@ -10,18 +10,33 @@
 
 extern struct tcb* current_task;
 extern uint32_t task_switch (struct tcb* next_task);
+extern struct tcb* head;
 uint32_t count;
 
 
 void task_function ()
 {
+  if (++count == 19)
+    unblock_task (2);
   kprint ("this is a new task: \n");
   print_task(0);
   int i;
   for (i = 0; i < 1e8; i++);
 
-  task_switch (current_task->next_task);
+  lock_scheduler ();
+  scheduler ();
+  unlock_scheduler ();
+
   task_function ();
+}
+
+uint8_t startup ()
+{
+  unlock_scheduler ();
+  if (current_task->pid == 2)
+    block_task (BLOCKED);
+  task_function ();
+  return 0;
 }
 
 
@@ -33,6 +48,8 @@ void entry ()
   kprint ("Welcome to the James OS!\n\0");
   isr_install (); 
   asm volatile ("sti");
+
+  pit_init (0);
 
   keyboard_init();
 
@@ -46,20 +63,18 @@ void entry ()
 
   kprint ("\n\n\n\n\n\n\n");
 
+
   //---------------------------------------------------
 
   asm volatile ("cli");
   multitask_init ();
   asm volatile ("sti");
 
-  print_task (0);
 
-  uint32_t *stack = 0x170000;
-  struct tcb *nt = create_kernel_task (stack, task_function, "ola");
 
-  task_switch (current_task->next_task);
+  create_kernel_task (0x120000, startup, "viado");
+  create_kernel_task (0x120000 - 0x1000, startup, "eh");
+  create_kernel_task (0x120000 - 0x2000, startup, "joao");
 
   task_function ();
-
-
 }

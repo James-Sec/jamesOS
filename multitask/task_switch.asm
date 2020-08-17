@@ -1,12 +1,14 @@
 extern current_task
 extern task_function
 
+
 struc TCB
   .ESP resd 1
   .PAGE_DIR resd 1
   .NEXT_TASK resd 1
   .PID resd 1
   .PNAME resb 32
+  .STATE resb 1
 endstruc
 
 global task_switch
