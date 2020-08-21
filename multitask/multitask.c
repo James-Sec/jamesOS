@@ -4,9 +4,9 @@ struct tcb *head;
 struct tcb *current_task;
 uint32_t last_pid = 1;
 extern struct page_directory_t *current_directory;
-uint32_t lock_counter = 0;
+uint32_t lock_irq_counter = 0;
+uint32_t multitasking_on;
 extern uint32_t tick;
-
 
 void multitask_init () 
 {
@@ -20,6 +20,8 @@ void multitask_init ()
   head->state = RUNNING;
   char *s = "init";
   memcpy (s, head->pname, 4);
+
+	multitasking_on = 1;
 }
 
 struct tcb* create_kernel_task (uint32_t* esp, uint8_t (*func) (void), char *pname)
@@ -46,56 +48,67 @@ struct tcb* create_kernel_task (uint32_t* esp, uint8_t (*func) (void), char *pna
 
 void block_task (uint8_t reason)
 {
-  lock_scheduler ();
+  lock_irq ();
   current_task->state = reason;
   scheduler ();
-  unlock_scheduler ();
+  unlock_irq ();
 }
 
 void unblock_task (uint32_t pid)
 {
-  lock_scheduler ();
+  lock_irq ();
   struct tcb *tmp;
   tmp = search_task (pid);
   current_task->state = READY_TO_RUN;
   tmp->state = RUNNING;
   task_switch (tmp);
-  unlock_scheduler ();
+  unlock_irq ();
 }
 
-void lock_scheduler ()
+void lock_irq ()
 {
   asm volatile ("cli");
-  ++lock_counter;
+  ++lock_irq_counter;
 }
 
-void unlock_scheduler ()
+void unlock_irq ()
 {
-  if (--lock_counter == 0)
+  if (--lock_irq_counter == 0)
     asm volatile ("sti");
 }
 
+
+// ticks is in seconds
 void sleep (uint32_t ticks)
 {
-
+	sleep_until ((ticks * 100) + tick);
 }
 
 void sleep_until (uint32_t ticks)
 {
-  
+
+	// if time has already passed
+	if (ticks < tick)
+		return;
+
+	// set the time that the task should wake up
+	current_task->sleep_until = ticks;
+
+	//current_task->state = SLEEPING;
+	block_task (SLEEPING);
 }
 
 void scheduler () 
 {
   struct tcb* next;
-  if (current_task->state != BLOCKED)
+  if (current_task->state != BLOCKED && current_task->state != SLEEPING)
     current_task->state = READY_TO_RUN;
   next = current_task->next_task;
   while (1)
   {
     if (!next)
       next = head;
-    if (next->state == BLOCKED)
+    if (next->state == BLOCKED || next->state == SLEEPING)
       next = next->next_task;
     else 
       break;
@@ -127,7 +140,7 @@ void print_task (struct tcb* tcb)
 
   struct tcb *it = current_task->next_task;
   kprintf ("\ncurrent task->next_task: %d\n", 1, head);
-  kprint ("\n--------------\n");
+  //kprint ("\n--------------\n");
 }
 
 struct tcb* search_task (uint32_t pid)

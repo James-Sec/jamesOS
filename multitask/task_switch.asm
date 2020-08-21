@@ -9,6 +9,7 @@ struc TCB
   .PID resd 1
   .PNAME resb 32
   .STATE resb 1
+  .SLEEP_UNTIL resd 1
 endstruc
 
 global task_switch

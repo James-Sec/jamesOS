@@ -12,6 +12,7 @@
 #include "ports.h"
 #include "vga.h"
 #include "isr.h"
+#include "multitask.h"
 
 void pit_init (uint32_t frequency);
 #endif

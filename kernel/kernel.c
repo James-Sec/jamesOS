@@ -16,25 +16,40 @@ uint32_t count;
 
 void task_function ()
 {
-  if (++count == 19)
-    unblock_task (2);
   kprint ("this is a new task: \n");
   print_task(0);
-  int i;
-  for (i = 0; i < 1e8; i++);
 
-  lock_scheduler ();
+
+	// TESTS
+	kprint ("pre sleep\n");
+	if (current_task->pid != 1) {
+		int i;
+		for (i = 0; i < 1e9; i++);
+	}
+	if (current_task->pid != 1)
+		sleep (3);
+	else {
+		int i;
+		for (i = 0; i < 1e8; i++);
+	}
+	kprint ("post sleep\n");
+  kprint ("\n--------------\n");
+	if (current_task->pid != 1) {
+		int i;
+		for (i = 0; i < 1e8; i++);
+	}
+	// END TESTS
+
+  lock_irq ();
   scheduler ();
-  unlock_scheduler ();
+  unlock_irq ();
 
   task_function ();
 }
 
 uint8_t startup ()
 {
-  unlock_scheduler ();
-  if (current_task->pid == 2)
-    block_task (BLOCKED);
+  unlock_irq ();
   task_function ();
   return 0;
 }
@@ -71,8 +86,7 @@ void entry ()
   asm volatile ("sti");
 
 
-
-  create_kernel_task (0x120000, startup, "viado");
+  create_kernel_task (0x120000, startup, "bonito");
   create_kernel_task (0x120000 - 0x1000, startup, "eh");
   create_kernel_task (0x120000 - 0x2000, startup, "joao");
 
