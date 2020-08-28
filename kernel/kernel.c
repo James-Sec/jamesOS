@@ -10,49 +10,9 @@
 
 extern struct tcb* current_task;
 extern uint32_t task_switch (struct tcb* next_task);
+extern uint8_t task_entry ();
 extern struct tcb* head;
 uint32_t count;
-
-
-void task_function ()
-{
-  kprint ("this is a new task: \n");
-  print_task(0);
-
-
-	// TESTS
-	kprint ("pre sleep\n");
-	if (current_task->pid != 1) {
-		int i;
-		for (i = 0; i < 1e9; i++);
-	}
-	if (current_task->pid != 1)
-		sleep (30);
-	else {
-		int i;
-		for (i = 0; i < 1e9; i++);
-	}
-	kprint ("post sleep\n");
-  kprint ("\n--------------\n");
-	if (current_task->pid != 1) {
-		int i;
-		for (i = 0; i < 1e9; i++);
-	}
-	// END TESTS
-
-  lock_irq ();
-  scheduler ();
-  unlock_irq ();
-
-  task_function ();
-}
-
-uint8_t startup ()
-{
-  unlock_irq ();
-  task_function ();
-  return 0;
-}
 
 
 extern uint32_t function (struct tcb *s);
@@ -80,15 +40,19 @@ void entry ()
 
 
   //---------------------------------------------------
+  alloc_frame (get_page (0x172000, 1, kernel_directory), 0, 0);
+  alloc_frame (get_page (0x173000, 1, kernel_directory), 0, 0);
 
   asm volatile ("cli");
   multitask_init ();
   asm volatile ("sti");
 
 
-  create_kernel_task (0x120000, startup, "ANDERSON");
-  create_kernel_task (0x120000 - 0x1000, startup, "CAROLINA");
-  create_kernel_task (0x120000 - 0x2000, startup, "?");
+
+  create_kernel_task (0x172ff0, task_entry, "ANDERSON");
+  create_kernel_task (0x172ff0 - 0x1000, task_entry, "CAROLINA");
+  create_kernel_task (0x172ff0 - 0x2000, task_entry, "?");
+
 
   task_function ();
 }

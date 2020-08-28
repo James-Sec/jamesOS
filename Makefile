@@ -1,5 +1,5 @@
 # list of c source files
-C_SOURCES = $(wildcard kernel/*.c libc/*.c drivers/*.c cpu/*.c multitask/*.c) 
+C_SOURCES = $(wildcard kernel/*.c libc/*.c drivers/*.c cpu/*.c multitask/*.c kernel_tasks/*.c) 
 # header files
 HEADERS = $(wildcard include/*.h)
 # list ofobject files to create
@@ -40,4 +40,4 @@ kernel/kernel.bin: kernel/kernel_entry.o ${OBJ}
 # cleaning binary/ELF files
 clean: 
 	rm -rf *.bin *.dat boot/*.bin kernel/*.bin
-	rm -rf kernel/*.o libc/*.o drivers/*.o cpu/*.o multitask/*.o
+	rm -rf kernel/*.o libc/*.o drivers/*.o cpu/*.o multitask/*.o kernel_tasks/*.o
