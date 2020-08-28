@@ -15,11 +15,14 @@ endstruc
 global task_switch
 
 task_switch:
- 
-    push ebx
-    push esi
-    push edi
-    push ebp
+		;the c compiler pushes the arguments then "call func"
+    ;the (call function) pushes the value of the EIP register
+    ;push args (5)
+    ;push eip  (4)
+    push ebx ; (3)top of next task kernel stack
+    push esi ; (2)the next task TCB
+    push edi ; (1)the current task TCB
+    push ebp ; (0)base pointer
  
     mov edi,[current_task]    ;edi = address of the previous task's "thread control block"
     mov [edi+TCB.ESP],esp         ;Save ESP for previous task's kernel stack in the thread's TCB
@@ -42,6 +45,8 @@ task_switch:
     pop edi
     pop esi
     pop ebx
-
+    
+    ;the esp is pointing to the position that holds the EIP of the current_task
+    ;the processor pops the return instruction pointer from the top of the stack into the EIP register
     ret                           ;Load next task's EIP from its kernel stack
 

@@ -27,16 +27,16 @@ void task_function ()
 		for (i = 0; i < 1e9; i++);
 	}
 	if (current_task->pid != 1)
-		sleep (3);
+		sleep (30);
 	else {
 		int i;
-		for (i = 0; i < 1e8; i++);
+		for (i = 0; i < 1e9; i++);
 	}
 	kprint ("post sleep\n");
   kprint ("\n--------------\n");
 	if (current_task->pid != 1) {
 		int i;
-		for (i = 0; i < 1e8; i++);
+		for (i = 0; i < 1e9; i++);
 	}
 	// END TESTS
 
@@ -86,9 +86,9 @@ void entry ()
   asm volatile ("sti");
 
 
-  create_kernel_task (0x120000, startup, "bonito");
-  create_kernel_task (0x120000 - 0x1000, startup, "eh");
-  create_kernel_task (0x120000 - 0x2000, startup, "joao");
+  create_kernel_task (0x120000, startup, "ANDERSON");
+  create_kernel_task (0x120000 - 0x1000, startup, "CAROLINA");
+  create_kernel_task (0x120000 - 0x2000, startup, "?");
 
   task_function ();
 }

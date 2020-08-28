@@ -18,7 +18,7 @@ void multitask_init ()
   head->next_task = 0;
   head->pid = 1;
   head->state = RUNNING;
-  char *s = "init";
+  char *s = "JAMES";
   memcpy (s, head->pname, 4);
 
 	multitasking_on = 1;
@@ -94,15 +94,19 @@ void sleep_until (uint32_t ticks)
 	// set the time that the task should wake up
 	current_task->sleep_until = ticks;
 
-	//current_task->state = SLEEPING;
+	// current_task->state = SLEEPING;
+	// the task call scheduler
 	block_task (SLEEPING);
 }
 
 void scheduler () 
 {
   struct tcb* next;
+	// if the running task wasnt blocked os "sleeped"
+	// set to the READY_TO_RUN list
   if (current_task->state != BLOCKED && current_task->state != SLEEPING)
     current_task->state = READY_TO_RUN;
+	// search for next available task
   next = current_task->next_task;
   while (1)
   {
