@@ -12,10 +12,12 @@ extern struct tcb* current_task;
 extern uint32_t task_switch (struct tcb* next_task);
 extern uint8_t task_entry ();
 extern struct tcb* head;
+extern void print_esp_eip_asm ();
+extern uint32_t lock_irq_counter;
 uint32_t count;
 
-
 extern uint32_t function (struct tcb *s);
+
 
 void entry ()
 {

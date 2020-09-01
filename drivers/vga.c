@@ -107,6 +107,24 @@ void kprintf (char *str, int n, ...)
           itoa (va_arg (ap, int), s);
           kprint (s);
         }
+        else if (str[i+1] == 'x')
+        {
+          char hex_v[11] = "0x????????\0";
+          char map [16] = "0123456789abcdef";
+          int int_v = va_arg (ap, int);
+          int tmp = int_v;
+          int digit = 2;
+          int shift = 28;
+          for (;digit < 10; digit++)
+          {
+            tmp >>= shift;
+            tmp &= 0xf;
+            hex_v[digit] = map[tmp];
+            shift -= 4;
+            tmp = int_v;
+          }
+          kprint (hex_v);
+        }
         else if (str[i+1] == 's')
           kprint (va_arg (ap, char*));
 

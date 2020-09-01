@@ -44,3 +44,8 @@ int8_t memcmp (uint8_t *source, uint8_t *targ, uint32_t len)
   }
   return 0;
 }
+
+void print_esp_eip_c (uint32_t esp, uint32_t eip)
+{
+  kprintf ("eip: %d (%x)\nesp: %d (%x)\n", 4, eip, eip, esp, esp);
+}

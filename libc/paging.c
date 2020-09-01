@@ -155,7 +155,7 @@ void page_fault_handler (registers_t* regs)
   itoa (faulting_addr, str);
   kprint_debug ("falting addr: ", LIGHT_GREEN);
   kprint_debug (str, LIGHT_GREEN);
-  kprint_debug ("\n", LIGHT_GREEN);
+  kprintf (": %x\n", 1, faulting_addr);
 
   uint8_t present = regs->err_code & 0x1;
   uint8_t rw = regs->err_code & 0x2;
