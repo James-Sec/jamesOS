@@ -1,5 +1,6 @@
 extern current_task
 extern task_function
+extern print_stack_asm
 
 
 struc TCB
@@ -40,6 +41,7 @@ task_switch:
     je .doneVAS                   ; no, virtual address space is the same, so don't reload it and cause TLB flushes
     mov cr3,eax                   ; yes, load the next task's virtual address space
 .doneVAS:
+
 
     pop ebp
     pop edi

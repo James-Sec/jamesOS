@@ -49,3 +49,8 @@ void print_esp_eip_c (uint32_t esp, uint32_t eip)
 {
   kprintf ("eip: %d (%x)\nesp: %d (%x)\n", 4, eip, eip, esp, esp);
 }
+
+void print_stack_c (uint32_t address, uint32_t value)
+{
+  kprintf ("stack->%x: %x\n", 2,address, value);
+}

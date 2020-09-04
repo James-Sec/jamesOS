@@ -16,6 +16,9 @@ static void pit_callback (registers_t *regs)
 			{
 				if (x->state == SLEEPING && x->sleep_until < tick)
 				{
+          kprint ("-----------handler-----------\n");
+          print_esp_eip_asm ();
+          kprint ("-----------handler-----------\n");
 					kprintf ("UNBLOCK: %d\n", 1, x->pid);
 					unblock_task (x->pid);
 				}

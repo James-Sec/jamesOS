@@ -23,11 +23,11 @@ struct tcb* create_idle_task (uint32_t* esp, uint8_t (*func) (void), char *pname
   memcpy (pname, idle_task->pname, 4);
   
   
-  //organizing the stack
-  *esp = esp + 4; //ebp
-  *(esp + 1) = 0; //edi
+  //organizing the stack -> 0x16fff0
+  *esp = esp + 5; //ebp
+  *(esp + 1) = 0x32; //edi
   *(esp + 2) = 0; //esi
-  *(esp + 3) = 0; //ebx
+  *(esp + 3) = 5; //ebx
   *(esp + 4) = func; //ret
   
   return idle_task;
@@ -166,9 +166,7 @@ void print_task (struct tcb* tcb)
   char s [10];
   itoa ((uint32_t)tcb->pid, s);
   kprint (s);
-  kprint ("\nesp: ");
-  itoa ((uint32_t)tcb->esp, s);
-  kprint (s);
+  kprintf ("\nesp: %x", 1, tcb->esp);
   kprint ("\nnext_task: ");
   itoa ((uint32_t)tcb->next_task, s);
   kprint (s);

@@ -51,9 +51,9 @@ void entry ()
 
 
 
-  create_kernel_task (0x172ff0, task_entry, "ANDERSON");
-  create_kernel_task (0x172ff0 - 0x1000, task_entry, "CAROLINA");
-  create_kernel_task (0x172ff0 - 0x2000, task_entry, "?");
+  //create_kernel_task (0x172ff0, task_entry, "ANDERSON");
+  //create_kernel_task (0x172ff0 - 0x1000, task_entry, "CAROLINA");
+  //create_kernel_task (0x172ff0 - 0x2000, task_entry, "?");
 
 
   task_function ();
