@@ -33,9 +33,9 @@ void entry ()
 
   paging_init ();
 
-  //rtl8139_init ();
-  //char *msg = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-  //rtl8139_send_frame ((uint8_t*) msg, 64);
+  rtl8139_init ();
+  char *msg = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+  rtl8139_send_frame ((uint8_t*) msg, 64);
 
   kprint ("\n\n\n\n\n\n\n");
 
