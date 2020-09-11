@@ -13,17 +13,21 @@ void test ()
 //should be 0x170004
 uint32_t idle_task_function ()
 {
-  //func_test (1,2);
-  asm volatile ("mov %%esp, %0" : "=r"(esp));//0x16fff8
+  asm volatile ("mov %%esp, %0" : "=r"(esp));
   kprintf ("inline esp: %x\n", 1, esp);
 
-  print_stack_asm (1, 0x1c);
+  //print_stack_asm (1, 0x1c);
+  func_test ();
   
-  //C - ASM 0 parametros ->   8 (4 eip)
-  //C - ASM 1-4 parametros -> 8(4 eip)  + 16 (parametros)
-  //C - C 0 parametros -> 16
-  //C - C 1-4 parametros -> 32
-  //func_test (1);
+  //C - ASM 0  ->   4 
+  //C - ASM 1-4 -> 4  + 16 
+  //C - C 0 -> 16
+  //C - C 1-4 -> 16 + 16
+  //
+  //ASM - ASM 0 -> 4
+  //ASM - ASM N -> 4 + N
+  //ASM - C 0 -> 16
+  //ASM - C N -> 16 + N
   //test ();
 
 

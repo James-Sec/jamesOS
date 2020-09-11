@@ -1,4 +1,5 @@
 #include "../include/mem.h"
+extern uint32_t esp;
 void memcpy (uint8_t *source, uint8_t *dest, uint32_t nbytes)
 {
   int i;
@@ -53,4 +54,14 @@ void print_esp_eip_c (uint32_t esp, uint32_t eip)
 void print_stack_c (uint32_t address, uint32_t value)
 {
   kprintf ("stack->%x: %x\n", 2,address, value);
+}
+
+void test_c (uint32_t v, uint32_t a, uint32_t b, uint32_t c, uint32_t d, uint32_t e, uint32_t f, uint32_t g)
+{
+  print_stack_asm (17, 0x1c);
+  while (1);
+}
+void print (uint32_t v)
+{
+  kprintf ("print: %x\n", 1, v);
 }
