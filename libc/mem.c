@@ -46,22 +46,11 @@ int8_t memcmp (uint8_t *source, uint8_t *targ, uint32_t len)
   return 0;
 }
 
-void print_esp_eip_c (uint32_t esp, uint32_t eip)
-{
-  kprintf ("eip: %d (%x)\nesp: %d (%x)\n", 4, eip, eip, esp, esp);
-}
-
 void print_stack_c (uint32_t address, uint32_t value)
 {
   kprintf ("stack->%x: %x\n", 2,address, value);
 }
 
-void test_c (uint32_t v, uint32_t a, uint32_t b, uint32_t c, uint32_t d, uint32_t e, uint32_t f, uint32_t g)
-{
-  print_stack_asm (17, 0x1c);
-  while (1);
-}
-void print (uint32_t v)
-{
-  kprintf ("print: %x\n", 1, v);
+void print_single_value (uint32_t value) {
+  kprintf ("single value: %x\n", 1, value);
 }

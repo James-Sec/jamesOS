@@ -1,19 +1,12 @@
 global print_stack_asm
-global func_test
 extern print_stack_c
 extern test_c
-extern print
-
-func_test:
-push 0x14
-push 1
-call print_stack_asm
-add esp, 8
-push 0xf8
-call test_c
-ret
+extern print_single_value
 
 print_stack_asm:
+
+call print_single_value ;EIP
+
 mov edx, [esp+8]; if the caller is a C code, it must be 0x1c. 
                 ; if the caller is a assembly code, it must be 0x14.
 mov eax, [esp+4]

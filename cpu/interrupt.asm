@@ -1,6 +1,7 @@
 ; Defined in isr.c
 [extern isr_handler]
 [extern irq_handler]
+extern print_stack_asm
 
 ; Common ISR code
 isr_common_stub:
@@ -32,26 +33,26 @@ isr_common_stub:
 	iret ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
 
 irq_common_stub:
-    pusha
-    mov ax, ds
-    push eax
-    mov ax, 0x10
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    push esp
-    call irq_handler 
-    pop ebx
-    pop eax  
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    popa
-    add esp, 8
-    
-    iret
+  pusha
+  mov ax, ds
+  push eax
+  mov ax, 0x10
+  mov ds, ax
+  mov es, ax
+  mov fs, ax
+  mov gs, ax
+  push esp
+  call irq_handler 
+  pop ebx
+  pop eax  
+  mov ds, ax
+  mov es, ax
+  mov fs, ax
+  mov gs, ax
+  popa
+  add esp, 8
+  
+  iret
 
 ; make the ISRs global
 global isr0 

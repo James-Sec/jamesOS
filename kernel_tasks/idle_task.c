@@ -10,15 +10,11 @@ void test ()
   print_stack_c (ptr, *ptr);
 }
 
-//should be 0x170004
+//should be 0x170000
+//but why the fuck it is 0x16fff8?
+//seems like there is a fcking add esp, 8
 uint32_t idle_task_function ()
 {
-  asm volatile ("mov %%esp, %0" : "=r"(esp));
-  kprintf ("inline esp: %x\n", 1, esp);
-
-  //print_stack_asm (1, 0x1c);
-  func_test ();
-  
   //C - ASM 0  ->   4 
   //C - ASM 1-4 -> 4  + 16 
   //C - C 0 -> 16
@@ -31,15 +27,16 @@ uint32_t idle_task_function ()
   //test ();
 
 
-  //asm volatile ("sti");
-  //unlock_irq ();
+  asm volatile ("sti");
   while (1)
   {
     kprint ("-----------idle-----------\n");
-    //print_esp_eip_asm ();
+    print_stack_asm (1, 0x1c);
     kprint ("-----------idle-----------\n");
-    int i;
+
+    uint32_t i = 0;
     for (i = 0; i < 1e9; i++);
+
     asm volatile ("hlt");
     //kprint ("idle\n");
   }

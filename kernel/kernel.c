@@ -12,7 +12,6 @@ extern struct tcb* current_task;
 extern uint32_t task_switch (struct tcb* next_task);
 extern uint8_t task_entry ();
 extern struct tcb* head;
-extern void print_esp_eip_asm ();
 extern uint32_t lock_irq_counter;
 uint32_t count;
 
@@ -34,9 +33,9 @@ void entry ()
 
   paging_init ();
 
-  rtl8139_init ();
-  char *msg = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-  rtl8139_send_frame ((uint8_t*) msg, 64);
+  //rtl8139_init ();
+  //char *msg = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+  //rtl8139_send_frame ((uint8_t*) msg, 64);
 
   kprint ("\n\n\n\n\n\n\n");
 
@@ -50,10 +49,9 @@ void entry ()
   asm volatile ("sti");
 
 
-
-  //create_kernel_task (0x172ff0, task_entry, "ANDERSON");
-  //create_kernel_task (0x172ff0 - 0x1000, task_entry, "CAROLINA");
-  //create_kernel_task (0x172ff0 - 0x2000, task_entry, "?");
+  create_kernel_task (0x172ff0, task_entry, "ANDERSON");
+  create_kernel_task (0x172ff0 - 0x1000, task_entry, "CAROLINA");
+  create_kernel_task (0x172ff0 - 0x2000, task_entry, "?");
 
 
   task_function ();
