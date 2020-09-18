@@ -15,6 +15,8 @@ extern struct tcb* head;
 extern uint32_t lock_irq_counter;
 uint32_t count;
 
+extern void task_terminator ();
+
 extern uint32_t function (struct tcb *s);
 
 
@@ -51,8 +53,6 @@ void entry ()
 
   create_kernel_task (0x172ff0, task_entry, "ANDERSON");
   create_kernel_task (0x172ff0 - 0x1000, task_entry, "CAROLINA");
-  create_kernel_task (0x172ff0 - 0x2000, task_entry, "?");
+  create_kernel_task (0x172ff0 - 0x2000, task_terminator, "SERIAL_KILLER");
 
-
-  task_function ();
 }

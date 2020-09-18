@@ -139,7 +139,7 @@ void scheduler ()
 
 	// if the running task wasnt blocked os "sleeped"
 	// set to the READY_TO_RUN list
-  if (current_task->state != BLOCKED && current_task->state != SLEEPING)
+  if (current_task->state != BLOCKED && current_task->state != SLEEPING && current_task->state != TERMINATED)
     current_task->state = READY_TO_RUN;
 	// search for next available task
   next = current_task->next_task;
@@ -147,13 +147,22 @@ void scheduler ()
   {
     if (!next)
       next = head;
-    if (next->state == BLOCKED || next->state == SLEEPING)
+    if (next->state == BLOCKED || next->state == SLEEPING || next->state == TERMINATED)
       next = next->next_task;
     else 
       break;
   }
   next->state = RUNNING;
   task_switch (next);
+}
+
+void task_termination ()
+{
+  kprintf ("TERMINATING %d...\n", 1, current_task->pid);
+  asm volatile ("cli");
+  --ready_to_run_counter;
+  current_task->state = TERMINATED;
+  scheduler ();
 }
 
 void print_task (struct tcb* tcb)

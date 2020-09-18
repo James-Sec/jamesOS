@@ -10,6 +10,7 @@
 #define READY_TO_RUN 2
 #define SLEEPING 3
 #define IDLE 4
+#define TERMINATED 5
 
 struct tcb
 {

@@ -1,6 +1,7 @@
 #include "../include/pit.h"
 
 extern struct tcb* head;
+extern struct tcb* current_task;
 extern uint32_t multitasking_on;
 uint32_t tick = 0;
 
@@ -25,7 +26,7 @@ static void pit_callback (registers_t *regs)
 			}
 			while (x);
 
-      if (tick % 10) {
+      if (!(tick % 99) && current_task->pid != 0) {
         lock_irq ();
         scheduler ();
         unlock_irq ();
