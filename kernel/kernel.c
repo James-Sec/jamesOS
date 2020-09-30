@@ -43,16 +43,13 @@ void entry ()
 
 
   //---------------------------------------------------
-  alloc_frame (get_page (0x172000, 1, kernel_directory), 0, 0);
-  alloc_frame (get_page (0x173000, 1, kernel_directory), 0, 0);
 
   asm volatile ("cli");
   multitask_init ();
+
+  create_task (task_entry, "ANDERSON", READY_TO_RUN);
+  create_task (task_entry, "CAROLINA", READY_TO_RUN);
+  create_task (task_terminator, "CHUAZNEGUER", READY_TO_RUN);
   asm volatile ("sti");
-
-
-  create_kernel_task (0x172ff0, task_entry, "ANDERSON");
-  create_kernel_task (0x172ff0 - 0x1000, task_entry, "CAROLINA");
-  create_kernel_task (0x172ff0 - 0x2000, task_terminator, "SERIAL_KILLER");
-
+  task_function ();
 }

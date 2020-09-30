@@ -5,6 +5,7 @@ struct tcb *current_task;
 struct tcb *idle_task;
 uint32_t last_pid = 1;
 extern struct page_directory_t *current_directory;
+extern struct page_directory_t *kernel_directory;
 uint32_t lock_irq_counter = 0;
 uint32_t multitasking_on;
 uint32_t ready_to_run_counter;
@@ -12,26 +13,60 @@ extern uint32_t tick;
 extern uint8_t idle_task_function ();
 
 
-struct tcb* create_idle_task (uint32_t* esp, uint8_t (*func) (void), char *pname)
+struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *next_task, uint32_t pid, uint8_t state, char *pname, uint8_t (*func) (void))
 {
-  idle_task = (struct tcb*) kmalloc (1024);
-  idle_task->esp = esp;
+  struct tcb *new_task = (struct tcb*) kmalloc (0x1000);
+  new_task->initial_addr = new_task;
+  new_task->ebp = ((uint32_t)new_task + 0x1000) - sizeof (struct tcb);
+  new_task->esp = new_task->ebp - 4;
+  new_task->page_dir = page_dir;
+  new_task->next_task = next_task;
+  new_task->pid = pid;
+  new_task->state = state;
+  memcpy (pname, new_task->pname, 32);
+  
+  //organizing the stack
+  *new_task->esp = new_task->ebp; //ebp
+  *(new_task->esp + 1) = 0; //edi
+  *(new_task->esp + 2) = 0; //esi
+  *(new_task->esp + 3) = 0; //ebx
+  *(new_task->esp + 4) = func; //ret
+  
+  return new_task;
+}
+  
+struct tcb* create_task (uint8_t (*func) (void), char *pname, uint8_t state)
+{
+  if (state == IDLE)
+    return idle_task =  _create_task (kernel_directory, 0, 0, state, pname, func);
+  ++ready_to_run_counter;
+  return head = _create_task (kernel_directory, head, ++last_pid, state, pname, func);
+
+}
+
+struct tcb* create_idle_task (uint8_t (*func) (void), char *pname)
+{
+  idle_task = (struct tcb*) kmalloc (0x1000);
+  idle_task->initial_addr = idle_task;
+  idle_task->ebp = ((uint32_t)idle_task + 0x1000) - sizeof (struct tcb);
+  idle_task->esp = idle_task->ebp - 4;
   idle_task->page_dir = current_directory;
   idle_task->next_task = 0;
   idle_task->pid = 0;
   idle_task->state = IDLE;
-  memcpy (pname, idle_task->pname, 4);
+  memcpy (pname, idle_task->pname, 32);
   
   
-  //organizing the stack -> 0x16fff0
-  *esp = esp + 5; //ebp
-  *(esp + 1) = 0x32; //edi
-  *(esp + 2) = 0; //esi
-  *(esp + 3) = 5; //ebx
-  *(esp + 4) = func; //ret
+  //organizing the stack
+  *idle_task->esp = idle_task->ebp; //ebp
+  *(idle_task->esp + 1) = 9; //edi
+  *(idle_task->esp + 2) = 3; //esi
+  *(idle_task->esp + 3) = 7; //ebx
+  *(idle_task->esp + 4) = func; //ret
   
   return idle_task;
 }
+
 void multitask_init () 
 {
   head = (struct tcb *) kmalloc (1024);
@@ -45,16 +80,20 @@ void multitask_init ()
   char *s = "JAMES";
   memcpy (s, head->pname, 4);
 
-  create_idle_task (0x172ff0 - 0x3000, idle_task_function, "IDLE");
+  //create_idle_task (idle_task_function, "IDLE");
+  create_task (idle_task_function, "IDLE", IDLE);
 	multitasking_on = 1;
   ++ready_to_run_counter;
 }
 
 
-struct tcb* create_kernel_task (uint32_t* esp, uint8_t (*func) (void), char *pname)
+/*
+struct tcb* create_kernel_task (uint8_t (*func) (void), char *pname)
 {
-  struct tcb *new_task = (struct tcb*) kmalloc (1024);
-  new_task->esp = esp;
+  struct tcb *new_task = (struct tcb*) kmalloc (0x1000);
+  new_task->initial_addr = new_task;
+  new_task->ebp = ((uint32_t)new_task + 0x1000) - sizeof (struct tcb);
+  new_task->esp = new_task->ebp - 4;
   new_task->page_dir = current_directory;
   new_task->next_task = head;
   new_task->pid = ++last_pid;
@@ -64,15 +103,16 @@ struct tcb* create_kernel_task (uint32_t* esp, uint8_t (*func) (void), char *pna
   head = new_task;
   
   //organizing the stack
-  *esp = esp + 4; //ebp
-  *(esp + 1) = 0; //edi
-  *(esp + 2) = 0; //esi
-  *(esp + 3) = 0; //ebx
-  *(esp + 4) = func; //ret
+  *new_task->esp = new_task->ebp; //ebp
+  *(new_task->esp + 1) = 9; //edi
+  *(new_task->esp + 2) = 3; //esi
+  *(new_task->esp + 3) = 7; //ebx
+  *(new_task->esp + 4) = func; //ret
   
   ++ready_to_run_counter;
   return new_task;
 }
+*/
 
 
 void block_task (uint8_t reason)
@@ -183,10 +223,6 @@ void print_task (struct tcb* tcb)
   itoa ((uint32_t)tcb->page_dir, s);
   kprint (s);
   kprintf ("\ncurrent state: %d", 1, tcb->state);
-
-  struct tcb *it = current_task->next_task;
-  kprintf ("\ncurrent task->next_task: %d\n", 1, head);
-  //kprint ("\n--------------\n");
 }
 
 struct tcb* search_task (uint32_t pid)

@@ -10,19 +10,20 @@ void task_terminator ()
   struct tcb* prev;
   while (1)
   {
+    uint8_t flag = 0;
     tmp = head;
     while (tmp)
     {
       if (tmp->state == TERMINATED)
       {
-        free_frame (get_page (tmp->esp, 0, tmp->page_dir));
+        flag = 1;
         if (tmp == head)
           head = tmp->next_task;
         else
-        {
           prev->next_task = tmp->next_task;
-        }
-        kfree (1024, tmp);
+        if (tmp->pid != 1)
+          kfree (0x1000, tmp->initial_addr);
+        break;
       }
       prev = tmp;
       tmp = tmp->next_task;
@@ -30,7 +31,8 @@ void task_terminator ()
     struct tcb* i;
     for (i = head; i!= 0; i = i->next_task)
      kprintf ("************%d, %d************\n", 2, i->pid, i->state);
-    sleep (5);
+    if (!flag)
+      sleep (5);
   }
 
 }

@@ -37,7 +37,7 @@ static uint32_t first_frame ()
   return  -1;
 }
 
-void alloc_frame (page_table_entry_t *page, uint32_t is_kernel, int32_t is_writeable)
+void alloc_page (page_table_entry_t *page, uint32_t is_kernel, int32_t is_writeable)
 {
   if (page->present)
     return;
@@ -58,7 +58,7 @@ void alloc_frame (page_table_entry_t *page, uint32_t is_kernel, int32_t is_write
   }
 }
 
-void free_frame (page_table_entry_t *page)
+void free_page (page_table_entry_t *page)
 {
   if (!page->present)
     return;
@@ -66,6 +66,7 @@ void free_frame (page_table_entry_t *page)
   {
     clear_frame (page->frame/0x1000);
     page->frame = 0x0;
+    page->present = 0x0;
   }
 }
 
@@ -81,7 +82,7 @@ void paging_init () {
   int i = 0;
   while (i <= HEAP_BASE) 
   {
-    alloc_frame (get_page (i, 1, kernel_directory), 0, 0);
+    alloc_page (get_page (i, 1, kernel_directory), 0, 0);
     i += 0x1000;
   }
   register_interrupt_handler (14, page_fault_handler);

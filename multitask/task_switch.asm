@@ -5,6 +5,8 @@ extern print_stack_asm
 
 struc TCB
   .ESP resd 1
+  .EBP resd 1
+  .INITIAL_ADDR resd 1
   .PAGE_DIR resd 1
   .NEXT_TASK resd 1
   .PID resd 1

@@ -10,10 +10,6 @@ void task_function ()
     kprintf ("-----------%d-----------\n", 1, current_task->pid);
     print_stack_asm (1, 0x1c);
     kprintf ("-----------%d-----------\n", 1, current_task->pid);
-
-    if (current_task->pid == 2)
-      task_termination ();
-    uint32_t i;
-    for (i = 0; i <1e8; i++);
+    task_termination ();
   }
 }

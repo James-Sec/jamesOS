@@ -14,18 +14,21 @@
 
 struct tcb
 {
-  uint8_t *esp;
+  uint32_t *esp;
+  uint32_t *ebp;
+  uint32_t *initial_addr;
   struct page_directory_t* page_dir;
   struct tcb* next_task;
   uint32_t pid;
   char pname [32];
   uint8_t state;
 	uint32_t sleep_until;
+
 }__attribute__ ((packed));
 
 void multitask_init ();
 void print_task (struct tcb*);
-struct tcb* create_kernel_task (uint32_t* esp, uint8_t (*func)(void), char *pname);
+struct tcb* create_kernel_task (uint8_t (*func)(void), char *pname);
 struct tcb* search_task (uint32_t pid);
 void unblock_task (uint32_t pid);
 void block_task (uint8_t reason);

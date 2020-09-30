@@ -1,0 +1,9 @@
+C - ASM 0  ->   4 
+C - ASM 1-4 -> 4  + 16 
+C - C 0 -> 16
+C - C 1-4 -> 16 + 16
+
+ASM - ASM 0 -> 4
+ASM - ASM N -> 4 + N
+ASM - C 0 -> 16
+ASM - C N -> 16 + N

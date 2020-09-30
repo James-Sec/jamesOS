@@ -5,7 +5,7 @@ extern print_single_value
 
 print_stack_asm:
 
-call print_single_value ;EIP
+;call print_single_value ;EIP
 
 mov edx, [esp+8]; if the caller is a C code, it must be 0x1c. 
                 ; if the caller is a assembly code, it must be 0x14.
