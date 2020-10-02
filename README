@@ -20,7 +20,10 @@ MAKE
     > make clean
 
 NEXT:
-  Documentation
+  Documentation (en/pt-br) (CURRENT)
+  Network stack (CURRENT)
+  User space
+  Switch to a microkernel architecture
 
 Resources:
   https://wiki.osdev.org
