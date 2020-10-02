@@ -7,7 +7,7 @@
 #include "ports.h"
 #include "string.h"
 
-// this functions are defined in assembly.asm
+// this functions are defined in interrupt.asm
 extern void isr0();
 extern void isr1();
 extern void isr2();

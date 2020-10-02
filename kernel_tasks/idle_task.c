@@ -1,10 +1,6 @@
-#include "../include/kernel_tasks.h"
-extern void unlock_irq ();
-uint32_t esp;
-uint32_t ebp;
-uint32_t *ptr;
+#include "../include/idle_task.h"
 
-uint32_t idle_task_function ()
+uint8_t idle_task_function ()
 {
   asm volatile ("sti");
   while (1)

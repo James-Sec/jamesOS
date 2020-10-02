@@ -37,17 +37,50 @@ void isr_install()
   set_idt_gate (30, (uint32_t)isr30);
   set_idt_gate (31, (uint32_t)isr31);
 
-  // remaping the PIC lines
-  port_byte_out (0x20, 0x11); 
-  port_byte_out (0xA0, 0x11);
-  port_byte_out (0x21, 0x20);  
-  port_byte_out (0xA1, 0x28);  
-  port_byte_out (0x21, 0x04); 
-  port_byte_out (0xA1, 0x02); 
-  port_byte_out (0x21, 0x01); 
-  port_byte_out (0xA1, 0x01);
-  port_byte_out (0x21, 0x0);
-  port_byte_out (0xA1, 0x0); 
+  // PIC is numbered as [0x8-0xf] and [0x70-0x77]
+  // remap the PIC
+  //            port  data
+  // 0x11 command means initialize command (wait for 3 initialize words
+  // on the data port)
+  // write 0x11 at master command port
+  port_byte_out(0x20, 0x11);
+  // write 0x11 at slave command port
+  port_byte_out(0xA0, 0x11);
+
+  // first word is the vector offset this means that
+  // the master port will begin at 0x20(32) and the
+  // slave will begin at 0x28(40)
+  // write 0x20 at master data port
+  port_byte_out(0x21, 0x20);
+  // write 0x28 at slave data port
+  port_byte_out(0xA1, 0x28);
+
+  // second word tells how the devices are wired to the pic
+  // 0x04 tells the master that there is a slave at position 2
+  // 0x04 (0000 0100)
+  // write 0x04 at master data port
+  port_byte_out(0x21, 0x04);
+  // 0x02 tells the slave that it is chained to master (cascade)
+  // 0x02 (0000 0010)
+  // write 0x28 at slave data port
+  port_byte_out(0xA1, 0x02);
+
+  // third word gives information about the environment
+  // 0x01 means 8086 mode
+  // write 0x01 at master data port
+  port_byte_out(0x21, 0x01);
+  // write 0x01 at slave data port
+  port_byte_out(0xA1, 0x01);
+
+  // this is to restore the saved masks
+  // masks are used to ignore a certain interrupt, it is a 8bit number
+  // that if the 3 bit is set, it will ignore that request
+  // 0000 0001
+  // so all bits are set to 0 right here
+  // write 0x00 at master data port
+  port_byte_out(0x21, 0x0);
+  // write 0x00 at slave data port
+  port_byte_out(0xA1, 0x0);
 
   set_idt_gate (32, (uint32_t)irq0);
   set_idt_gate (33, (uint32_t)irq1);
@@ -65,7 +98,7 @@ void isr_install()
   set_idt_gate (45, (uint32_t)irq13);
   set_idt_gate (46, (uint32_t)irq14);
   set_idt_gate (47, (uint32_t)irq15);
-  
+
   load_idt(); // Load with ASM 
 }
 

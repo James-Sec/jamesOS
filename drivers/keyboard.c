@@ -1,6 +1,7 @@
 #include "../include/keyboard.h"
 
 static void print_letter (uint8_t scancode);
+static void keyboard_callback (registers_t *regs);
 
 static void keyboard_callback (registers_t *regs)
 {

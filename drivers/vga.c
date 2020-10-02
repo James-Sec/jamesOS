@@ -5,7 +5,7 @@ static uint32_t print_char (uint8_t character, uint8_t attributeint, uint32_t of
 static uint32_t get_cursor_offset();
 static void set_cursor_offset (uint32_t offset);
 static void scroll_screen();
-  
+
 // default character color
 uint8_t attribute = YELLOW_ON_BLACK; 
 

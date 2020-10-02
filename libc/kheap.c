@@ -1,13 +1,13 @@
 #include "../include/kheap.h"
 
+static uint32_t kmalloc_int (uint32_t size, uint32_t align); 
+static uint32_t kheap_malloc (uint32_t size);
+static void fill (uint32_t begin, uint32_t size, uint8_t value);
+
 uint8_t *bitset_base = (uint8_t*) BITSET_BASE;
 uint8_t *bitset_limit = (uint8_t*) BITSET_LIMIT;
 uint8_t *heap_base = (uint8_t*) HEAP_BASE;
-
-uint32_t kmalloc_int (uint32_t size, uint32_t align); 
-
 uint32_t placement_address = 0x5c00;
-
 uint32_t kheap_enable = 0;
 
 uint32_t kmalloc_a (uint32_t sz)
@@ -26,7 +26,7 @@ void kheap_init ()
   memset ((uint8_t*)BITSET_LIMIT, 0 ,BITSET_BASE - BITSET_LIMIT);
 }
  
-uint32_t kmalloc_int (uint32_t size, uint32_t align)
+static uint32_t kmalloc_int (uint32_t size, uint32_t align)
 {
   if (!kheap_enable)
   {
@@ -51,7 +51,7 @@ uint32_t kmalloc_int (uint32_t size, uint32_t align)
   }
 }
 
-uint32_t kheap_malloc (uint32_t size)
+static uint32_t kheap_malloc (uint32_t size)
 {
   uint8_t *i;
   int count = 0;
@@ -76,7 +76,7 @@ uint32_t kheap_malloc (uint32_t size)
   return 0;
 }
 
-void fill (uint32_t begin, uint32_t size, uint8_t value)
+static void fill (uint32_t begin, uint32_t size, uint8_t value)
 {
   int i;
   for (i = begin; i < (size + begin); i++) 

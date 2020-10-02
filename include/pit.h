@@ -15,5 +15,10 @@
 #include "multitask.h"
 #include "mem.h"
 
+// global functions
 void pit_init (uint32_t frequency);
+
+// global variables
+uint32_t tick = 0;
+
 #endif

@@ -32,24 +32,27 @@ typedef struct page_table_entry {
     uint32_t reserved2  : 2;
     uint32_t available  : 3;
     uint32_t frame      : 20;
-}page_table_entry_t;
+} page_table_entry_t;
 
 typedef struct page_table 
 {
   page_table_entry_t pages [1024];
 } page_table_t;
 
-
 typedef struct page_directory 
 {
   page_dir_entry_t tables_physical [1024];
-  
   page_table_t *tables [1024];
 }page_directory_t;
 
+//global functions
 void paging_init ();
 void switch_page_directory (page_directory_t *dir, uint8_t phy);
 page_table_entry_t* get_page (uint32_t address, int make, page_directory_t *dir);
-void page_fault_handler (registers_t *regs);
 uint32_t virtual2phys (page_directory_t* dir, uint32_t virtual_addr);
+
+//global vars
+page_directory_t *kernel_directory=0;
+page_directory_t *current_directory=0;
+
 #endif

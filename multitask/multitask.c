@@ -1,19 +1,12 @@
 #include "../include/multitask.h"
 
-struct tcb *head;
-struct tcb *current_task;
-struct tcb *idle_task;
+static struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *next_task, uint32_t pid, uint8_t state, char *pname, uint8_t (*func) (void));
+static void sleep_until (uint32_t ticks);
+
 uint32_t last_pid = 1;
-extern struct page_directory_t *current_directory;
-extern struct page_directory_t *kernel_directory;
 uint32_t lock_irq_counter = 0;
-uint32_t multitasking_on;
-uint32_t ready_to_run_counter;
-extern uint32_t tick;
-extern uint8_t idle_task_function ();
 
-
-struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *next_task, uint32_t pid, uint8_t state, char *pname, uint8_t (*func) (void))
+static struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *next_task, uint32_t pid, uint8_t state, char *pname, uint8_t (*func) (void))
 {
   struct tcb *new_task = (struct tcb*) kmalloc (0x1000);
   new_task->initial_addr = new_task;
@@ -44,32 +37,9 @@ struct tcb* create_task (uint8_t (*func) (void), char *pname, uint8_t state)
 
 }
 
-struct tcb* create_idle_task (uint8_t (*func) (void), char *pname)
-{
-  idle_task = (struct tcb*) kmalloc (0x1000);
-  idle_task->initial_addr = idle_task;
-  idle_task->ebp = ((uint32_t)idle_task + 0x1000) - sizeof (struct tcb);
-  idle_task->esp = idle_task->ebp - 4;
-  idle_task->page_dir = current_directory;
-  idle_task->next_task = 0;
-  idle_task->pid = 0;
-  idle_task->state = IDLE;
-  memcpy (pname, idle_task->pname, 32);
-  
-  
-  //organizing the stack
-  *idle_task->esp = idle_task->ebp; //ebp
-  *(idle_task->esp + 1) = 9; //edi
-  *(idle_task->esp + 2) = 3; //esi
-  *(idle_task->esp + 3) = 7; //ebx
-  *(idle_task->esp + 4) = func; //ret
-  
-  return idle_task;
-}
-
 void multitask_init () 
 {
-  head = (struct tcb *) kmalloc (1024);
+  head = (struct tcb *) kmalloc (0x1000);
   current_task = head;
 
   asm volatile ("mov %%esp, %0" : "=r" (head->esp));
@@ -82,38 +52,10 @@ void multitask_init ()
 
   //create_idle_task (idle_task_function, "IDLE");
   create_task (idle_task_function, "IDLE", IDLE);
+  create_task (task_terminator, "CHUAZNEGUER", READY_TO_RUN);
 	multitasking_on = 1;
   ++ready_to_run_counter;
 }
-
-
-/*
-struct tcb* create_kernel_task (uint8_t (*func) (void), char *pname)
-{
-  struct tcb *new_task = (struct tcb*) kmalloc (0x1000);
-  new_task->initial_addr = new_task;
-  new_task->ebp = ((uint32_t)new_task + 0x1000) - sizeof (struct tcb);
-  new_task->esp = new_task->ebp - 4;
-  new_task->page_dir = current_directory;
-  new_task->next_task = head;
-  new_task->pid = ++last_pid;
-  new_task->state = READY_TO_RUN;
-  memcpy (pname, new_task->pname, 32);
-  
-  head = new_task;
-  
-  //organizing the stack
-  *new_task->esp = new_task->ebp; //ebp
-  *(new_task->esp + 1) = 9; //edi
-  *(new_task->esp + 2) = 3; //esi
-  *(new_task->esp + 3) = 7; //ebx
-  *(new_task->esp + 4) = func; //ret
-  
-  ++ready_to_run_counter;
-  return new_task;
-}
-*/
-
 
 void block_task (uint8_t reason)
 {
@@ -155,7 +97,7 @@ void sleep (uint32_t ticks)
 	sleep_until ((ticks * 100) + tick);
 }
 
-void sleep_until (uint32_t ticks)
+static void sleep_until (uint32_t ticks)
 {
 
 	// if time has already passed

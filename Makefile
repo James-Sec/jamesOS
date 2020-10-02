@@ -8,7 +8,7 @@ OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o multitask/task_switch.o libc/print_stack
 # set cross compiler
 CC = i686-elf-gcc 
 # default flags
-CFLAGS= -g -ffreestanding -c 
+CFLAGS= -g -ffreestanding -c
 # set gdb
 GDB = i686-elf-gdb
 
@@ -17,13 +17,16 @@ GDB = i686-elf-gdb
 run: os-image.bin
 	sudo qemu-system-i386 -fda os-image.bin -netdev tap,id=mynet0,ifname=tap0,script=no,downscript=no -device rtl8139,netdev=mynet0,mac=52:55:00:d1:55:01 -object filter-dump,id=f1,netdev=mynet0,file=dump.dat
 
+# build the image
+build: os-image.bin
+
 # creating the os-image.bin
 os-image.bin: boot/boot_sector.bin kernel/kernel.bin 
 	cat $^ > os-image.bin  
 
 # creating the binary kernel
 kernel/kernel.bin: kernel/kernel_entry.o ${OBJ}
-	i686-elf-ld -o $@ -Ttext 0x1000 $^ --oformat binary 
+	i686-elf-ld -z muldefs -o $@ -Ttext 0x1000 $^ --oformat binary 
 
 # compiling c source codes
 %.o: %.c ${HEADERS}

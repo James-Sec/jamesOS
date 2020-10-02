@@ -1,3 +1,4 @@
+[bits 32]
 extern current_task
 extern task_function
 extern print_stack_asm

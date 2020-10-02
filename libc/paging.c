@@ -1,15 +1,14 @@
 #include "../include/paging.h"
 
 static void enable_paging ();
-
-page_directory_t *kernel_directory=0;
-
-page_directory_t *current_directory=0;
+static void page_fault_handler (registers_t* regs);
+static void set_frame (uint32_t frame_addr);
+static void clear_frame (uint32_t frame_addr);
+static uint32_t first_frame ();
+static void alloc_page (page_table_entry_t *page, uint32_t is_kernel, int32_t is_writeable);
 
 uint8_t page_enabled = 0;
-
 uint8_t *bitmap; 
-
 uint32_t nframes;
 
 static void set_frame (uint32_t frame_addr)
@@ -37,7 +36,7 @@ static uint32_t first_frame ()
   return  -1;
 }
 
-void alloc_page (page_table_entry_t *page, uint32_t is_kernel, int32_t is_writeable)
+static void alloc_page (page_table_entry_t *page, uint32_t is_kernel, int32_t is_writeable)
 {
   if (page->present)
     return;
@@ -146,7 +145,7 @@ uint32_t virtual2phys (page_directory_t *dir, uint32_t virt_addr)
   return ((page->frame << 12) & 0xfff00000) | (virt_addr & 0xfffff);
 }
 
-void page_fault_handler (registers_t* regs)
+static void page_fault_handler (registers_t* regs)
 {
   kprint_debug ("FECHEM OS PORTOOOOOOOOES!! ESTAMOS SENDO ATACAAAAAAAAADOS!!!\n", LIGHT_GREEN);
 

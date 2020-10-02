@@ -2,10 +2,10 @@
 [org 0x7c00]
 
 ; the memory offset where we will load our kernel
-KERNEL_OFFSET equ 0x1000 
+KERNEL_OFFSET equ 0x1000
 
 ; the BIOS loads the current drive identifier in dl register
-mov [BOOT_DRIVE], dl 
+mov [BOOT_DRIVE], dl
 
 ; organizing the stack
 mov bp, 0x9000
@@ -37,8 +37,8 @@ load_kernel:
 
   ; reading the kernel from the storage device
   mov bx, 0
-  mov es, bx ;segment 
-  mov bx, KERNEL_OFFSET ;offset 
+  mov es, bx ;segment
+  mov bx, KERNEL_OFFSET ;offset
   mov dh,48 ;number of sectors
   mov dl, [BOOT_DRIVE] ;set the driver to read
   call disk_load

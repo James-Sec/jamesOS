@@ -11,7 +11,7 @@ disk_load:
 
   mov cl, 2   ; init sector  
   mov ch, 0   ; cylinder 
-  mov dh, 0    ; Head 
+  mov dh, 0   ; Head 
 
   int 0x13
 

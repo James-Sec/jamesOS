@@ -1,11 +1,11 @@
-#include "../include/multitask.h"
-#include "../include/paging.h"
+#include "../include/task_terminator.h"
+
 extern struct tcb* head;
 
 void task_terminator ()
 {
   unlock_irq();
-  
+
   struct tcb* tmp;
   struct tcb* prev;
   while (1)
@@ -21,8 +21,7 @@ void task_terminator ()
           head = tmp->next_task;
         else
           prev->next_task = tmp->next_task;
-        if (tmp->pid != 1)
-          kfree (0x1000, tmp->initial_addr);
+        kfree (0x1000, tmp->initial_addr);
         break;
       }
       prev = tmp;
