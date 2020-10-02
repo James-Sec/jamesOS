@@ -1,0 +1,2 @@
+i686-elf/*
+!i686-elf/i686-elf-install.sh
