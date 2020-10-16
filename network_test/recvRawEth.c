@@ -17,12 +17,12 @@
 #include <net/if.h>
 #include <netinet/ether.h>
 
-#define DEST_MAC0	0x00
-#define DEST_MAC1	0x00
-#define DEST_MAC2	0x00
-#define DEST_MAC3	0x00
-#define DEST_MAC4	0x00
-#define DEST_MAC5	0x00
+#define DEST_MAC0	0x12
+#define DEST_MAC1	0xa3
+#define DEST_MAC2	0xab
+#define DEST_MAC3	0x41
+#define DEST_MAC4	0x6e
+#define DEST_MAC5	0x12
 
 #define ETHER_TYPE	0x0800
 
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
 	/* Open PF_PACKET socket, listening for EtherType ETHER_TYPE */
 	if ((sockfd = socket(PF_PACKET, SOCK_RAW, htons(ETHER_TYPE))) == -1) {
-		perror("listener: socket");	
+		//perror("listener: socket");	
 		return -1;
 	}
 
@@ -78,9 +78,9 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-repeat:	printf("listener: Waiting to recvfrom...\n");
+repeat:	//printf("listener: Waiting to recvfrom...\n");
 	numbytes = recvfrom(sockfd, buf, BUF_SIZ, 0, NULL, NULL);
-	printf("listener: got packet %lu bytes\n", numbytes);
+	//printf("listener: got packet %lu bytes\n", numbytes);
 
 	/* Check the packet is for me */
 	if (eh->ether_dhost[0] == DEST_MAC0 &&
@@ -91,6 +91,7 @@ repeat:	printf("listener: Waiting to recvfrom...\n");
 			eh->ether_dhost[5] == DEST_MAC5) {
 		printf("Correct destination MAC address\n");
 	} else {
+    /*
 		printf("Wrong destination MAC: %x:%x:%x:%x:%x:%x\n",
 						eh->ether_dhost[0],
 						eh->ether_dhost[1],
@@ -98,9 +99,11 @@ repeat:	printf("listener: Waiting to recvfrom...\n");
 						eh->ether_dhost[3],
 						eh->ether_dhost[4],
 						eh->ether_dhost[5]);
+    */
 		ret = -1;
 		goto done;
 	}
+  printf("listener: got packet %lu bytes\n", numbytes);
 
 	/* Get source IP */
 	((struct sockaddr_in *)&their_addr)->sin_addr.s_addr = iph->saddr;

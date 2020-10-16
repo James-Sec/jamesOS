@@ -29,9 +29,8 @@ void task_terminator ()
     }
     struct tcb* i;
     for (i = head; i!= 0; i = i->next_task)
-     kprintf ("************%d, %d************\n", 2, i->pid, i->state);
+     //kprintf ("************%d, %d************\n", 2, i->pid, i->state);
     if (!flag)
       sleep (5);
   }
-
 }

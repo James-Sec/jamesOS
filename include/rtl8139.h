@@ -6,16 +6,19 @@
 #include "pci.h"
 #include "kheap.h"
 #include "paging.h"
+#include "ethernet.h"
 
 #define VENDOR_ID 0x10EC 
 #define DEVICE_ID 0x8139
 
-extern page_directory_t* kernel_directory;
 
 void rtl8139_init ();
-void rtl8139_send_frame (uint8_t *data, uint32_t len);
+void rtl8139_send_frame (struct ether_frame* frame);
 
-typedef struct rtl8139_dev
+struct rtl8139_dev* rtl8139_device;
+
+
+struct rtl8139_dev
 {
   uint8_t bar_type;
   uint32_t io_base;
@@ -23,5 +26,5 @@ typedef struct rtl8139_dev
   uint8_t mac_addr[6];
   uint8_t *rx_buffer;
   uint8_t tx_cur;
-} rtl8139_dev_t;
+};
 #endif

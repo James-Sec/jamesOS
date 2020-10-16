@@ -8,6 +8,7 @@
 #include "../include/multitask.h"
 #include "../include/pit.h"
 #include "../include/task_entry.h"
+#include "../include/ethernet.h"
 
 void entry ()
 {
@@ -24,19 +25,17 @@ void entry ()
 
   paging_init ();
 
-  /*
-  rtl8139_init ();
-  char *msg = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-  rtl8139_send_frame ((uint8_t*) msg, 64);
-  kprint ("\n\n\n\n\n\n\n");
-  */
 
   asm volatile ("cli");
   multitask_init ();
 
-  create_task (task_entry, "ANDERSON", READY_TO_RUN);
-  create_task (task_entry, "CAROLINA", READY_TO_RUN);
+  //create_task (task_entry, "ANDERSON", READY_TO_RUN);
+  //create_task (task_entry, "CAROLINA", READY_TO_RUN);
   asm volatile ("sti");
-
-  task_function ();
+  //task_function ();
+  
+  rtl8139_init ();
+  uint8_t dest_addr [] = {0x12, 0xa3, 0xab, 0x41, 0x6e, 0x12};
+  uint8_t type [] = {0x08, 0x00};
+  rtl8139_send_frame (build_ether_frame (dest_addr, type, "JAMES", 5));
 }
