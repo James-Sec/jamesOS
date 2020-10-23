@@ -9,6 +9,7 @@
 #include "../include/pit.h"
 #include "../include/task_entry.h"
 #include "../include/ethernet.h"
+#include "../include/ip.h"
 
 void entry ()
 {
@@ -25,7 +26,6 @@ void entry ()
 
   paging_init ();
 
-
   asm volatile ("cli");
   multitask_init ();
 
@@ -37,5 +37,16 @@ void entry ()
   rtl8139_init ();
   uint8_t dest_addr [] = {0x12, 0xa3, 0xab, 0x41, 0x6e, 0x12};
   uint8_t type [] = {0x08, 0x00};
-  rtl8139_send_frame (build_ether_frame (dest_addr, type, "JAMES", 5));
+
+
+	struct ip_packet* ip = build_ipv4_packet ("jaaames", 7);
+
+	kprint ("ip header: \n");
+	int i = 0;
+	for (; i < 20; i++)
+		kprintf ("%x ", 1, *((uint8_t*)ip + i));
+	kprint ("\n");
+
+  struct ether_frame* frame = build_ether_frame (dest_addr, type, (uint8_t*) ip, 200);
+  rtl8139_send_frame (frame);
 }

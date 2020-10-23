@@ -89,19 +89,6 @@ void rtl8139_init ()
   // register and enable network interruptions
   reg = pci_read_data (bus, device, 0x3c) & 0xff;
   register_interrupt_handler (reg + 32, rtl8139_handler);
-  reg = port_dword_in (rtl8139_device->io_base + 0x40);
-  char s[10];
-  itoa (reg, s);
-  kprint ("Transmit Config Reg: ");
-  kprint (s);
-  kprint ("\n");
-  reg |= 65536;
-  //port_dword_out (rtl8139_device.io_base + 0x40, reg);
-  reg = port_dword_in (rtl8139_device->io_base + 0x40);
-  itoa (reg, s);
-  kprint ("Transmit Config Reg: ");
-  kprint (s);
-  kprint ("\n");
 
   // get mac addr
   uint8_t i;
