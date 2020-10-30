@@ -1,4 +1,4 @@
-#include "../include/idle_task.h"
+#include <idle_task.h>
 
 uint8_t idle_task_function ()
 {
@@ -15,4 +15,3 @@ uint8_t idle_task_function ()
     for (i = 0; i < 1e8; i++);
   }
 }
-

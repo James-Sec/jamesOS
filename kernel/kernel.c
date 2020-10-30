@@ -1,15 +1,15 @@
 #include <stdint.h>
-#include "../include/vga.h"
-#include "../include/isr.h"
-#include "../include/keyboard.h"
-#include "../include/kheap.h"
-#include "../include/paging.h"
-#include "../include/rtl8139.h"
-#include "../include/multitask.h"
-#include "../include/pit.h"
-#include "../include/task_entry.h"
-#include "../include/ethernet.h"
-#include "../include/ip.h"
+#include <vga.h>
+#include <isr.h>
+#include <keyboard.h>
+#include <kheap.h>
+#include <paging.h>
+#include <rtl8139.h>
+#include <multitask.h>
+#include <pit.h>
+#include <task_entry.h>
+#include <ethernet.h>
+#include <ip.h>
 
 void entry ()
 {
@@ -36,7 +36,6 @@ void entry ()
   
   rtl8139_init ();
   uint8_t dest_addr [] = {0x12, 0xa3, 0xab, 0x41, 0x6e, 0x12};
-  uint8_t type [] = {0x08, 0x00};
 
 
 	struct ip_packet* ip = build_ipv4_packet ("jaaames", 7);
@@ -47,6 +46,8 @@ void entry ()
 		kprintf ("%x ", 1, *((uint8_t*)ip + i));
 	kprint ("\n");
 
-  struct ether_frame* frame = build_ether_frame (dest_addr, type, (uint8_t*) ip, 200);
-  rtl8139_send_frame (frame);
+  //struct ether_frame* frame = build_ether_frame (dest_addr, type, (uint8_t*) ip, 200);
+  //rtl8139_send_frame (frame);
+
+  send_ether_frame (dest_addr, ETHER_TYPE_IPV4, (uint8_t*) ip, 200);
 }

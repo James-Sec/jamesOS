@@ -1,4 +1,4 @@
-#include "../include/ip.h"
+#include <ip.h>
 
 uint16_t checksum (uint8_t* ip) {
 	uint32_t sz = sizeof (struct ipv4_header) / 2;
@@ -51,6 +51,11 @@ void htons (uint16_t* shrt) {
 	tmp += (0xff00 & *shrt) >> 8;
 
 	*shrt = tmp;
+}
+
+void ntohs (uint16_t* shrt)
+{
+  htons (shrt);
 }
 
 void htonl (uint32_t* lng) {

@@ -1,4 +1,4 @@
-#include "../include/general_task.h"
+#include <general_task.h>
 
 uint8_t task_function ()
 {

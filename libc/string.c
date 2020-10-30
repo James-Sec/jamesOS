@@ -1,4 +1,4 @@
-#include "../include/string.h"
+#include <string.h>
 
 // K&R implementation
 void itoa (uint32_t n, char s[]) 

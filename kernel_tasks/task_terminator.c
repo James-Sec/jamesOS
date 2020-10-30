@@ -1,4 +1,4 @@
-#include "../include/task_terminator.h"
+#include <task_terminator.h>
 
 extern struct tcb* head;
 

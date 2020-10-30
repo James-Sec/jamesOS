@@ -1,4 +1,4 @@
-#include "../include/vga.h"
+#include <vga.h>
 
 // auxiliary functions
 static uint32_t print_char (uint8_t character, uint8_t attributeint, uint32_t offset);

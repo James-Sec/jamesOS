@@ -2,12 +2,12 @@
 #define MULTITASK_H
 
 #include <stdint.h>
-#include "paging.h"
-#include "vga.h"
-#include "mem.h"
-#include "pit.h"
-#include "idle_task.h"
-#include "task_terminator.h"
+#include <paging.h>
+#include <vga.h>
+#include <mem.h>
+#include <pit.h>
+#include <idle_task.h>
+#include <task_terminator.h>
 
 #define BLOCKED 0
 #define RUNNING 1

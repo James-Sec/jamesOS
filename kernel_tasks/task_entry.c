@@ -1,4 +1,4 @@
-#include "../include/task_entry.h"
+#include <task_entry.h>
 
 uint8_t task_entry ()
 {

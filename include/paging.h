@@ -2,8 +2,8 @@
 #define PAGING_H
 
 #include <stdint.h>
-#include "isr.h"
-#include "kheap.h"
+#include <isr.h>
+#include <kheap.h>
 
 #define INDEX_FROM_BIT(a) (a/(8))
 #define OFFSET_FROM_BIT(a) (a%(8))

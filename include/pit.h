@@ -8,12 +8,12 @@
 #define PIT_CTRL_PORT 0x43
 
 #include <stdint.h>
-#include "string.h"
-#include "ports.h"
-#include "vga.h"
-#include "isr.h"
-#include "multitask.h"
-#include "mem.h"
+#include <string.h>
+#include <ports.h>
+#include <vga.h>
+#include <isr.h>
+#include <multitask.h>
+#include <mem.h>
 
 // global functions
 void pit_init (uint32_t frequency);

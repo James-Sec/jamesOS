@@ -30,8 +30,8 @@
 
 #include <stdint.h>
 #include <stdarg.h>
-#include "mem.h"
-#include "ports.h"
+#include <mem.h>
+#include <ports.h>
 
 void clear_screen ();
 void kprint_at (uint8_t *message, int32_t offset);

@@ -1,4 +1,4 @@
-#include "../include/pit.h"
+#include <pit.h>
 
 static void pit_callback (registers_t *regs);
 
@@ -41,4 +41,3 @@ void pit_init (uint32_t freq) {
   port_byte_out (PIT_DATA_PORT_CH0, low);
   port_byte_out (PIT_DATA_PORT_CH0, high);
 }
-

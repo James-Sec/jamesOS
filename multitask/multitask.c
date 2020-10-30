@@ -1,4 +1,4 @@
-#include "../include/multitask.h"
+#include <multitask.h>
 
 static struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *next_task, uint32_t pid, uint8_t state, char *pname, uint8_t (*func) (void));
 static void sleep_until (uint32_t ticks);

@@ -8,7 +8,7 @@ OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o multitask/task_switch.o libc/print_stack
 # set cross compiler
 CC = i686-elf-gcc 
 # default flags
-CFLAGS= -g -ffreestanding -c
+CFLAGS= -g -ffreestanding -c -I include -nostdlib
 # set gdb
 GDB = i686-elf-gdb
 

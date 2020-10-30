@@ -2,9 +2,9 @@
 #define KMALLOC_H
 
 #include <stdint.h>
-#include "mem.h"
-#include "string.h"
-#include "vga.h"
+#include <mem.h>
+#include <string.h>
+#include <vga.h>
 
 #define BITSET_BASE 0x10c800
 #define BITSET_LIMIT 0x100000

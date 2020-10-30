@@ -1,4 +1,4 @@
-#include "../include/kheap.h"
+#include <kheap.h>
 
 static uint32_t kmalloc_int (uint32_t size, uint32_t align); 
 static uint32_t kheap_malloc (uint32_t size);

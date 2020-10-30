@@ -1,4 +1,4 @@
-#include "../include/rtl8139.h"
+#include <rtl8139.h>
 
 
 uint8_t TSAD_array[4] = {0x20, 0x24, 0x28, 0x2C};
@@ -8,10 +8,11 @@ uint8_t TSD_array[4] = {0x10, 0x14, 0x18, 0x1C};
 static void rtl8139_receive_frame ()
   // specific implementation for test
 {
+  /*
   char s[10];
   int i;
   kprint_debug ("Data bytes: \n", LIGHT_BLUE);
-  for (i = 0; i <=256; i++)
+  for (i = 0; i <= 256; i++)
   {
     itoa (*(rtl8139_device->rx_buffer + i), s);
     kprint_debug (s, LIGHT_BLUE);
@@ -22,6 +23,9 @@ static void rtl8139_receive_frame ()
   itoa ((uint32_t) rtl8139_device->rx_buffer, s);
   kprint_debug (s, LIGHT_BLUE);
   kprint ("\n");
+  */
+  kprint_debug ("frame received, passed to ether_handler\n", LIGHT_BLUE);
+  recv_ether_frame ((struct ether_frame*) ((uint8_t*)rtl8139_device->rx_buffer+4));
 }
 
 static void rtl8139_handler (registers_t *regs)

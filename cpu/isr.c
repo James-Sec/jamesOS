@@ -1,4 +1,4 @@
-#include "../include/isr.h"
+#include <isr.h>
 
 isr_t interrupt_handlers[256]; 
 

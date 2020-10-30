@@ -1,4 +1,4 @@
-#include "../include/paging.h"
+#include <paging.h>
 
 static void enable_paging ();
 static void page_fault_handler (registers_t* regs);

@@ -1,4 +1,4 @@
-#include "../include/idt.h"
+#include <idt.h>
 
 // handler is a function pointer
 void set_idt_gate (uint32_t n, uint32_t handler)

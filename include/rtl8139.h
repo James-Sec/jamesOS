@@ -2,11 +2,11 @@
 #define RTL8139_H
 
 #include <stdint.h>
-#include "isr.h"
-#include "pci.h"
-#include "kheap.h"
-#include "paging.h"
-#include "ethernet.h"
+#include <isr.h>
+#include <pci.h>
+#include <kheap.h>
+#include <paging.h>
+#include <ethernet.h>
 
 #define VENDOR_ID 0x10EC 
 #define DEVICE_ID 0x8139

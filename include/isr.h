@@ -2,10 +2,10 @@
 #define ISR_H
 
 #include <stdint.h>
-#include "idt.h"
-#include "vga.h"
-#include "ports.h"
-#include "string.h"
+#include <idt.h>
+#include <vga.h>
+#include <ports.h>
+#include <string.h>
 
 // this functions are defined in interrupt.asm
 extern void isr0();
