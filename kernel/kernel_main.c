@@ -26,28 +26,20 @@ void entry ()
 
   paging_init ();
 
+  rtl8139_init ();
+
   asm volatile ("cli");
   multitask_init ();
 
   //create_task (task_entry, "ANDERSON", READY_TO_RUN);
   //create_task (task_entry, "CAROLINA", READY_TO_RUN);
   asm volatile ("sti");
+
   //task_function ();
-  
-  rtl8139_init ();
-  uint8_t dest_addr [] = {0x12, 0xa3, 0xab, 0x41, 0x6e, 0x12};
 
-
-	struct ip_packet* ip = build_ipv4_packet ("jaaames", 7);
-
-	kprint ("ip header: \n");
-	int i = 0;
-	for (; i < 20; i++)
-		kprintf ("%x ", 1, *((uint8_t*)ip + i));
-	kprint ("\n");
-
-  //struct ether_frame* frame = build_ether_frame (dest_addr, type, (uint8_t*) ip, 200);
-  //rtl8139_send_frame (frame);
-
-  send_ether_frame (dest_addr, ETHER_TYPE_IPV4, (uint8_t*) ip, 200);
+	// sending a ipv4 packet
+	char* data = "jaaames";
+	struct ip_packet* ip = build_ipv4_packet (0x01020304, 0x01020304, data, 7);
+  uint8_t mac_dest_addr [] = {0x12, 0xa3, 0xab, 0x41, 0x6e, 0x12};
+	send_ipv4_packet (ip, mac_dest_addr);
 }

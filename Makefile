@@ -21,11 +21,11 @@ run: os-image.bin
 build: os-image.bin
 
 # creating the os-image.bin
-os-image.bin: boot/boot_sector.bin kernel/kernel.bin 
+os-image.bin: boot/boot_sector.bin kernel/kernel_main.bin 
 	cat $^ > os-image.bin  
 
 # creating the binary kernel
-kernel/kernel.bin: kernel/kernel_entry.o ${OBJ}
+kernel/kernel_main.bin: kernel/kernel_entry.o ${OBJ}
 	i686-elf-ld -z muldefs -o $@ -Ttext 0x1000 $^ --oformat binary 
 
 # compiling c source codes

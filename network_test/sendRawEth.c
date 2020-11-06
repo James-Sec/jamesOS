@@ -86,6 +86,21 @@ int main(int argc, char *argv[])
 	sendbuf[tx_len++] = 'a';
 	sendbuf[tx_len++] = 'a';
 	sendbuf[tx_len++] = 'a';
+	sendbuf[tx_len++] = 'a';
+	sendbuf[tx_len++] = 'a';
+	sendbuf[tx_len++] = 'a';
+	sendbuf[tx_len++] = 'a';
+	sendbuf[tx_len++] = 'a';
+
+	sendbuf[tx_len++] = 1;
+	sendbuf[tx_len++] = 2;
+	sendbuf[tx_len++] = 3;
+	sendbuf[tx_len++] = 4;
+
+	sendbuf[tx_len++] = 1;
+	sendbuf[tx_len++] = 2;
+	sendbuf[tx_len++] = 3;
+	sendbuf[tx_len++] = 4;
 	//sendbuf[tx_len++] = 0xff;
 
 	/* Index of the network device */

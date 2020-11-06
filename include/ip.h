@@ -2,6 +2,9 @@
 #define IP_H
 
 #include <mem.h>
+#include <network_utils.h>
+#include <vga.h>
+#include <ethernet.h>
 
 #define IPv4_DATA_MAX_LENGTH 65535
 
@@ -26,7 +29,7 @@
 #define IPv4_TOTAL_LENGTH_SIZE 16
 #define IPv4_IDENTIFICATION_SIZE 16
 #define IPv4_FLAGS_SIZE 3
-#define IPv4_FRAGMENT_OFFSET_SIZE 16
+#define IPv4_FRAGMENT_OFFSET_SIZE 13
 #define IPv4_TIME_TO_LIVE_SIZE 8
 #define IPv4_PROTOCOL_SIZE 8
 #define IPv4_HEADER_CHECKSUM_SIZE 16
@@ -52,6 +55,10 @@ struct ip_packet {
 	uint8_t data [IPv4_DATA_MAX_LENGTH];
 };
 
-struct ip_packet* build_ipv4_packet (uint8_t data [20], uint16_t len);
+struct ip_packet* build_ipv4_packet (uint32_t source_ip, uint32_t destination_ip, uint8_t data [20], uint16_t len);
+struct ip_packet* _build_ipv4_packet (uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data, uint16_t data_len);
+
+void print_bit_ipv4 (uint8_t* header);
+void recv_ipv4_handler (struct ip_packet* ip);
 
 #endif

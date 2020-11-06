@@ -1,8 +1,9 @@
-#ifndef ETHERNET.H
-#define ETHERNET.H
+#ifndef ETHERNET_H
+#define ETHERNET_H
 
 #include <stdint.h>
 #include <rtl8139.h>
+#include <ip.h>
 
 // network byte order
 #define ETHER_TYPE_IPV4 0x0008
@@ -70,4 +71,8 @@ struct ether_frame
 };
 
 struct ether_frame* build_ether_frame (uint8_t dest [6], uint16_t type, uint8_t *data, uint32_t size);
+
+void send_ether_frame (struct ether_frame* frame);
+void recv_ether_frame (struct ether_frame* frame);
+
 #endif
