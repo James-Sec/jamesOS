@@ -1,5 +1,5 @@
 # list of c source files
-C_SOURCES = $(wildcard kernel/*.c libc/*.c drivers/*.c cpu/*.c multitask/*.c kernel_tasks/*.c network/*.c) 
+C_SOURCES = $(wildcard kcore/*.c libc/*.c drivers/*.c cpu/*.c multitask/*.c kernel_tasks/*.c network/*.c) 
 # header files
 HEADERS = $(wildcard include/*.h)
 # list ofobject files to create
@@ -8,7 +8,7 @@ OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o multitask/task_switch.o libc/print_stack
 # set cross compiler
 CC = i686-elf-gcc 
 # default flags
-CFLAGS= -g -ffreestanding -c -I include -nostdlib
+CFLAGS= -g -ffreestanding -c -I include -nostdlib -lgcc
 # set gdb
 GDB = i686-elf-gdb
 
@@ -21,11 +21,11 @@ run: os-image.bin
 build: os-image.bin
 
 # creating the os-image.bin
-os-image.bin: boot/boot_sector.bin kernel/kernel_main.bin 
+os-image.bin: boot/boot_sector.bin kcore/kernel_main.bin 
 	cat $^ > os-image.bin  
 
 # creating the binary kernel
-kernel/kernel_main.bin: kernel/kernel_entry.o ${OBJ}
+kcore/kernel_main.bin: kcore/kernel_entry.o ${OBJ}
 	i686-elf-ld -z muldefs -o $@ -Ttext 0x1000 $^ --oformat binary 
 
 # compiling c source codes
@@ -43,4 +43,4 @@ kernel/kernel_main.bin: kernel/kernel_entry.o ${OBJ}
 # cleaning binary/ELF files
 clean: 
 	rm -rf *.bin *.dat boot/*.bin kernel/*.bin
-	rm -rf kernel/*.o libc/*.o drivers/*.o cpu/*.o multitask/*.o kernel_tasks/*.o network/*.o
+	rm -rf kcore/*.o libc/*.o drivers/*.o cpu/*.o multitask/*.o kernel_tasks/*.o network/*.o

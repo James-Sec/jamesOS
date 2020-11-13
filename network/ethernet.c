@@ -29,8 +29,11 @@ void recv_ether_frame (struct ether_frame* frame)
   {
     case ETHER_TYPE_IPV4:
       kprint ("calling ipv4 handler\n");
-      // ipv4 handler
 			recv_ipv4_handler ((struct ip_packet*)frame->data);
+      break;
+    case ETHER_TYPE_ARP:
+      kprint ("calling arp handler\n");
+      recv_arp_handler ((struct arp_t*) frame->data);
       break;
     default:
       kprint ("undefined protocol\n");

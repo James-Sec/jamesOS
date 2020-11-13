@@ -50,9 +50,9 @@ static void set_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint3
 	}
 }
 
-struct ip_packet* build_ipv4_packet (uint32_t source_ip, uint32_t destination_ip, uint8_t* data, uint16_t data_len)
+struct ip_packet* build_ipv4_packet (uint32_t destination_ip, uint8_t* data, uint16_t data_len)
 {
-	return _build_ipv4_packet (4, 5, 127, 0, 20 + data_len, 0x1337, 0, 0, 128, 6, source_ip, destination_ip, data, data_len);
+	return _build_ipv4_packet (4, 5, 127, 0, 20 + data_len, 0x1337, 0, 0, 128, 6, rtl8139_device->ip_addr, destination_ip, data, data_len);
 }
 
 struct ip_packet* _build_ipv4_packet (uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data, uint16_t data_len)
@@ -94,4 +94,9 @@ void send_ipv4_packet (struct ip_packet* ip, uint8_t* mac_dest_addr)
 
   struct ether_frame* frame = build_ether_frame (mac_dest_addr, ETHER_TYPE_IPV4, ip, ip_size);
   send_ether_frame (frame);
+}
+
+void set_ip_addr (uint32_t ip)
+{
+  rtl8139_device->ip_addr = ip;
 }

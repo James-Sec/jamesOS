@@ -55,7 +55,7 @@ struct ip_packet {
 	uint8_t data [IPv4_DATA_MAX_LENGTH];
 };
 
-struct ip_packet* build_ipv4_packet (uint32_t source_ip, uint32_t destination_ip, uint8_t data [20], uint16_t len);
+struct ip_packet* build_ipv4_packet (uint32_t destination_ip, uint8_t data [20], uint16_t len);
 struct ip_packet* _build_ipv4_packet (uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data, uint16_t data_len);
 
 void print_bit_ipv4 (uint8_t* header);

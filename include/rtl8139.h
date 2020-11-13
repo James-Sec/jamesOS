@@ -7,6 +7,7 @@
 #include <kheap.h>
 #include <paging.h>
 #include <ethernet.h>
+#include <ip.h>
 
 #define VENDOR_ID 0x10EC 
 #define DEVICE_ID 0x8139
@@ -24,6 +25,7 @@ struct rtl8139_dev
   uint32_t io_base;
   uint32_t mem_base;
   uint8_t mac_addr[6];
+  uint32_t ip_addr;
   uint8_t *rx_buffer;
   uint8_t tx_cur;
 };

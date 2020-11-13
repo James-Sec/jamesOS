@@ -75,33 +75,41 @@ int main(int argc, char *argv[])
 	eh->ether_dhost[4] = MY_DEST_MAC4;
 	eh->ether_dhost[5] = MY_DEST_MAC5;
 	/* Ethertype field */
-	eh->ether_type = htons(0x0800);
+	eh->ether_type = htons(0x0806);
 	tx_len += sizeof(struct ether_header);
 
 	/* Packet data */
 	sendbuf[tx_len++] = 'a';
 	sendbuf[tx_len++] = 'a';
-	sendbuf[tx_len++] = 'a';
-	sendbuf[tx_len++] = 'a';
-	sendbuf[tx_len++] = 'a';
-	sendbuf[tx_len++] = 'a';
-	sendbuf[tx_len++] = 'a';
-	sendbuf[tx_len++] = 'a';
-	sendbuf[tx_len++] = 'a';
-	sendbuf[tx_len++] = 'a';
+
+	sendbuf[tx_len++] = 0x08;
+	sendbuf[tx_len++] = 0x00;
+
 	sendbuf[tx_len++] = 'a';
 	sendbuf[tx_len++] = 'a';
 
+	sendbuf[tx_len++] = 0x00;
+	sendbuf[tx_len++] = 0x02;
+	sendbuf[tx_len++] = ((uint8_t *)&if_mac.ifr_hwaddr.sa_data)[0];
+	sendbuf[tx_len++] = ((uint8_t *)&if_mac.ifr_hwaddr.sa_data)[1];
+	sendbuf[tx_len++] = ((uint8_t *)&if_mac.ifr_hwaddr.sa_data)[2];
+	sendbuf[tx_len++] = ((uint8_t *)&if_mac.ifr_hwaddr.sa_data)[3];
+	sendbuf[tx_len++] = ((uint8_t *)&if_mac.ifr_hwaddr.sa_data)[4];
+	sendbuf[tx_len++] = ((uint8_t *)&if_mac.ifr_hwaddr.sa_data)[5];
+	sendbuf[tx_len++] = 4;
+	sendbuf[tx_len++] = 3;
+	sendbuf[tx_len++] = 2;
+	sendbuf[tx_len++] = 1;
+	sendbuf[tx_len++] = 0x52;
+	sendbuf[tx_len++] = 0x55;
+	sendbuf[tx_len++] = 0x00;
+	sendbuf[tx_len++] = 0xd1;
+	sendbuf[tx_len++] = 0x55;
+	sendbuf[tx_len++] = 0x01;
 	sendbuf[tx_len++] = 1;
 	sendbuf[tx_len++] = 2;
 	sendbuf[tx_len++] = 3;
 	sendbuf[tx_len++] = 4;
-
-	sendbuf[tx_len++] = 1;
-	sendbuf[tx_len++] = 2;
-	sendbuf[tx_len++] = 3;
-	sendbuf[tx_len++] = 4;
-	//sendbuf[tx_len++] = 0xff;
 
 	/* Index of the network device */
 	socket_address.sll_ifindex = if_idx.ifr_ifindex;

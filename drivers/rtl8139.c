@@ -98,4 +98,7 @@ void rtl8139_init ()
   uint8_t i;
   for (i = 0; i < 6; i++)
     rtl8139_device->mac_addr[i] = port_byte_in (rtl8139_device->io_base + i);
+
+  // set ip addr
+  set_ip_addr (0x01020304);
 }
