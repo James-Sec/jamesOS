@@ -42,5 +42,5 @@ kcore/kernel_main.bin: kcore/kernel_entry.o ${OBJ}
 
 # cleaning binary/ELF files
 clean: 
-	rm -rf *.bin *.dat boot/*.bin kernel/*.bin
+	rm -rf *.bin *.dat boot/*.bin kcore/*.bin
 	rm -rf kcore/*.o libc/*.o drivers/*.o cpu/*.o multitask/*.o kernel_tasks/*.o network/*.o

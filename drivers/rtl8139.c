@@ -77,6 +77,8 @@ void rtl8139_init ()
   port_byte_out ((uint16_t)(rtl8139_device->io_base + 0x37), 0x10);
   while (port_byte_in ((uint16_t)(rtl8139_device->io_base + 0x37)) & 0x10);
 
+  // TODO FIX RTL8139 BUFFER 
+  // TODO FIGURE OUT WHERE WE PASS THE SIZE FOR THE RTL8139
   rtl8139_device->rx_buffer = (uint8_t*) virtual2phys (kernel_directory, kmalloc_a (8192 + 0x1000));
   memset (rtl8139_device->rx_buffer, 0, 8192 + 0x1000);
   port_dword_out ((uint16_t)(rtl8139_device->io_base + 0x30), (uint32_t)rtl8139_device->rx_buffer);
@@ -85,7 +87,7 @@ void rtl8139_init ()
   port_word_out ((uint16_t)(rtl8139_device->io_base + 0x3C), 0x0005);
 
   // (1 << 7) is the WRAP bit, 0xf is AB+AM+APM+AAP
-  port_dword_out ((uint16_t)(rtl8139_device->io_base + 0x44), 0x2 | (1 << 7));
+  port_dword_out ((uint16_t)(rtl8139_device->io_base + 0x44), 0xf | (1 << 7));
 
   // Sets the RE and TE bits high
   port_byte_out ((uint16_t)(rtl8139_device->io_base + 0x37), 0x0C);

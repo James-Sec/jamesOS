@@ -6,7 +6,9 @@ static void recv_arp_reply (struct arp_t* arp)
 
 static void send_arp_reply (struct arp_t* arp)
 {
-  struct arp_t* new_arp = build_arp_packet (1, 0x0800, 6, 4, 2, &arp->header[ARP_THA], &arp->header[ARP_TPA], &arp->header[ARP_SHA], &arp->header[ARP_SPA]);
+  //kprintf ("mac: %x\n", 1, rtl8139_device->mac_addr);
+  //kprintf ("&mac: %x\n", 1, &rtl8139_device->mac_addr);
+  struct arp_t* new_arp = build_arp_packet (1, 0x0800, 6, 4, 2, &rtl8139_device->mac_addr, &arp->header[ARP_TPA], &arp->header[ARP_SHA], &arp->header[ARP_SPA]);
 
   send_ether_frame (build_ether_frame (&arp->header[ARP_SHA], ETHER_TYPE_ARP, new_arp, ARP_SIZE));
 }
