@@ -1,5 +1,5 @@
 #                                                         JAMES OS
-# DEPENDENCIES
+## DEPENDENCIES
   qemu-system-i386
   To install
     Search for your OS
@@ -7,24 +7,24 @@
   i686-elf-ld
   i686-elf-gdb
   To install
-    cd i686-elf
-    ./i686-elf-install.sh BINUTILS-VERSION GCC-VERSION
+    *cd i686-elf
+    *./i686-elf-install.sh BINUTILS-VERSION GCC-VERSION
 
-# MAKE
+## MAKE
   To build
-    make build
+    *make build
   To run
-    make run
+    *make run
   To clean
-    make clean
+    *make clean
 
-# NEXT:
+## NEXT:
   Documentation (en/pt-br) (CURRENT)
   Network stack (CURRENT)
   User space
   Switch to a microkernel architecture
 
-# Resources:
+## Resources:
   https://wiki.osdev.org
   https://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf
   http://www.jamesmolloy.co.uk/tutorial_html/
