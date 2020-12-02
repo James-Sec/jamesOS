@@ -4,28 +4,40 @@
 uint8_t TSAD_array[4] = {0x20, 0x24, 0x28, 0x2C};
 uint8_t TSD_array[4] = {0x10, 0x14, 0x18, 0x1C};
 
+uint32_t current_rx_packet;
+
 
 static void rtl8139_receive_frame ()
   // specific implementation for test
 {
-  /*
-  char s[10];
-  int i;
-  kprint_debug ("Data bytes: \n", LIGHT_BLUE);
-  for (i = 0; i <= 256; i++)
-  {
-    itoa (*(rtl8139_device->rx_buffer + i), s);
-    kprint_debug (s, LIGHT_BLUE);
-    kprint_debug (" ", LIGHT_BLUE);
-  }
-  kprint_debug ("\n", LIGHT_BLUE);
-  kprint_debug ("address: ", LIGHT_BLUE);
-  itoa ((uint32_t) rtl8139_device->rx_buffer, s);
-  kprint_debug (s, LIGHT_BLUE);
-  kprint ("\n");
-  */
-  kprint_debug ("frame received, passed to ether_handler\n", LIGHT_BLUE);
-  recv_ether_frame ((struct ether_frame*) ((uint8_t*)rtl8139_device->rx_buffer+4));
+  kprint_debug ("frame received, handling...\n", LIGHT_BLUE);
+
+	kprintf ("Printing the packet Status Register: ");
+	for (int i = 0; i < 4; i++)
+		kprintf ("%x ", 1, *((uint8_t*)rtl8139_device->rx_buffer + i));
+	kprint ("\n");
+
+	// getting packet size
+	uint16_t *pckt_ptr = (uint16_t*)(rtl8139_device->rx_buffer + current_rx_packet);
+	uint16_t pckt_sz = *(pckt_ptr + 1);
+	pckt_ptr += 2;
+
+	// alloc packet in safe location
+	uint8_t* crr_pckt = kmalloc (pckt_sz);
+	memcpy ((uint8_t*)pckt_ptr, crr_pckt, pckt_sz);
+
+	// handle the packet
+  recv_ether_frame ((struct ether_frame*) (crr_pckt));
+
+	// freeing the packet
+	kfree (pckt_sz, crr_pckt);
+
+	// updating the packet offset
+	current_rx_packet = (current_rx_packet + pckt_sz + 4 + 3) & (~3);
+	current_rx_packet %= RX_BUFFER_SIZE;
+
+	// 0x38 == CAPR(CURRENT ADDRESS PACKET READ) PORT
+	port_word_out (rtl8139_device->io_base + 0x38, current_rx_packet - 0x10);
 }
 
 static void rtl8139_handler (registers_t *regs)
@@ -77,8 +89,6 @@ void rtl8139_init ()
   port_byte_out ((uint16_t)(rtl8139_device->io_base + 0x37), 0x10);
   while (port_byte_in ((uint16_t)(rtl8139_device->io_base + 0x37)) & 0x10);
 
-  // TODO FIX RTL8139 BUFFER 
-  // TODO FIGURE OUT WHERE WE PASS THE SIZE FOR THE RTL8139
   rtl8139_device->rx_buffer = (uint8_t*) virtual2phys (kernel_directory, kmalloc_a (8192 + 0x1000));
   memset (rtl8139_device->rx_buffer, 0, 8192 + 0x1000);
   port_dword_out ((uint16_t)(rtl8139_device->io_base + 0x30), (uint32_t)rtl8139_device->rx_buffer);
