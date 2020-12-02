@@ -3,21 +3,20 @@
   qemu-system-i386
   To install
     Search for your OS
-
   i686-elf-gcc
   i686-elf-ld
   i686-elf-gdb
   To install
-  > cd i686-elf
-  > ./i686-elf-install.sh BINUTILS-VERSION GCC-VERSION
+    cd i686-elf
+    ./i686-elf-install.sh BINUTILS-VERSION GCC-VERSION
 
 # MAKE
   To build
-  > make build
+    make build
   To run
-  > make run
+    make run
   To clean
-  > make clean
+    make clean
 
 # NEXT:
   Documentation (en/pt-br) (CURRENT)
