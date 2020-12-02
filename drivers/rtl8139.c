@@ -13,7 +13,8 @@ static void rtl8139_receive_frame ()
   kprint_debug ("frame received, handling...\n", LIGHT_BLUE);
 
 	kprintf ("Printing the packet Status Register: ");
-	for (int i = 0; i < 4; i++)
+	uint8_t i = 0;
+	for (i = 0; i < 4; i++)
 		kprintf ("%x ", 1, *((uint8_t*)rtl8139_device->rx_buffer + i));
 	kprint ("\n");
 

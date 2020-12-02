@@ -39,7 +39,7 @@ load_kernel:
   mov bx, 0
   mov es, bx ;segment
   mov bx, KERNEL_OFFSET ;offset
-  mov dh,48 ;number of sectors
+  mov dh, 48 ;number of sectors
   mov dl, [BOOT_DRIVE] ;set the driver to read
   call disk_load
   ret

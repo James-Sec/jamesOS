@@ -1,0 +1,6 @@
+ARP:
+	verify all cases when the arp table needs to be updated
+	check if an (ip, mac) is already mapped into the table
+
+OS:
+	OS static memory is runnning low, fix

@@ -1,7 +1,26 @@
 #include <arp.h>
+
+static void update_arp_table (struct arp_t* arp) {
+	uint8_t james = 7;
+	memcpy (&arp->header [ARP_SPA], &arp_table [arp_table_size].ip_addr, 4);
+	memcpy (&arp->header [ARP_SHA], arp_table [arp_table_size].mac_addr, 6);
+	arp_table_size++;
+
+
+	/*
+	kprint ("======printing arp table:======\n");
+	uint8_t i = 0;
+	for (i = 0; i < arp_table_size; i++)
+		kprintf ("ip: %x, mac: %x:%x:%x:%x:%x:%x\n", 7, arp_table [i].ip_addr, arp_table [i].mac_addr [0], arp_table [i].mac_addr [1], arp_table [i].mac_addr [2], arp_table [i].mac_addr [3], arp_table [i].mac_addr [4], arp_table [i].mac_addr [5]);
+
+	kprint ("====== END ARP TABLE ======\n");
+	*/
+
+}
+
 static void recv_arp_reply (struct arp_t* arp)
 {
-  kprintf ("%d.%d.%d.%d", 4, arp->header[ARP_SPA], arp->header[ARP_SPA + 1], arp->header[ARP_SPA + 2], arp->header[ARP_SPA + 3]);
+  kprintf ("%d.%d.%d.%d\n", 4, arp->header[ARP_SPA], arp->header[ARP_SPA + 1], arp->header[ARP_SPA + 2], arp->header[ARP_SPA + 3]);
 }
 
 static void send_arp_reply (struct arp_t* arp)
@@ -41,6 +60,9 @@ static void recv_arp_request (struct arp_t* arp)
     if (target_ip == rtl8139_device->ip_addr)
     {
       kprint ("ip checked... sending arp reply\n");
+
+			update_arp_table (arp);
+
       send_arp_reply (arp);
     }
   }

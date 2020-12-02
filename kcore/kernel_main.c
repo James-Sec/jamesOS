@@ -48,5 +48,5 @@ void entry ()
 
   // sending arp request
   uint8_t ipp[4] = "\x01\x02\x03\x04";
-  //send_arp_request (ipp);
+  send_arp_request (ipp);
 }

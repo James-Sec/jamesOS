@@ -13,6 +13,8 @@
 
 #define ARP_SIZE 28
 
+#define ARP_TABLE_SIZE 10
+
 #include <stdint.h>
 #include <rtl8139.h>
 
@@ -24,6 +26,14 @@ struct arp_t
 void recv_arp_handler (struct arp_t* arp);
 void send_arp_request (uint8_t* ip);
 
+struct arp_table_entry {
+	uint32_t ip_addr;
+	uint8_t mac_addr [6];
+};
+
+struct arp_table_entry arp_table [ARP_TABLE_SIZE];
+
+uint8_t arp_table_size = 0;
 
 
 struct arp_t* build_arp_packet (uint16_t htype, uint16_t ptype, uint8_t hlen, uint8_t plen, uint16_t oper, uint8_t sha [6], uint8_t* spa, uint8_t tha[6], uint8_t* tpa);
