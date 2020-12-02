@@ -8,8 +8,8 @@
   i686-elf-ld
   i686-elf-gdb
   To install
-    > cd i686-elf
-    > ./i686-elf-install.sh BINUTILS-VERSION GCC-VERSION
+  > cd i686-elf
+  > ./i686-elf-install.sh BINUTILS-VERSION GCC-VERSION
 
 # MAKE
   To build
