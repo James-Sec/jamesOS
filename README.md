@@ -13,11 +13,11 @@
 
 # MAKE
   To build
-    > make build
+  > make build
   To run
-    > make run
+  > make run
   To clean
-    > make clean
+  > make clean
 
 # NEXT:
   Documentation (en/pt-br) (CURRENT)
