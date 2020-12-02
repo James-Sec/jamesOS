@@ -1,5 +1,5 @@
-                                                         JAMES OS
-DEPENDENCIES
+#                                                         JAMES OS
+# DEPENDENCIES
   qemu-system-i386
   To install
     Search for your OS
@@ -11,7 +11,7 @@ DEPENDENCIES
     > cd i686-elf
     > ./i686-elf-install.sh BINUTILS-VERSION GCC-VERSION
 
-MAKE
+# MAKE
   To build
     > make build
   To run
@@ -19,13 +19,13 @@ MAKE
   To clean
     > make clean
 
-NEXT:
+# NEXT:
   Documentation (en/pt-br) (CURRENT)
   Network stack (CURRENT)
   User space
   Switch to a microkernel architecture
 
-Resources:
+# Resources:
   https://wiki.osdev.org
   https://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf
   http://www.jamesmolloy.co.uk/tutorial_html/
