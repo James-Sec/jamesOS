@@ -90,7 +90,7 @@ void rtl8139_init ()
   port_byte_out ((uint16_t)(rtl8139_device->io_base + 0x37), 0x10);
   while (port_byte_in ((uint16_t)(rtl8139_device->io_base + 0x37)) & 0x10);
 
-  rtl8139_device->rx_buffer = (uint8_t*) virtual2phys (kernel_directory, kmalloc_a (8192 + 0x1000));
+  rtl8139_device->rx_buffer = (uint8_t*) virtual2phys (kernel_directory, kmalloc_u (8192 + 0x1000));
   memset (rtl8139_device->rx_buffer, 0, 8192 + 0x1000);
   port_dword_out ((uint16_t)(rtl8139_device->io_base + 0x30), (uint32_t)rtl8139_device->rx_buffer);
 

@@ -13,7 +13,7 @@
 
 #define ARP_SIZE 28
 
-#define ARP_TABLE_SIZE 10
+#define ARP_TABLE_SIZE 256
 
 #include <stdint.h>
 #include <rtl8139.h>

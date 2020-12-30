@@ -10,14 +10,14 @@ uint8_t *heap_base = (uint8_t*) HEAP_BASE;
 uint32_t placement_address = 0x5c00;
 uint32_t kheap_enable = 0;
 
-uint32_t kmalloc_a (uint32_t sz)
+uint32_t kmalloc_u (uint32_t sz)
 {
-  return kmalloc_int (sz, 1);
+  return kmalloc_int (sz, 0);
 }
 
 uint32_t kmalloc (uint32_t sz)
 {
-  return kmalloc_int (sz, 0);
+  return kmalloc_int (sz, 1);
 }
 
 void kheap_init ()
@@ -41,7 +41,7 @@ static uint32_t kmalloc_int (uint32_t size, uint32_t align)
   }
   else
   {
-    if (size & 0x00000fff)
+    if (align && (size & 0x00000fff))
     {
       size += 0x1000;
       size &= 0xfffff000;

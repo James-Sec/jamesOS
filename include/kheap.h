@@ -14,7 +14,7 @@
 void kheap_init ();
 void kfree (uint32_t size, uint32_t addr);
 uint32_t kmalloc (uint32_t sz);
-uint32_t kmalloc_a (uint32_t sz);
+uint32_t kmalloc_u (uint32_t sz);
 
 void print_bit_map (uint32_t size) ;
 

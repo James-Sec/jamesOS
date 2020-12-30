@@ -12,6 +12,7 @@
 #include <ip.h>
 #include <arp.h>
 
+uint8_t var;
 void entry ()
 {
   clear_screen ();

@@ -2,13 +2,13 @@
 [org 0x7c00]
 
 ; the memory offset where we will load our kernel
-KERNEL_OFFSET equ 0x1000
+KERNEL_OFFSET equ 0x7e00
 
 ; the BIOS loads the current drive identifier in dl register
 mov [BOOT_DRIVE], dl
 
 ; organizing the stack
-mov bp, 0x9000
+mov bp, 0x7c00
 mov sp, bp
 
 ; printing 16-bit real mode debug message
