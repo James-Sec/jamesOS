@@ -48,6 +48,6 @@ void entry ()
   */
 
   // sending arp request
-  uint8_t ipp[4] = "\x01\x02\x03\x04";
+  uint32_t ipp = 0x07060504;
   send_arp_request (ipp);
 }

@@ -34,7 +34,7 @@ void print_bit_ipv4 (uint8_t* header)
 	kprint ("\n");
 }
 
-static void set_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint32_t value)
+static void ip_set_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint32_t value)
 {
 	uint32_t i = offset;
 	uint8_t cnt = size - 1;
@@ -59,20 +59,20 @@ struct ip_packet* _build_ipv4_packet (uint8_t version, uint8_t ihl, uint8_t dscp
 {
 	struct ip_packet* ip = (struct ip_packet*)kmalloc (sizeof (struct ip_packet));
 	//setting on network order
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_VERSION_OFFSET, IPv4_VERSION_SIZE, version);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_IHL_OFFSET, IPv4_IHL_SIZE, ihl);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_DSCP_OFFSET, IPv4_DSCP_SIZE, dscp);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_ECN_OFFSET, IPv4_ECN_SIZE, ecn);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_TOTAL_LENGTH_OFFSET, IPv4_TOTAL_LENGTH_SIZE, 20 + data_len);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_IDENTIFICATION_OFFSET, IPv4_IDENTIFICATION_SIZE, identification);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_FLAGS_OFFSET, IPv4_FLAGS_SIZE, flags);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_FRAGMENT_OFFSET_OFFSET, IPv4_FRAGMENT_OFFSET_SIZE, fragment_offset);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_TIME_TO_LIVE_OFFSET, IPv4_TIME_TO_LIVE_SIZE, time_to_live);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE, protocol);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_SOURCE_IP_ADDRESS_OFFSET, IPv4_SOURCE_IP_ADDRESS_SIZE, source_ip);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_DESTINATION_IP_ADDRESS_OFFSET, IPv4_DESTINATION_IP_ADDRESS_SIZE, destination_ip);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, 0x0);
-	set_attr_value (ip->header.ipv4.ipv4, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, checksum (ip->header.ipv4.ipv4));
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_VERSION_OFFSET, IPv4_VERSION_SIZE, version);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_IHL_OFFSET, IPv4_IHL_SIZE, ihl);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_DSCP_OFFSET, IPv4_DSCP_SIZE, dscp);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_ECN_OFFSET, IPv4_ECN_SIZE, ecn);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_TOTAL_LENGTH_OFFSET, IPv4_TOTAL_LENGTH_SIZE, 20 + data_len);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_IDENTIFICATION_OFFSET, IPv4_IDENTIFICATION_SIZE, identification);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_FLAGS_OFFSET, IPv4_FLAGS_SIZE, flags);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_FRAGMENT_OFFSET_OFFSET, IPv4_FRAGMENT_OFFSET_SIZE, fragment_offset);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_TIME_TO_LIVE_OFFSET, IPv4_TIME_TO_LIVE_SIZE, time_to_live);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE, protocol);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_SOURCE_IP_ADDRESS_OFFSET, IPv4_SOURCE_IP_ADDRESS_SIZE, source_ip);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_DESTINATION_IP_ADDRESS_OFFSET, IPv4_DESTINATION_IP_ADDRESS_SIZE, destination_ip);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, 0x0);
+	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, checksum (ip->header.ipv4.ipv4));
 
 	// -20, look at union struct it allocs the bigger type
 	memcpy (data, ip->data - 20, data_len);
