@@ -1,11 +1,8 @@
 #include <task_terminator.h>
 
-extern struct tcb* head;
-
 void task_terminator ()
 {
-  unlock_irq();
-
+  task_entry ();
   struct tcb* tmp;
   struct tcb* prev;
   while (1)
@@ -16,21 +13,20 @@ void task_terminator ()
     {
       if (tmp->state == TERMINATED)
       {
+        kprintf ("[%s] exterminating %s...\n",2, current_task->pname, tmp->pname);
         flag = 1;
         if (tmp == head)
           head = tmp->next_task;
         else
           prev->next_task = tmp->next_task;
-        kfree (0x1000, tmp->initial_addr);
+        kfree (0x1000, tmp);
+        kprintf ("[%s] done.\n", 1, current_task->pname);
         break;
       }
       prev = tmp;
       tmp = tmp->next_task;
     }
-    struct tcb* i;
-    for (i = head; i!= 0; i = i->next_task)
-     //kprintf ("************%d, %d************\n", 2, i->pid, i->state);
     if (!flag)
-      sleep (5);
+      sleep (10);
   }
 }

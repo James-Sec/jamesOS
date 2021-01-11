@@ -5,18 +5,13 @@ static void pit_callback (registers_t *regs);
 static void pit_callback (registers_t *regs)
 {
   tick++;
-  //kprintf ("Tick: %d\n", 1, tick);
   if (multitasking_on)
   {
     struct tcb* x = head;
     do
     {
       if (x->state == SLEEPING && x->sleep_until < tick)
-      {
-        kprint ("-----------handler-----------\n");
-        kprintf ("UNBLOCK: %d\n", 1, x->pid);
         unblock_task (x->pid);
-      }
       x = x->next_task;
     }
     while (x);

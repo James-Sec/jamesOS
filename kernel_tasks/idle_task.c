@@ -2,16 +2,12 @@
 
 uint8_t idle_task_function ()
 {
-  asm volatile ("sti");
+  task_entry ();
   while (1)
   {
-    kprint ("-----------idle-----------\n");
-//    print_stack_asm (1, 0x1c);
-//    kprint ("-----------idle-----------\n");
-
+    kprintf ("[%s] executing...\n", 1, current_task->pname);
     asm volatile ("hlt");
-    //kprint ("idle\n");
-    int i;
-    for (i = 0; i < 1e8; i++);
+    uint32_t i;
+    for (i = 0; i < 1e9; i++);
   }
 }

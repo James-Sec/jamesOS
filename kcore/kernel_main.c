@@ -6,8 +6,8 @@
 #include <paging.h>
 #include <rtl8139.h>
 #include <multitask.h>
+#include <general_task.h>
 #include <pit.h>
-#include <task_entry.h>
 #include <ethernet.h>
 #include <ip.h>
 #include <arp.h>
@@ -33,11 +33,10 @@ void entry ()
   asm volatile ("cli");
   multitask_init ();
 
-  //create_task (task_entry, "ANDERSON", READY_TO_RUN);
-  //create_task (task_entry, "CAROLINA", READY_TO_RUN);
+  //create_task (general_task_function, "ANDERSON", READY_TO_RUN);
+  //create_task (general_task_function, "CAROLINA", READY_TO_RUN);
   asm volatile ("sti");
-
-  //task_function ();
+  //task_termination ();
 
 	// sending a ipv4 packet
   /*
@@ -48,6 +47,6 @@ void entry ()
   */
 
   // sending arp request
-  uint32_t ipp = 0x07060504;
-  send_arp_request (ipp);
+  //uint32_t ipp = 0x07060504;
+  //send_arp_request (ipp);
 }

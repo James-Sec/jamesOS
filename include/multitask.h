@@ -20,7 +20,6 @@ struct tcb
 {
   uint32_t *esp;
   uint32_t *ebp;
-  uint32_t *initial_addr;
   struct page_directory_t* page_dir;
   struct tcb* next_task;
   uint32_t pid;
@@ -38,6 +37,7 @@ void print_task (struct tcb*);
 void unblock_task (uint32_t pid);
 void block_task (uint8_t reason);
 void sleep (uint32_t ticks);
+void task_entry ();
 void task_termination ();
 void scheduler () ;
 void lock_irq ();
