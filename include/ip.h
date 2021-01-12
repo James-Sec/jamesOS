@@ -6,7 +6,8 @@
 #include <vga.h>
 #include <ethernet.h>
 
-#define IPv4_DATA_MAX_LENGTH 65535
+#define IPv4_DATA_MAX_LENGTH 65515
+#define IPv4_HEADER_SIZE 20
 
 #define IPv4_VERSION_OFFSET 0
 #define IPv4_IHL_OFFSET 4
@@ -52,13 +53,14 @@ union ip_header {
 
 struct ip_packet {
 	union ip_header header;
-	uint8_t data [IPv4_DATA_MAX_LENGTH];
+	uint8_t *data;
 };
 
-struct ip_packet* build_ipv4_packet (uint32_t destination_ip, uint8_t data [20], uint16_t len);
-struct ip_packet* _build_ipv4_packet (uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data, uint16_t data_len);
+struct ip_packet* build_ipv4_packet (uint32_t destination_ip, uint8_t* data, uint16_t len);
+struct ip_packet* _build_ipv4_packet (uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data);
 
 void print_bit_ipv4 (uint8_t* header);
 void recv_ipv4_handler (struct ip_packet* ip);
+void send_ipv4_packet (struct ip_packet* ip, uint8_t* mac_dest_addr);
 
 #endif
