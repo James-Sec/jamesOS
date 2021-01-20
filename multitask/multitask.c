@@ -8,7 +8,7 @@ uint32_t lock_irq_counter = 0;
 
 static struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *next_task, uint32_t pid, uint8_t state, char *pname, uint8_t (*func) (void))
 {
-  struct tcb *new_task = (struct tcb*) kmalloc (0x1000);
+  struct tcb *new_task = (struct tcb*) kmalloc_u (0x1000);
   new_task->ebp = ((uint32_t)new_task + 0x1000) - sizeof (struct tcb);
   new_task->esp = new_task->ebp - 4;
   new_task->page_dir = page_dir;
@@ -39,7 +39,7 @@ struct tcb* create_task (uint8_t (*func) (void), char *pname, uint8_t state)
 
 void multitask_init () 
 {
-  head = (struct tcb *) kmalloc (0x1000);
+  head = (struct tcb *) kmalloc_u (0x1000);
   current_task = head;
 
   asm volatile ("mov %%esp, %0" : "=r" (head->esp));

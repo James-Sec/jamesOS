@@ -2,7 +2,7 @@
 
 struct ether_frame* build_ether_frame (uint8_t dest [6], uint16_t type, uint8_t *data, uint32_t size)
 {
-  struct ether_frame* frame = (struct ether_frame*) kmalloc (sizeof (struct ether_frame));
+  struct ether_frame* frame = (struct ether_frame*) kmalloc_u (sizeof (struct ether_frame));
   memcpy (dest, frame->destination_addr,  6);
   memcpy (rtl8139_device->mac_addr, frame->source_addr,  6);
   frame->ether_type = type;

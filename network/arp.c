@@ -93,7 +93,7 @@ struct arp_t* build_arp_packet (uint16_t htype, uint16_t ptype, uint8_t hlen, ui
 {
   uint8_t i;
 
-  struct arp_t* arp = (struct arp_t*) kmalloc (sizeof (struct arp_t));
+  struct arp_t* arp = (struct arp_t*) kmalloc_u (sizeof (struct arp_t));
   arp->header[ARP_HTYPE_OFFSET] = (htype >> 8) & 0xff;
   arp->header[ARP_HTYPE_OFFSET + 1] = htype & 0xff;
   

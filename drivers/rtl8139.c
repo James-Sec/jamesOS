@@ -24,7 +24,7 @@ static void rtl8139_receive_frame ()
 	pckt_ptr += 2;
 
 	// alloc packet in safe location
-	uint8_t* crr_pckt = kmalloc (pckt_sz);
+	uint8_t* crr_pckt = kmalloc_u (pckt_sz);
 	memcpy ((uint8_t*)pckt_ptr, crr_pckt, pckt_sz);
 
 	// handle the packet
@@ -67,7 +67,7 @@ void rtl8139_send_frame (struct ether_frame* frame)
 
 void rtl8139_init ()
 {
-  rtl8139_device = (struct rtl8139_dev*) kmalloc (sizeof (struct rtl8139_dev));
+  rtl8139_device = (struct rtl8139_dev*) kmalloc_u (sizeof (struct rtl8139_dev));
   uint16_t bus;
   uint8_t device;
   rtl8139_device->tx_cur = 0;

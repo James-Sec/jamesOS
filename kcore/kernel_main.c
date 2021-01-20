@@ -34,24 +34,24 @@ void entry ()
   asm volatile ("cli");
   multitask_init ();
 
-  //create_task (general_task_function, "ANDERSON", READY_TO_RUN);
-  //create_task (general_task_function, "CAROLINA", READY_TO_RUN);
+  create_task (general_task_function, "ANDERSON", READY_TO_RUN);
+  create_task (general_task_function, "CAROLINA", READY_TO_RUN);
   asm volatile ("sti");
-  //task_termination ();
+  task_termination ();
 
 	// sending a ipv4 packet
-	//uint8_t* data = "jaaames";
-	//struct ip_packet* ip = build_ipv4_packet (0x01020304, data, 7);
-  //uint8_t mac_dest_addr [] = {0x12, 0xa3, 0xab, 0x41, 0x6e, 0x12};
-	//send_ipv4_packet (ip, mac_dest_addr);
+	uint8_t* data = "jaaames";
+	struct ip_packet* ip = build_ipv4_packet (0x01020304, data, 7);
+  uint8_t mac_dest_addr [] = {0x12, 0xa3, 0xab, 0x41, 0x6e, 0x12};
+	send_ipv4_packet (ip, mac_dest_addr);
 
   // sending arp request
-  //uint32_t ipp = 0x07060504;
-  //send_arp_request (ipp);
-
-  // sending a icmp4 packet
   uint32_t ipp = 0x07060504;
-  uint8_t mac_dest_addr [] = {0x12, 0xa3, 0xab, 0x41, 0x6e, 0x12};
+  send_arp_request (ipp);
+
+  //sending a icmp4 packet
+  //uint32_t ipp = 0x07060504;
+  //uint8_t mac_dest_addr [] = {0x12, 0xa3, 0xab, 0x41, 0x6e, 0x12};
   struct icmp4* icmp = build_icmp4_packet (ICMP4_ECHO_REQUEST_TYPE, 0, 0xfff7, 0);
   send_icmp4_packet (icmp, ICMP4_HEADER_SIZE, ipp, mac_dest_addr);
 }

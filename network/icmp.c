@@ -2,7 +2,7 @@
 
 struct icmp4* build_icmp4_packet (uint8_t type, uint8_t code, uint16_t checksum, uint32_t rest_of_header)
 {
-  struct icmp4* icmp = (struct icmp4*)kmalloc(sizeof (struct icmp4));
+  struct icmp4* icmp = (struct icmp4*)kmalloc_u (sizeof (struct icmp4));
   memcpy (&type, ((uint8_t*)icmp) + ICMP4_TYPE_OFFSET, ICMP4_TYPE_SIZE);
   memcpy (&code, ((uint8_t*)icmp) + ICMP4_CODE_OFFSET, ICMP4_CODE_SIZE);
   memcpy (&checksum, ((uint8_t*)icmp) + ICMP4_CHECKSUM_OFFSET, ICMP4_CHECKSUM_SIZE);

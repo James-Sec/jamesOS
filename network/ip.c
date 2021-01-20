@@ -52,12 +52,12 @@ static void ip_set_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, ui
 
 struct ip_packet* build_ipv4_packet (uint32_t destination_ip, uint8_t* data, uint16_t data_len)
 {
-	return _build_ipv4_packet (4, 5, 127, 0, IPv4_HEADER_SIZE + data_len, 0x1337, 0, 0, 128, 1, rtl8139_device->ip_addr, destination_ip, data);
+	return _build_ipv4_packet (4, 5, 127, 0, IPv4_HEADER_SIZE + data_len, 0x1337, 0, 0, 128, 6, rtl8139_device->ip_addr, destination_ip, data);
 }
 
 struct ip_packet* _build_ipv4_packet (uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data)
 {
-	struct ip_packet* ip = (struct ip_packet*)kmalloc (sizeof (struct ip_packet));
+	struct ip_packet* ip = (struct ip_packet*)kmalloc_u (sizeof (struct ip_packet));
 	//setting on network order
 	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_VERSION_OFFSET, IPv4_VERSION_SIZE, version);
 	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_IHL_OFFSET, IPv4_IHL_SIZE, ihl);

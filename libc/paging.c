@@ -75,11 +75,15 @@ void paging_init () {
   bitmap = (uint8_t*) kmalloc (INDEX_FROM_BIT (nframes));
   memset ((uint8_t*) bitmap, 0, INDEX_FROM_BIT (nframes));
 
+  kprintf ("bitmap: %x\n", 1, bitmap);
+
   kernel_directory = (page_directory_t*) kmalloc (sizeof (page_directory_t));
   current_directory = kernel_directory;
 
+  kprintf ("kernel_directory: %x\n", 1, kernel_directory);
+
   int i = 0;
-  while (i <= HEAP_BASE) 
+  while (i <= HEAP_LIMIT) 
   {
     alloc_page (get_page (i, 1, kernel_directory), 0, 0);
     i += 0x1000;
