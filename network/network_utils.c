@@ -1,6 +1,7 @@
 #include <network_utils.h>
 
-void htonb (uint8_t* byte, uint8_t bits) {
+void htonb (uint8_t* byte, uint8_t bits)
+{
 	uint8_t tmp = 0;
 
 	uint8_t i = 0;
@@ -14,11 +15,13 @@ void htonb (uint8_t* byte, uint8_t bits) {
 	*byte = tmp;
 }
 
-void ntohb (uint8_t* byte, uint8_t bits) {
+void ntohb (uint8_t* byte, uint8_t bits)
+{
 	htonb (byte, 8 - bits);
 }
 
-void htons (uint16_t* shrt) {
+void htons (uint16_t* shrt)
+{
 	uint16_t tmp = 0;
 
 	tmp += (0xff & *shrt) << 8;
@@ -32,7 +35,8 @@ void ntohs (uint16_t* shrt)
   htons (shrt);
 }
 
-void htonl (uint32_t* lng) {
+void htonl (uint32_t* lng)
+{
 	uint32_t tmp = 0;
 
 	tmp += (0xff000000 & *lng) >> 24;
@@ -45,6 +49,17 @@ void htonl (uint32_t* lng) {
 	*lng = tmp;
 }
 
-void ntohl (uint32_t* lng) {
+void ntohl (uint32_t* lng)
+{
   htonl (lng);
+}
+
+uint8_t* l3_interface (uint8_t* header, uint32_t header_size, uint8_t* data, uint32_t data_size)
+{
+  uint8_t* packet = kmalloc_u (header_size + data_size);
+
+  memcpy (header, packet, header_size);
+  memcpy (data, packet + header_size, data_size);
+
+  return packet;
 }

@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <ip.h>
 #include <mem.h>
+#include <network_utils.h>
 
 #define ICMP4_ECHO_REPLY_TYPE 0
 #define ICMP4_ECHO_REQUEST_TYPE 8

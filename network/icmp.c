@@ -13,7 +13,7 @@ struct icmp4* build_icmp4_packet (uint8_t type, uint8_t code, uint16_t checksum,
 
 void send_icmp4_packet (struct icmp4* icmp, uint32_t icmp_size, uint32_t dest_ip, uint8_t dest_mac[6])
 {
-  struct ip_packet* ip = build_ipv4_packet (dest_ip, icmp, ICMP4_HEADER_SIZE);
-  memcpy (icmp->data, ip->data + ICMP4_HEADER_SIZE, icmp_size - ICMP4_HEADER_SIZE);
+  uint8_t* packet = l3_interface (icmp->header, ICMP4_HEADER_SIZE, icmp->data, icmp_size - ICMP4_HEADER_SIZE);
+  struct ip_packet* ip = build_ipv4_packet (dest_ip, packet, icmp_size);
   send_ipv4_packet (ip, dest_mac);
 }

@@ -9,7 +9,7 @@ uint32_t lock_irq_counter = 0;
 static struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *next_task, uint32_t pid, uint8_t state, char *pname, uint8_t (*func) (void))
 {
   struct tcb *new_task = (struct tcb*) kmalloc_u (0x1000);
-  new_task->ebp = ((uint32_t)new_task + 0x1000) - sizeof (struct tcb);
+  new_task->ebp = ((uint32_t)new_task + 0x1000 - 4);
   new_task->esp = new_task->ebp - 4;
   new_task->page_dir = page_dir;
   new_task->next_task = next_task;
@@ -18,14 +18,14 @@ static struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *
   if (state == READY_TO_RUN)
     ++ready_to_run_counter;
   memcpy (pname, new_task->pname, 32);
-  
+
   //organizing the stack
   *new_task->esp = new_task->ebp; //ebp
   *(new_task->esp + 1) = 0; //edi
   *(new_task->esp + 2) = 0; //esi
   *(new_task->esp + 3) = 0; //ebx
   *(new_task->esp + 4) = func; //ret
-  
+
   return new_task;
 }
   
