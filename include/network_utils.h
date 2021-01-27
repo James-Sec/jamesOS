@@ -12,6 +12,9 @@ void ntohs (uint16_t* shrt);
 void htonl (uint32_t* lng);
 void ntohl (uint32_t* lng);
 
-uint8_t* l3_interface (uint8_t* header, uint32_t header_size, uint8_t* data, uint32_t data_size);
+uint8_t* l3_interface_send (uint8_t* header, uint32_t header_size, uint8_t* data, uint32_t data_size);
+
+struct icmp4* l3_interface_recv_icmp4 (uint8_t* packet);
+
 
 #endif

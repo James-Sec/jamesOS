@@ -8,6 +8,8 @@
 
 #define ICMP4_ECHO_REPLY_TYPE 0
 #define ICMP4_ECHO_REQUEST_TYPE 8
+#define ICMP4_ECHO_REPLY_CODE 0
+#define ICMP4_ECHO_REQUEST_CODE 0
 
 #define ICMP4_TYPE_SIZE 1
 #define ICMP4_CODE_SIZE 1
@@ -28,5 +30,6 @@ struct icmp4 {
 
 struct icmp4* build_icmp4_packet (uint8_t type, uint8_t code, uint16_t checksum, uint32_t rest_of_header);
 void send_icmp4_packet (struct icmp4* icmp, uint32_t icmp_size, uint32_t dest_ip, uint8_t dest_mac[6]);
+void recv_icmp4_packet (uint8_t *packet);
 
 #endif

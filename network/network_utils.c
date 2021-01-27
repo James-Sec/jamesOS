@@ -54,7 +54,7 @@ void ntohl (uint32_t* lng)
   htonl (lng);
 }
 
-uint8_t* l3_interface (uint8_t* header, uint32_t header_size, uint8_t* data, uint32_t data_size)
+uint8_t* l3_interface_send (uint8_t* header, uint32_t header_size, uint8_t* data, uint32_t data_size)
 {
   uint8_t* packet = kmalloc_u (header_size + data_size);
 
@@ -62,4 +62,15 @@ uint8_t* l3_interface (uint8_t* header, uint32_t header_size, uint8_t* data, uin
   memcpy (data, packet + header_size, data_size);
 
   return packet;
+}
+
+struct icmp4* l3_interface_recv_icmp4 (uint8_t* packet, uint32_t size)
+{
+  struct icmp4 *icmp4_packet = kmalloc (sizeof (struct icmp4));
+  memcpy (packet, icmp4_packet, ICMP4_HEADER_SIZE);
+
+  icmp4_packet->data = kmalloc (sizeof (size - ICMP4_HEADER_SIZE));
+  memcpy (packet + ICMP4_HEADER_SIZE, icmp4_packet->data, size - ICMP4_HEADER_SIZE);
+
+  return icmp4_packet;
 }
