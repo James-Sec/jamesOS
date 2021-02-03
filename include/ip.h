@@ -63,4 +63,6 @@ void print_bit_ipv4 (uint8_t* header);
 void recv_ipv4_handler (struct ip_packet* ip);
 void send_ipv4_packet (struct ip_packet* ip, uint8_t* mac_dest_addr);
 
+uint32_t ip_get_attr_value (uint8_t* attr, uint32_t offset, uint32_t size);
+
 #endif

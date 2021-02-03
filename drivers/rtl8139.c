@@ -12,33 +12,32 @@ static void rtl8139_receive_frame ()
 {
   kprint_debug ("frame received, handling...\n", LIGHT_BLUE);
 
-	kprintf ("Printing the packet Status Register: ");
-	uint8_t i = 0;
-	for (i = 0; i < 4; i++)
-		kprintf ("%x ", 1, *((uint8_t*)rtl8139_device->rx_buffer + i));
-	kprint ("\n");
+  kprintf ("Printing the packet Status Register: ");
+  uint8_t i = 0;
+  for (i = 0; i < 4; i++)
+    kprintf ("%x ", 1, *((uint8_t*)rtl8139_device->rx_buffer + i));
+  kprint ("\n");
 
-	// getting packet size
-	uint16_t *pckt_ptr = (uint16_t*)(rtl8139_device->rx_buffer + current_rx_packet);
-	uint16_t pckt_sz = *(pckt_ptr + 1);
-	pckt_ptr += 2;
+  // getting packet size
+  uint16_t *pckt_ptr = (uint16_t*)(rtl8139_device->rx_buffer + current_rx_packet);
+  uint16_t pckt_sz = *(pckt_ptr + 1);
+  pckt_ptr += 2;
 
-	// alloc packet in safe location
-	uint8_t* crr_pckt = kmalloc_u (pckt_sz);
-	memcpy ((uint8_t*)pckt_ptr, crr_pckt, pckt_sz);
+  // alloc packet in safe location
+  struct ether_frame *ether = l2_interface_recv_ethernet2 (pckt_ptr, pckt_sz);
 
-	// handle the packet
-  recv_ether_frame ((struct ether_frame*) (crr_pckt));
+  // handle the packet
+  recv_ether_frame (ether);
 
-	// freeing the packet
-	kfree (pckt_sz, crr_pckt);
+  // freeing the packet
+  kfree (pckt_sz, ether);
 
-	// updating the packet offset
-	current_rx_packet = (current_rx_packet + pckt_sz + 4 + 3) & (~3);
-	current_rx_packet %= RX_BUFFER_SIZE;
+  // updating the packet offset
+  current_rx_packet = (current_rx_packet + pckt_sz + 4 + 3) & (~3);
+  current_rx_packet %= RX_BUFFER_SIZE;
 
-	// 0x38 == CAPR(CURRENT ADDRESS PACKET READ) PORT
-	port_word_out (rtl8139_device->io_base + 0x38, current_rx_packet - 0x10);
+  // 0x38 == CAPR(CURRENT ADDRESS PACKET READ) PORT
+  port_word_out (rtl8139_device->io_base + 0x38, current_rx_packet - 0x10);
 }
 
 static void rtl8139_handler (registers_t *regs)
@@ -57,10 +56,10 @@ static void rtl8139_handler (registers_t *regs)
   }
 }
 
-void rtl8139_send_frame (struct ether_frame* frame)
+void rtl8139_send_frame (uint8_t* frame, uint32_t size)
 {
   port_dword_out (rtl8139_device->io_base + TSAD_array[rtl8139_device->tx_cur], frame);
-  port_dword_out (rtl8139_device->io_base + TSD_array[rtl8139_device->tx_cur++], frame->data_size + 14);
+  port_dword_out (rtl8139_device->io_base + TSD_array[rtl8139_device->tx_cur++], size);
   if(rtl8139_device->tx_cur > 3)
     rtl8139_device->tx_cur = 0;
 }

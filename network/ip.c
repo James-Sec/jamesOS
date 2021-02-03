@@ -34,7 +34,7 @@ void print_bit_ipv4 (uint8_t* header)
 	kprint ("\n");
 }
 
-static void ip_set_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint32_t value)
+void ip_set_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint32_t value)
 {
 	uint32_t i = offset;
 	uint8_t cnt = size - 1;
@@ -48,6 +48,25 @@ static void ip_set_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, ui
 		else
 			*(attr + byte) &= ~(1 << bit);
 	}
+}
+
+uint32_t ip_get_attr_value (uint8_t* attr, uint32_t offset, uint32_t size)
+{
+  uint32_t ret = 0;
+
+	uint32_t i = offset;
+	uint8_t cnt = size - 1;
+	for (; i < (offset + size); i++)
+	{
+		uint8_t byte = i / 8;
+		uint8_t bit = 7 - (i % 8);
+
+    if ((*(attr + byte) >> bit) & 1)
+      ret |= (1 << cnt--);
+    else
+      cnt--;
+	}
+  return ret;
 }
 
 struct ip_packet* build_ipv4_packet (uint32_t destination_ip, uint8_t* data, uint16_t data_len)
@@ -80,20 +99,14 @@ struct ip_packet* _build_ipv4_packet (uint8_t version, uint8_t ihl, uint8_t dscp
 
 void recv_ipv4_handler (struct ip_packet* ip)
 {
-  kprintf ("ipv4_destination_addr: %d.%d.%d.%d\n", 4, ip->header.ipv4.ipv4 [12], ip->header.ipv4.ipv4 [13], ip->header.ipv4.ipv4 [14], ip->header.ipv4.ipv4 [15]);
+  //kprintf ("ipv4_destination_addr: %d.%d.%d.%d\n", 4, ip->header.ipv4.ipv4 [12], ip->header.ipv4.ipv4 [13], ip->header.ipv4.ipv4 [14], ip->header.ipv4.ipv4 [15]);
 
-  kprintf ("ipv4_source_addr: %d.%d.%d.%d\n", 4, ip->header.ipv4.ipv4 [16], ip->header.ipv4.ipv4 [17], ip->header.ipv4.ipv4 [18], ip->header.ipv4.ipv4 [19]);
+  //kprintf ("ipv4_source_addr: %d.%d.%d.%d\n", 4, ip->header.ipv4.ipv4 [16], ip->header.ipv4.ipv4 [17], ip->header.ipv4.ipv4 [18], ip->header.ipv4.ipv4 [19]);
 }
 
 void send_ipv4_packet (struct ip_packet* ip, uint8_t* mac_dest_addr)
 {
-	uint16_t ip_size = 0;
-	ip_size = ip->header.ipv4.ipv4 [2] << 8;
-	ip_size += ip->header.ipv4.ipv4 [3];
-
-  struct ether_frame* frame = build_ether_frame (mac_dest_addr, ETHER_TYPE_IPV4, ip, ip_size);
-  // ip_packet->data is a pointer, so it is needed to be copied separatetly
-  memcpy (ip->data, (((uint8_t*)frame->data) + IPv4_HEADER_SIZE), ip_size - IPv4_HEADER_SIZE);
+  struct ether_frame* frame = l2_interface_send_ethernet2 (ip, mac_dest_addr);
   send_ether_frame (frame);
 }
 

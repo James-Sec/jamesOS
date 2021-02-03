@@ -61,6 +61,9 @@
 #define ETHER_TYPE_ECTP 0x0090
 #define ETHER_TYPE_802_1Q 0x0091
 #define ETHER_TYPE_802_1CB 0xC1F1
+
+#define ETHER_HEADER_SIZE 14
+
 struct ether_frame
 {
   uint8_t destination_addr [6];
@@ -68,7 +71,7 @@ struct ether_frame
   uint16_t ether_type;
   uint8_t data [1500];
   uint32_t data_size;
-};
+} __attribute__((packed));
 
 struct ether_frame* build_ether_frame (uint8_t dest [6], uint16_t type, uint8_t *data, uint32_t size);
 

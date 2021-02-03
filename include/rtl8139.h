@@ -16,7 +16,7 @@
 
 
 void rtl8139_init ();
-void rtl8139_send_frame (struct ether_frame* frame);
+void rtl8139_send_frame (uint8_t* frame, uint32_t size);
 
 struct rtl8139_dev* rtl8139_device;
 
