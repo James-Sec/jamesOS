@@ -12,25 +12,12 @@ static void rtl8139_receive_frame ()
 {
   kprint_debug ("frame received, handling...\n", LIGHT_BLUE);
 
-  kprintf ("Printing the packet Status Register: ");
-  uint8_t i = 0;
-  for (i = 0; i < 4; i++)
-    kprintf ("%x ", 1, *((uint8_t*)rtl8139_device->rx_buffer + i));
-  kprint ("\n");
-
   // getting packet size
   uint16_t *pckt_ptr = (uint16_t*)(rtl8139_device->rx_buffer + current_rx_packet);
   uint16_t pckt_sz = *(pckt_ptr + 1);
   pckt_ptr += 2;
 
-  // alloc packet in safe location
-  struct ether_frame *ether = l2_interface_recv_ethernet2 (pckt_ptr, pckt_sz);
-
-  // handle the packet
-  recv_ether_frame (ether);
-
-  // freeing the packet
-  kfree (pckt_sz, ether);
+  l2_lower_interface (pckt_ptr, pckt_sz);
 
   // updating the packet offset
   current_rx_packet = (current_rx_packet + pckt_sz + 4 + 3) & (~3);

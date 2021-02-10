@@ -56,6 +56,19 @@ struct ip_packet {
 	uint8_t *data;
 };
 
+struct ipv6_packet
+{
+  uint8_t header[40];
+  uint8_t *data;
+};
+
+struct ipv4_packet 
+{
+  uint8_t header[20];
+  uint8_t *data;
+};
+
+
 struct ip_packet* build_ipv4_packet (uint32_t destination_ip, uint8_t* data, uint16_t len);
 struct ip_packet* _build_ipv4_packet (uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data);
 
@@ -64,5 +77,8 @@ void recv_ipv4_handler (struct ip_packet* ip);
 void send_ipv4_packet (struct ip_packet* ip, uint8_t* mac_dest_addr);
 
 uint32_t ip_get_attr_value (uint8_t* attr, uint32_t offset, uint32_t size);
+
+uint8_t* ipv4_to_array (struct ipv4_packet* packet);
+struct ipv4_packet* array_to_ipv4 (uint8_t* array, uint32_t size);
 
 #endif

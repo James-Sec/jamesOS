@@ -87,16 +87,20 @@ struct icmp4* l3_interface_recv_icmp4 (uint8_t* packet, uint32_t size)
 
 struct ether_frame* l2_interface_recv_ethernet2 (uint8_t* packet, uint32_t size)
 {
+  /*
   struct ether_frame* ether = kmalloc_u (sizeof (struct ether_frame));
   memcpy (packet, (uint8_t*)ether, size);
 
   ether->data_size = size;
 
   return ether;
+  */
+  return 0;
 }
 
 struct ether_frame* l2_interface_send_ethernet2 (struct ip_packet* ip, uint8_t* mac_dest_addr)
 {
+  /*
 	uint16_t ip_size = 0;
 	ip_size = ip->header.ipv4.ipv4 [2] << 8;
 	ip_size += ip->header.ipv4.ipv4 [3];
@@ -106,6 +110,8 @@ struct ether_frame* l2_interface_send_ethernet2 (struct ip_packet* ip, uint8_t* 
   memcpy (ip->data, ether->data + IPv4_HEADER_SIZE, ip_size - IPv4_HEADER_SIZE);
 
   return ether;
+  */
+  return 0;
 }
 
 uint8_t* l1_interface_send_rtl8139 (struct ether_frame* ether)

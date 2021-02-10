@@ -12,6 +12,7 @@
 #include <ip.h>
 #include <arp.h>
 #include <icmp.h>
+#include <l2_interface.h>
 
 uint8_t var;
 void entry ()
@@ -57,5 +58,10 @@ void entry ()
   icmp->data = data;
   send_icmp4_packet (icmp, ICMP4_HEADER_SIZE + 7, ipp, mac_dest_addr);
   */
+  
+  uint8_t *james = "JAAAMES";
+  uint8_t mac_dest_addr [] = {0x12, 0xa3, 0xab, 0x41, 0x6e, 0x12};
+  l2_upper_interface (mac_dest_addr, james, 7, L2_PROTOCOL_ETHERNET2, 0x0008);
+
   task_termination ();
 }

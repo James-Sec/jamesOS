@@ -114,3 +114,27 @@ void set_ip_addr (uint32_t ip)
 {
   rtl8139_device->ip_addr = ip;
 }
+
+uint8_t* ipv4_to_array (struct ipv4_packet* packet)
+{
+  uint8_t total_length = ip_get_attr_value (packet, IPv4_TOTAL_LENGTH_OFFSET, IPv4_TOTAL_LENGTH_SIZE);
+
+  uint8_t* array = kmalloc_u (total_length);
+
+  memcpy (packet->header, array, IPv4_HEADER_SIZE);
+  memcpy (packet->data, array+IPv4_HEADER_SIZE, total_length - IPv4_HEADER_SIZE);
+
+  return array;
+}
+
+struct ipv4_packet* array_to_ipv4 (uint8_t* array, uint32_t size)
+{
+  struct ipv4_packet *packet = (struct ipv4_packet *) kmalloc_u (sizeof (struct ipv4_packet));
+  
+  memcpy (array, packet->header, IPv4_HEADER_SIZE);
+
+  packet->data = kmalloc_u (size - IPv4_HEADER_SIZE);
+  memcpy (array + IPv4_HEADER_SIZE, packet->data, size - IPv4_HEADER_SIZE);
+
+  return packet;
+}

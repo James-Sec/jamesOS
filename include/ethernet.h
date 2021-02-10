@@ -69,13 +69,14 @@ struct ether_frame
   uint8_t destination_addr [6];
   uint8_t source_addr [6];
   uint16_t ether_type;
-  uint8_t data [1500];
-  uint32_t data_size;
+  uint8_t *data;
 } __attribute__((packed));
 
-struct ether_frame* build_ether_frame (uint8_t dest [6], uint16_t type, uint8_t *data, uint32_t size);
+struct ether_frame* build_ether_frame (struct ether_frame* frame, uint8_t dest [6], uint16_t type, uint8_t *data, uint32_t data_size);
 
 void send_ether_frame (struct ether_frame* frame);
 void recv_ether_frame (struct ether_frame* frame);
+uint8_t* ethernet_to_array (struct ether_frame *frame, uint32_t data_size);
+struct ether_frame * array_to_ethernet (struct ether_frame* ether, uint8_t* array, uint32_t size);
 
 #endif

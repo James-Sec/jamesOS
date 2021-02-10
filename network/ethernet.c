@@ -1,20 +1,19 @@
 #include <ethernet.h>
 
-struct ether_frame* build_ether_frame (uint8_t dest [6], uint16_t type, uint8_t *data, uint32_t size)
+struct ether_frame* build_ether_frame (struct ether_frame *frame, uint8_t dest [6], uint16_t type, uint8_t *data, uint32_t data_size)
 {
-  struct ether_frame* frame = (struct ether_frame*) kmalloc_u (sizeof (struct ether_frame));
   memcpy (dest, frame->destination_addr,  6);
   memcpy (rtl8139_device->mac_addr, frame->source_addr,  6);
-  frame->ether_type = type;
-  memcpy (data, frame->data, size);
-  frame->data_size  = size;
+  memcpy (&type, &frame->ether_type, sizeof (uint16_t));
+  memcpy (data, frame->data, data_size);
+
   return frame;
 }
 
 void send_ether_frame (struct ether_frame* frame)
 {
   uint8_t *ether = l1_interface_send_rtl8139 (frame);
-  rtl8139_send_frame (ether, frame->data_size + ETHER_HEADER_SIZE);
+  //rtl8139_send_frame (ether, frame->data_size + ETHER_HEADER_SIZE);
 }
 
 void recv_ether_frame (struct ether_frame* frame)
@@ -41,4 +40,21 @@ void recv_ether_frame (struct ether_frame* frame)
       kprint ("undefined protocol\n");
       break;
   }
+}
+uint8_t* ethernet_to_array (struct ether_frame *frame, uint32_t data_size)
+{
+  uint8_t *array = kmalloc_u (data_size + ETHER_HEADER_SIZE);
+  memcpy (frame, array,ETHER_HEADER_SIZE);
+  memcpy (frame->data, array + ETHER_HEADER_SIZE, data_size);
+  
+  return array;
+}
+
+struct ether_frame* array_to_ethernet (struct ether_frame* ether, uint8_t* array, uint32_t size)
+{
+  memcpy (array, ether, ETHER_HEADER_SIZE);
+  ether->data = kmalloc_u (size - ETHER_HEADER_SIZE);
+  memcpy (array + ETHER_HEADER_SIZE, ether->data, size - ETHER_HEADER_SIZE);
+
+  return ether;
 }
