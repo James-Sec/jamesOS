@@ -6,7 +6,7 @@
 #include <ip.h>
 
 // network byte order
-#define ETHER_TYPE_IPV4 0x0008
+#define ETHER_TYPE_IPv4 0x0008
 #define ETHER_TYPE_ARP 0x0608
 #define ETHER_TYPE_WOL 0x4208
 #define ETHER_TYPE_AVTP 0xF022
@@ -75,7 +75,7 @@ struct ether_frame
 struct ether_frame* build_ether_frame (struct ether_frame* frame, uint8_t dest [6], uint16_t type, uint8_t *data, uint32_t data_size);
 
 void send_ether_frame (struct ether_frame* frame);
-void recv_ether_frame (struct ether_frame* frame);
+void recv_ethernet_frame (uint8_t *data, uint32_t size);
 uint8_t* ethernet_to_array (struct ether_frame *frame, uint32_t data_size);
 struct ether_frame * array_to_ethernet (struct ether_frame* ether, uint8_t* array, uint32_t size);
 

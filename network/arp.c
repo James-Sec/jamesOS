@@ -34,7 +34,7 @@ static void send_arp_reply (struct arp_t* arp)
   //kprintf ("&mac: %x\n", 1, &rtl8139_device->mac_addr);
   //struct arp_t* new_arp = build_arp_packet (1, 0x0800, 6, 4, 2, &rtl8139_device->mac_addr, &arp->header[ARP_TPA_OFFSET], &arp->header[ARP_SHA_OFFSET], &arp->header[ARP_SPA_OFFSET]);
 
-  //send_ether_frame (build_ether_frame (&arp->header[ARP_SHA_OFFSET], ETHER_TYPE_ARP, new_arp, ARP_SIZE));
+  send_ethernet_frame (&arp->header[ARP_SHA_OFFSET], arp, ARP_SIZE, ETHER_TYPE_ARP);
 }
 
 void send_arp_request (uint32_t ip)

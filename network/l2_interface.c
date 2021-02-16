@@ -5,25 +5,19 @@ void l2_upper_interface (uint8_t mac[6], uint8_t *data, uint32_t data_size, uint
   va_list ap;
   switch (protocol)
   {
-    case 0:
+    case L2_PROTOCOL_ETHERNET2:
       va_start (ap, 1);
-      struct ether_frame* ether = kmalloc_u (sizeof (struct ether_frame));
-      uint16_t type = va_arg (ap, int);
-      ether = build_ether_frame (ether, mac, type, data, data_size);
-      rtl8139_send_frame (ethernet_to_array (ether, data_size), data_size + ETHER_HEADER_SIZE);
+      send_ethernet_frame (mac, data, data_size, va_arg (ap, int));
       break;
   }
 }
 
-void l2_lower_interface (uint8_t *data, uint32_t size)
+void l2_lower_interface (uint8_t *data, uint32_t size, uint8_t protocol)
 {
-  struct ether_frame *ether = kmalloc_u (sizeof (struct ether_frame));
-  ether = array_to_ethernet (ether, data, size);
-
-  switch (ether->ether_type)
+  switch (protocol)
   {
-    case ETHER_TYPE_IPV4:
-      //l3_lower_interface (ether->source_addr, ether->data, size - ETHER_HEADER_SIZE, L3_PROTOCOL_IPv4);
+    case L2_PROTOCOL_ETHERNET2:
+      recv_ethernet_frame (data, size);
       break;
   }
 }

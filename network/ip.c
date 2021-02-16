@@ -40,7 +40,7 @@ void ip_set_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint32_t 
 	uint8_t cnt = size - 1;
 	for (; i < (offset + size); i++) 
 	{
-		uint8_t byte = i / 8;
+    uint8_t byte = i / 8;
 		uint8_t bit = 7 - (i % 8);
 
 		if ((value >> cnt--) & 1)
@@ -69,45 +69,56 @@ uint32_t ip_get_attr_value (uint8_t* attr, uint32_t offset, uint32_t size)
   return ret;
 }
 
-struct ip_packet* build_ipv4_packet (uint32_t destination_ip, uint8_t* data, uint16_t data_len)
+struct ipv4_packet* build_ipv4_packet (struct ipv4_packet* ip, uint32_t destination_ip, uint8_t* data, uint16_t data_len)
 {
-	return _build_ipv4_packet (4, 5, 127, 0, IPv4_HEADER_SIZE + data_len, 0x1337, 0, 0, 128, 1, rtl8139_device->ip_addr, destination_ip, data);
+	return _build_ipv4_packet (ip, 4, 5, 127, 0, IPv4_HEADER_SIZE + data_len, 0x1337, 0, 0, 128, 1, rtl8139_device->ip_addr, destination_ip, data);
 }
 
-struct ip_packet* _build_ipv4_packet (uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data)
+struct ipv4_packet* _build_ipv4_packet (struct ipv4_packet *ip, uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data)
 {
-	struct ip_packet* ip = (struct ip_packet*)kmalloc_u (sizeof (struct ip_packet));
 	//setting on network order
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_VERSION_OFFSET, IPv4_VERSION_SIZE, version);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_IHL_OFFSET, IPv4_IHL_SIZE, ihl);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_DSCP_OFFSET, IPv4_DSCP_SIZE, dscp);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_ECN_OFFSET, IPv4_ECN_SIZE, ecn);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_TOTAL_LENGTH_OFFSET, IPv4_TOTAL_LENGTH_SIZE, total_length);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_IDENTIFICATION_OFFSET, IPv4_IDENTIFICATION_SIZE, identification);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_FLAGS_OFFSET, IPv4_FLAGS_SIZE, flags);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_FRAGMENT_OFFSET_OFFSET, IPv4_FRAGMENT_OFFSET_SIZE, fragment_offset);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_TIME_TO_LIVE_OFFSET, IPv4_TIME_TO_LIVE_SIZE, time_to_live);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE, protocol);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_SOURCE_IP_ADDRESS_OFFSET, IPv4_SOURCE_IP_ADDRESS_SIZE, source_ip);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_DESTINATION_IP_ADDRESS_OFFSET, IPv4_DESTINATION_IP_ADDRESS_SIZE, destination_ip);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, 0x0);
-	ip_set_attr_value (ip->header.ipv4.ipv4, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, checksum (ip->header.ipv4.ipv4));
-
+	ip_set_attr_value (ip->header, IPv4_VERSION_OFFSET, IPv4_VERSION_SIZE, version);
+	ip_set_attr_value (ip->header, IPv4_IHL_OFFSET, IPv4_IHL_SIZE, ihl);
+	ip_set_attr_value (ip->header, IPv4_DSCP_OFFSET, IPv4_DSCP_SIZE, dscp);
+	ip_set_attr_value (ip->header, IPv4_ECN_OFFSET, IPv4_ECN_SIZE, ecn);
+	ip_set_attr_value (ip->header, IPv4_TOTAL_LENGTH_OFFSET, IPv4_TOTAL_LENGTH_SIZE, total_length);
+	ip_set_attr_value (ip->header, IPv4_IDENTIFICATION_OFFSET, IPv4_IDENTIFICATION_SIZE, identification);
+	ip_set_attr_value (ip->header, IPv4_FLAGS_OFFSET, IPv4_FLAGS_SIZE, flags);
+	ip_set_attr_value (ip->header, IPv4_FRAGMENT_OFFSET_OFFSET, IPv4_FRAGMENT_OFFSET_SIZE, fragment_offset);
+	ip_set_attr_value (ip->header, IPv4_TIME_TO_LIVE_OFFSET, IPv4_TIME_TO_LIVE_SIZE, time_to_live);
+	ip_set_attr_value (ip->header, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE, protocol);
+	ip_set_attr_value (ip->header, IPv4_SOURCE_IP_ADDRESS_OFFSET, IPv4_SOURCE_IP_ADDRESS_SIZE, source_ip);
+	ip_set_attr_value (ip->header, IPv4_DESTINATION_IP_ADDRESS_OFFSET, IPv4_DESTINATION_IP_ADDRESS_SIZE, destination_ip);
+	ip_set_attr_value (ip->header, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, 0x0);
+	ip_set_attr_value (ip->header, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, checksum (ip->header));
   ip->data = data;
 	return ip;
 }
 
-void recv_ipv4_handler (struct ip_packet* ip)
+void recv_ipv4_packet (uint8_t mac[6], uint8_t *data, uint32_t size)
 {
-  //kprintf ("ipv4_destination_addr: %d.%d.%d.%d\n", 4, ip->header.ipv4.ipv4 [12], ip->header.ipv4.ipv4 [13], ip->header.ipv4.ipv4 [14], ip->header.ipv4.ipv4 [15]);
+  kprint ("revc\n");
+  struct ipv4_packet *packet = kmalloc_u (sizeof (struct ipv4_packet));
 
-  //kprintf ("ipv4_source_addr: %d.%d.%d.%d\n", 4, ip->header.ipv4.ipv4 [16], ip->header.ipv4.ipv4 [17], ip->header.ipv4.ipv4 [18], ip->header.ipv4.ipv4 [19]);
+  packet = array_to_ipv4 (packet, data, size);
+
+  switch (ip_get_attr_value (packet, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE))
+  {
+    case 1:
+      kprint ("ICMP RECEIVED\n");
+      //l4_lower_interface ()
+      break;
+  }
+
 }
 
-void send_ipv4_packet (struct ip_packet* ip, uint8_t* mac_dest_addr)
+void send_ipv4_packet (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size)
 {
-  struct ether_frame* frame = l2_interface_send_ethernet2 (ip, mac_dest_addr);
-  send_ether_frame (frame);
+  struct ipv4_packet *packet = kmalloc_u (sizeof (struct ipv4_packet));
+  build_ipv4_packet (packet, ip, data, data_size);
+
+  uint8_t *array = ipv4_to_array (packet, data_size);
+  l2_upper_interface (mac, array, IPv4_HEADER_SIZE + data_size, L2_PROTOCOL_ETHERNET2, ETHER_TYPE_IPv4);
 }
 
 void set_ip_addr (uint32_t ip)
@@ -115,26 +126,20 @@ void set_ip_addr (uint32_t ip)
   rtl8139_device->ip_addr = ip;
 }
 
-uint8_t* ipv4_to_array (struct ipv4_packet* packet)
+uint8_t* ipv4_to_array (struct ipv4_packet *ip_packet, uint32_t data_size)
 {
-  uint8_t total_length = ip_get_attr_value (packet, IPv4_TOTAL_LENGTH_OFFSET, IPv4_TOTAL_LENGTH_SIZE);
-
-  uint8_t* array = kmalloc_u (total_length);
-
-  memcpy (packet->header, array, IPv4_HEADER_SIZE);
-  memcpy (packet->data, array+IPv4_HEADER_SIZE, total_length - IPv4_HEADER_SIZE);
-
+  uint8_t *array = kmalloc_u (data_size + IPv4_HEADER_SIZE);
+  memcpy (ip_packet, array,IPv4_HEADER_SIZE);
+  memcpy (ip_packet->data, array + IPv4_HEADER_SIZE, data_size);
+  
   return array;
 }
 
-struct ipv4_packet* array_to_ipv4 (uint8_t* array, uint32_t size)
+struct ipv4_packet* array_to_ipv4 (struct ipv4_packet* ip_packet, uint8_t* array, uint32_t size)
 {
-  struct ipv4_packet *packet = (struct ipv4_packet *) kmalloc_u (sizeof (struct ipv4_packet));
-  
-  memcpy (array, packet->header, IPv4_HEADER_SIZE);
+  memcpy (array, ip_packet, IPv4_HEADER_SIZE);
+  ip_packet->data = kmalloc_u (size - IPv4_HEADER_SIZE);
+  memcpy (array + IPv4_HEADER_SIZE, ip_packet->data, size - IPv4_HEADER_SIZE);
 
-  packet->data = kmalloc_u (size - IPv4_HEADER_SIZE);
-  memcpy (array + IPv4_HEADER_SIZE, packet->data, size - IPv4_HEADER_SIZE);
-
-  return packet;
+  return ip_packet;
 }

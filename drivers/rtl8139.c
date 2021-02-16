@@ -17,7 +17,7 @@ static void rtl8139_receive_frame ()
   uint16_t pckt_sz = *(pckt_ptr + 1);
   pckt_ptr += 2;
 
-  l2_lower_interface (pckt_ptr, pckt_sz);
+  l2_lower_interface (pckt_ptr, pckt_sz, L2_PROTOCOL_ETHERNET2);
 
   // updating the packet offset
   current_rx_packet = (current_rx_packet + pckt_sz + 4 + 3) & (~3);

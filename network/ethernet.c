@@ -10,27 +10,23 @@ struct ether_frame* build_ether_frame (struct ether_frame *frame, uint8_t dest [
   return frame;
 }
 
-void send_ether_frame (struct ether_frame* frame)
+void send_ethernet_frame (uint8_t mac[6], uint8_t *data, uint32_t data_size, uint16_t type)
 {
-  uint8_t *ether = l1_interface_send_rtl8139 (frame);
-  //rtl8139_send_frame (ether, frame->data_size + ETHER_HEADER_SIZE);
+  struct ether_frame* ether = kmalloc_u (sizeof (struct ether_frame));
+  ether = build_ether_frame (ether, mac, type, data, data_size);
+  rtl8139_send_frame (ethernet_to_array (ether, data_size), data_size + ETHER_HEADER_SIZE);
+
 }
 
-void recv_ether_frame (struct ether_frame* frame)
+void recv_ethernet_frame (uint8_t *data, uint32_t size)
 {
-  //kprintf ("mac_destination_addr: %x:%x:%x:%x:%x:%x\n", 6, frame->destination_addr[0], frame->destination_addr[1],frame->destination_addr[2],frame->destination_addr[3],frame->destination_addr[4],frame->destination_addr[5]);
-
-  //kprintf ("mac_source_addr: %x:%x:%x:%x:%x:%x\n", 6, frame->source_addr[0], frame->source_addr[1],frame->source_addr[2],frame->source_addr[3],frame->source_addr[4],frame->source_addr[5]);
-
-  //ntohs (&(frame->ether_type));
-  //kprintf ("ether_type: %x\n", 1, frame->ether_type);
-
+  struct ether_frame *frame = kmalloc_u (sizeof (struct ether_frame));
+  frame = array_to_ethernet (frame, data, size);
   switch (frame->ether_type)
   {
-    case ETHER_TYPE_IPV4:
+    case ETHER_TYPE_IPv4:
       kprint ("calling ipv4 handler\n");
-      struct ip_packet *ip = l3_interface_recv (frame->data);
-      recv_ipv4_handler (ip);
+      l3_lower_interface (frame->source_addr, frame->data, size - ETHER_HEADER_SIZE, L3_PROTOCOL_IPv4);
       break;
     case ETHER_TYPE_ARP:
       kprint ("calling arp handler\n");
@@ -50,11 +46,11 @@ uint8_t* ethernet_to_array (struct ether_frame *frame, uint32_t data_size)
   return array;
 }
 
-struct ether_frame* array_to_ethernet (struct ether_frame* ether, uint8_t* array, uint32_t size)
+struct ether_frame* array_to_ethernet (struct ether_frame* frame, uint8_t* array, uint32_t size)
 {
-  memcpy (array, ether, ETHER_HEADER_SIZE);
-  ether->data = kmalloc_u (size - ETHER_HEADER_SIZE);
-  memcpy (array + ETHER_HEADER_SIZE, ether->data, size - ETHER_HEADER_SIZE);
+  memcpy (array, frame, ETHER_HEADER_SIZE);
+  frame->data = kmalloc_u (size - ETHER_HEADER_SIZE);
+  memcpy (array + ETHER_HEADER_SIZE, frame->data, size - ETHER_HEADER_SIZE);
 
-  return ether;
+  return frame;
 }
