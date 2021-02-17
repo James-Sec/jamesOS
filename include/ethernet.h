@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <rtl8139.h>
 #include <ip.h>
+#include <l1_interface.h>
 
 // network byte order
 #define ETHER_TYPE_IPv4 0x0008

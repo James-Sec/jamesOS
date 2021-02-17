@@ -32,12 +32,10 @@ static void rtl8139_handler (registers_t *regs)
   uint16_t status = port_word_in ((uint16_t)(rtl8139_device->io_base + 0x3e));
   if(status & (1<<2))
   {
-    kprint("Packet sent\n");
     port_word_out (rtl8139_device->io_base + 0x3E, 0x4);
   }
   if (status & (1<<0))
   {
-    kprint("Packet received\n");
     rtl8139_receive_frame ();
     port_word_out ((uint16_t)(rtl8139_device->io_base + 0x3E), 0x1);
   }

@@ -21,7 +21,7 @@
 #define ARP_THA_SIZE 6
 #define ARP_TPA_SIZE 4
 
-#define ARP_SIZE 28
+#define ARP_HEADER_SIZE 28
 
 #define ARP_TABLE_SIZE 256
 
@@ -43,7 +43,7 @@ struct arp_table_entry arp_table [ARP_TABLE_SIZE];
 uint8_t arp_table_size = 0;
 
 
-struct arp_t* build_arp_packet (uint16_t htype, uint16_t ptype, uint8_t hlen, uint8_t plen, uint16_t oper, uint8_t sha [6], uint8_t* spa, uint8_t tha[6], uint8_t* tpa);
+struct arp_t* build_arp_packet (struct arp_t* arp, uint16_t htype, uint16_t ptype, uint8_t hlen, uint8_t plen, uint16_t oper, uint8_t sha [6], uint8_t* spa, uint8_t tha[6], uint8_t* tpa);
 
 void recv_arp_handler (struct arp_t* arp);
 

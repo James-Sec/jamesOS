@@ -76,10 +76,10 @@ struct ip_packet* l3_interface_recv (uint8_t* packet)
 
 struct icmp4* l3_interface_recv_icmp4 (uint8_t* packet, uint32_t size)
 {
-  struct icmp4 *icmp4_packet = kmalloc (sizeof (struct icmp4));
+  struct icmp4 *icmp4_packet = kmalloc_u (sizeof (struct icmp4));
   memcpy (packet, icmp4_packet, ICMP4_HEADER_SIZE);
 
-  icmp4_packet->data = kmalloc (sizeof (size - ICMP4_HEADER_SIZE));
+  icmp4_packet->data = kmalloc_u (sizeof (size - ICMP4_HEADER_SIZE));
   memcpy (packet + ICMP4_HEADER_SIZE, icmp4_packet->data, size - ICMP4_HEADER_SIZE);
 
   return icmp4_packet;

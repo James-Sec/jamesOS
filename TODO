@@ -1,5 +1,3 @@
-VERIFY IF WE'RE USING KMALLOC_U
-
 NETWORK:
   REFAC ALL NETWORK STACK CODE
     Interfaces, Function responsabilities

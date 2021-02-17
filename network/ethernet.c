@@ -14,7 +14,9 @@ void send_ethernet_frame (uint8_t mac[6], uint8_t *data, uint32_t data_size, uin
 {
   struct ether_frame* ether = kmalloc_u (sizeof (struct ether_frame));
   ether = build_ether_frame (ether, mac, type, data, data_size);
-  rtl8139_send_frame (ethernet_to_array (ether, data_size), data_size + ETHER_HEADER_SIZE);
+
+  uint8_t* ethernet_array = ethernet_to_array (ether, data_size);
+  l1_upper_interface (ethernet_array, data_size + ETHER_HEADER_SIZE, L1_RTL8139_ID);
 
 }
 
