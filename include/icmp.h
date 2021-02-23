@@ -28,8 +28,9 @@ struct icmp4 {
   uint8_t* data;
 };
 
-struct icmp4* build_icmp4_packet (uint8_t type, uint8_t code, uint16_t checksum, uint32_t rest_of_header);
-void send_icmp4_packet (struct icmp4* icmp, uint32_t icmp_size, uint32_t dest_ip, uint8_t dest_mac[6]);
-void recv_icmp4_packet (uint8_t *packet);
+struct icmp4* build_icmp4_packet (struct icmp4* icmp, uint8_t type, uint8_t code, uint16_t checksum, uint32_t rest_of_header);
+void send_icmp4_packet (uint32_t ip, uint8_t mac[6], uint8_t type, uint8_t code, uint32_t rest_of_header, uint8_t *data, uint32_t data_size);
+uint8_t* icmp4_to_array (struct icmp4 *icmp, uint32_t data_size);
+struct icmp4* array_to_icmp4 (struct icmp4* icmp, uint8_t* array, uint32_t size);
 
 #endif

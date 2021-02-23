@@ -2,6 +2,7 @@
 #define L2_INTERFACE_H
 
 #define L2_PROTOCOL_ETHERNET2 0
+#define L2_PROTOCOL_ARP 1
 
 #include <ethernet.h>
 #include <rtl8139.h>

@@ -39,6 +39,7 @@ void recv_ethernet_frame (uint8_t *data, uint32_t size)
       break;
   }
 }
+
 uint8_t* ethernet_to_array (struct ether_frame *frame, uint32_t data_size)
 {
   uint8_t *array = kmalloc_u (data_size + ETHER_HEADER_SIZE);

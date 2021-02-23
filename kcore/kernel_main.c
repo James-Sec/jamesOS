@@ -39,10 +39,14 @@ void entry ()
   create_task (general_task_function, "CAROLINA", READY_TO_RUN);
   asm volatile ("sti");
 
-  uint8_t mac_dest_addr [] = {0x12, 0xa3, 0xab, 0x41, 0x6e, 0x12};
+  /*
 
   uint8_t *james = "JAMES";
   l3_upper_interface (0x05060708, mac_dest_addr, james, 5, L3_PROTOCOL_IPv4);
+  */
 
+  uint8_t mac_dest_addr [] = {0x12, 0xa3, 0xab, 0x41, 0x6e, 0x12};
+  uint8_t *james = "JAMES";
+  l3_upper_interface (0x10101010, mac_dest_addr, james, 5, L3_PROTOCOL_ICMP4, ICMP4_ECHO_REQUEST_TYPE, ICMP4_ECHO_REQUEST_CODE, 0);
   task_termination ();
 }

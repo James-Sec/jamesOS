@@ -66,9 +66,9 @@ uint8_t* l3_interface_send (uint8_t* header, uint32_t header_size, uint8_t* data
 
 struct ip_packet* l3_interface_recv (uint8_t* packet)
 {
-  struct ip_packet *ip = kmalloc_u (sizeof (struct ip_packet));
-  memcpy (packet, ip->header.ipv4.ipv4, IPv4_HEADER_SIZE);
-  uint32_t size = ip_get_attr_value (ip->header.ipv4.ipv4, IPv4_TOTAL_LENGTH_OFFSET, IPv4_TOTAL_LENGTH_SIZE) - IPv4_HEADER_SIZE;
+  struct ipv4_packet *ip = kmalloc_u (sizeof (struct ipv4_packet));
+  memcpy (packet, ip->header, IPv4_HEADER_SIZE);
+  uint32_t size = ip_get_attr_value (ip->header, IPv4_TOTAL_LENGTH_OFFSET, IPv4_TOTAL_LENGTH_SIZE) - IPv4_HEADER_SIZE;
   memcpy (packet + IPv4_HEADER_SIZE, ip->data, size);
 
   return ip;

@@ -2,7 +2,7 @@
 
 static uint16_t checksum (uint8_t* ip)
 {
-	uint32_t sz = sizeof (struct ipv4_header) / 2;
+	uint32_t sz = sizeof (struct ipv4_packet) / 2;
 	uint16_t* arr = (uint16_t*) ip;
 
 	uint32_t i = 0;
@@ -97,16 +97,17 @@ struct ipv4_packet* _build_ipv4_packet (struct ipv4_packet *ip, uint8_t version,
 
 void recv_ipv4_packet (uint8_t mac[6], uint8_t *data, uint32_t size)
 {
-  kprint ("revc\n");
   struct ipv4_packet *packet = kmalloc_u (sizeof (struct ipv4_packet));
-
   packet = array_to_ipv4 (packet, data, size);
-
   switch (ip_get_attr_value (packet, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE))
   {
-    case 1:
+    case IPv4_PROTOCOL_ICMP4:
       kprint ("ICMP RECEIVED\n");
-      //l4_lower_interface ()
+      kprint ("ICMP RECEIVED\n");
+      kprint ("ICMP RECEIVED\n");
+      kprint ("ICMP RECEIVED\n");
+      kprint ("ICMP RECEIVED\n");
+      //recv_icmp_packet();
       break;
   }
 

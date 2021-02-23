@@ -38,24 +38,9 @@
 #define IPv4_SOURCE_IP_ADDRESS_SIZE 32
 #define IPv4_DESTINATION_IP_ADDRESS_SIZE 32
 
-struct ipv4_header {
-	uint8_t ipv4 [20];
-	//uint8_t options [24];
-} __attribute__ ((packed));
-
-struct ipv6_header {
-	uint8_t ipv6 [40];
-} __attribute__ ((packed));
-
-union ip_header {
-	struct ipv4_header ipv4;
-	struct ipv6_header ipv6;
-};
-
-struct ip_packet {
-	union ip_header header;
-	uint8_t *data;
-};
+#define IPv4_PROTOCOL_ICMP4 1
+#define IPv4_PROTOCOL_TCP 6
+#define IPv4_PROTOCOL_UDP 17
 
 struct ipv6_packet
 {
