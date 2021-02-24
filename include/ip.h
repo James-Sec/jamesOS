@@ -42,6 +42,11 @@
 #define IPv4_PROTOCOL_TCP 6
 #define IPv4_PROTOCOL_UDP 17
 
+#define IPv4_VERSION 4
+#define IPv4_IHL 5
+#define IPv4_DSCP_DF 0
+#define IPv4_TTL 64 //see why to use 127
+
 struct ipv6_packet
 {
   uint8_t header[40];
@@ -55,13 +60,14 @@ struct ipv4_packet
 };
 
 
-struct ipv4_packet* build_ipv4_packet (struct ipv4_packet *ip, uint32_t destination_ip, uint8_t* data, uint16_t len);
+struct ipv4_packet* build_ipv4_packet (struct ipv4_packet *ip, uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data);
+
 struct ipv4_packet* _build_ipv4_packet (struct ipv4_packet *ip, uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data);
 
 
 void print_bit_ipv4 (uint8_t* header);
 void recv_ipv4_packet (uint8_t mac[6], uint8_t *data, uint32_t size);
-void send_ipv4_packet (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);
+void send_ipv4_packet (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size, uint8_t dscp, uint8_t ecn, uint8_t protocol);
 
 uint8_t* ipv4_to_array (struct ipv4_packet *ip_packet, uint32_t data_size);
 

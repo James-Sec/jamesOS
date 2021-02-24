@@ -15,11 +15,11 @@ struct icmp4* build_icmp4 (struct icmp4* icmp, uint8_t type, uint8_t code, uint1
 void send_icmp4_packet (uint32_t ip, uint8_t mac[6], uint8_t type, uint8_t code, uint32_t rest_of_header, uint8_t *data, uint32_t data_size)
 {
   struct icmp4 *icmp = kmalloc_u (sizeof (struct icmp4));
-  build_icmp4 (icmp, type, code, 0x790d, rest_of_header, data, data_size);
+  build_icmp4 (icmp, type, code, 0x760d, rest_of_header, data, data_size);
 
   uint8_t *array = icmp4_to_array (icmp, data_size);
 
-  send_ipv4_packet (ip, mac, array, data_size + ICMP4_HEADER_SIZE);
+  send_ipv4_packet (ip, mac, array, data_size + ICMP4_HEADER_SIZE, IPv4_DSCP_DF, 0, IPv4_PROTOCOL_ICMP4);
 }
 
 uint8_t* icmp4_to_array (struct icmp4 *icmp, uint32_t data_size)

@@ -6,7 +6,11 @@ void l3_upper_interface (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t da
   switch (protocol)
   {
     case L3_PROTOCOL_IPv4:
-      send_ipv4_packet (ip, mac, data, data_size);
+      va_start (ap, 3);
+      uint32_t dscp = va_arg (ap, int);
+      uint32_t ecn = va_arg (ap, int);
+      uint8_t protocol = va_arg (ap, int);
+      send_ipv4_packet (ip, mac, data, data_size, dscp, ecn, protocol);
       break;
     case L3_PROTOCOL_ICMP4:
       va_start (ap, 3);
