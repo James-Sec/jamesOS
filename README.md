@@ -17,9 +17,8 @@
   - [Samy Pessé's Tutorial/OS](https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System)
 
 ## BOOKS:
-  - [Sistemas Operacionais: Conceitos e Mecanismos] (http://wiki.inf.ufpr.br/maziero/doku.php?id=socm:start)
-  - [Operating System DesignOperating System Design The Xinu Approach] (https://xinu.cs.purdue.edu/)
-  - [Operating Systems Design and Implementation, 3/E] (https://media.pearsoncmg.com/bc/abp/cs-resources/products/product.html#product,isbn=0131429388)
-  - [Modern Operating Systems] (https://media.pearsoncmg.com/bc/abp/cs-resources/products/product.html#product,isbn=013359162X)
-  - [Structured Computer Organization] (https://media.pearsoncmg.com/bc/abp/cs-resources/products/product.html#product,isbn=0132916525)
-
+  - [Sistemas Operacionais: Conceitos e Mecanismos - Carlos Maziero](http://wiki.inf.ufpr.br/maziero/doku.php?id=socm:start)
+  - [Operating System DesignOperating System Design The Xinu Approach - Douglas Comer](https://xinu.cs.purdue.edu/)
+  - [Operating Systems Design and Implementation, 3/E - Andrew S. Tanenbaum](https://media.pearsoncmg.com/bc/abp/cs-resources/products/product.html#product,isbn=0131429388)
+  - [Modern Operating Systems - Andrew S. Tanenbaum](https://media.pearsoncmg.com/bc/abp/cs-resources/products/product.html#product,isbn=013359162X)
+  - [Structured Computer Organization - Andrew S. Tanenbaum](https://media.pearsoncmg.com/bc/abp/cs-resources/products/product.html#product,isbn=0132916525)
