@@ -4,7 +4,7 @@
   ### qemu-system-i386 
     * Search for your OS.
   ### i686-elf-binutils and i686-elf-gcc 
-    $ cd i686-elf
+    $ cd scripts
     $ ./i686-elf-install.sh BINUTILS-VERSION GCC-VERSION
     
   ### GNU MAKE
