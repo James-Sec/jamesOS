@@ -2,15 +2,15 @@
 
 ## DEPENDENCIES
   ### qemu-system-i386 
-    * Search for your OS.
+     Search for your OS.
   ### i686-elf-binutils and i686-elf-gcc 
     $ cd scripts
     $ ./i686-elf-install.sh BINUTILS-VERSION GCC-VERSION
     
   ### GNU MAKE
-    * Search for your OS.
+     Search for your OS.
   ### NASM
-    * Search for your OS.
+     Search for your OS.
   
 ## MAKE
   * To build:
