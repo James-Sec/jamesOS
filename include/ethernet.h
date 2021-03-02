@@ -63,13 +63,19 @@
 #define ETHER_TYPE_802_1Q 0x0091
 #define ETHER_TYPE_802_1CB 0xC1F1
 
+#define ETHER_DEST_MAC_SIZE 6
+#define ETHER_SOURCE_MAC_SIZE 6
+#define ETHER_TYPE_SIZE 2
+
+#define ETHER_DEST_MAC_OFFSET 0
+#define ETHER_SOURCE_MAC_OFFSET 6
+#define ETHER_TYPE_OFFSET 12
+
 #define ETHER_HEADER_SIZE 14
 
 struct ether_frame
 {
-  uint8_t destination_addr [6];
-  uint8_t source_addr [6];
-  uint16_t ether_type;
+  uint8_t header [14];
   uint8_t *data;
 } __attribute__((packed));
 
@@ -79,5 +85,8 @@ void send_ether_frame (struct ether_frame* frame);
 void recv_ethernet_frame (uint8_t *data, uint32_t size);
 uint8_t* ethernet_to_array (struct ether_frame *frame, uint32_t data_size);
 struct ether_frame * array_to_ethernet (struct ether_frame* ether, uint8_t* array, uint32_t size);
+
+void ethernet_get_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint8_t* ret);
+void ethernet_set_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint8_t* value);
 
 #endif

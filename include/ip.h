@@ -73,4 +73,8 @@ uint8_t* ipv4_to_array (struct ipv4_packet *ip_packet, uint32_t data_size);
 
 struct ipv4_packet* array_to_ipv4 (struct ipv4_packet* ip_packet, uint8_t* array, uint32_t size);
 
+
+uint32_t ip_get_attr_value (uint8_t* attr, uint32_t offset, uint32_t size);
+void ip_set_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint32_t value);
+
 #endif
