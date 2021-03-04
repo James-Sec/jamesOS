@@ -54,3 +54,47 @@ void ntohl (uint32_t* lng)
   htonl (lng);
 }
 
+void set_bits_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint32_t value)
+{
+	uint32_t i = offset;
+	uint8_t cnt = size - 1;
+	for (; i < (offset + size); i++) 
+	{
+    uint8_t byte = i / 8;
+		uint8_t bit = 7 - (i % 8);
+
+		if ((value >> cnt--) & 1)
+			*(attr + byte) |= (1 << bit);
+		else
+			*(attr + byte) &= ~(1 << bit);
+	}
+}
+
+uint32_t get_bits_attr_value (uint8_t* attr, uint32_t offset, uint32_t size)
+{
+  uint32_t ret = 0;
+
+	uint32_t i = offset;
+	uint8_t cnt = size - 1;
+	for (; i < (offset + size); i++)
+	{
+		uint8_t byte = i / 8;
+		uint8_t bit = 7 - (i % 8);
+
+    if ((*(attr + byte) >> bit) & 1)
+      ret |= (1 << cnt--);
+    else
+      cnt--;
+	}
+  return ret;
+}
+
+void get_bytes_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint8_t* ret)
+{
+  memcpy (attr + offset, ret, size);
+}
+
+void set_bytes_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint8_t* value)
+{
+  memcpy (value, attr + offset, size);
+}

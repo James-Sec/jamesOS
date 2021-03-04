@@ -14,5 +14,10 @@ void ntohs (uint16_t* shrt);
 void htonl (uint32_t* lng);
 void ntohl (uint32_t* lng);
 
+void set_bits_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint32_t value);
+uint32_t get_bits_attr_value (uint8_t* attr, uint32_t offset, uint32_t size);
+
+void get_bytes_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint8_t* ret);
+void set_bytes_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint8_t* value);
 
 #endif

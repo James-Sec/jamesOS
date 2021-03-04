@@ -4,10 +4,11 @@ struct icmp4* build_icmp4 (struct icmp4* icmp, uint8_t type, uint8_t code, uint1
 {
   icmp->data = kmalloc_u (data_size);
   memcpy (data, icmp->data, data_size);
-  memcpy (&type, ((uint8_t*)icmp) + ICMP4_TYPE_OFFSET, ICMP4_TYPE_SIZE);
-  memcpy (&code, ((uint8_t*)icmp) + ICMP4_CODE_OFFSET, ICMP4_CODE_SIZE);
-  memcpy (&checksum, ((uint8_t*)icmp) + ICMP4_CHECKSUM_OFFSET, ICMP4_CHECKSUM_SIZE);
-  memcpy (&rest_of_header, ((uint8_t*)icmp) + ICMP4_REST_OF_HEADER_OFFSET, ICMP4_REST_OF_HEADER_SIZE);
+
+  set_bytes_attr_value (icmp->header, ICMP4_TYPE_OFFSET, ICMP4_TYPE_SIZE, &type);
+  set_bytes_attr_value (icmp->header, ICMP4_CODE_OFFSET, ICMP4_CODE_SIZE, &code);
+  set_bytes_attr_value (icmp->header, ICMP4_CHECKSUM_OFFSET, ICMP4_CHECKSUM_SIZE, &checksum);
+  set_bytes_attr_value (icmp->header, ICMP4_REST_OF_HEADER_OFFSET, ICMP4_REST_OF_HEADER_SIZE, &rest_of_header);
 
   return icmp;
 }

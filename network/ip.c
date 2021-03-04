@@ -34,58 +34,23 @@ void print_bit_ipv4 (uint8_t* header)
 	kprint ("\n");
 }
 
-void ip_set_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint32_t value)
-{
-	uint32_t i = offset;
-	uint8_t cnt = size - 1;
-	for (; i < (offset + size); i++) 
-	{
-    uint8_t byte = i / 8;
-		uint8_t bit = 7 - (i % 8);
-
-		if ((value >> cnt--) & 1)
-			*(attr + byte) |= (1 << bit);
-		else
-			*(attr + byte) &= ~(1 << bit);
-	}
-}
-
-uint32_t ip_get_attr_value (uint8_t* attr, uint32_t offset, uint32_t size)
-{
-  uint32_t ret = 0;
-
-	uint32_t i = offset;
-	uint8_t cnt = size - 1;
-	for (; i < (offset + size); i++)
-	{
-		uint8_t byte = i / 8;
-		uint8_t bit = 7 - (i % 8);
-
-    if ((*(attr + byte) >> bit) & 1)
-      ret |= (1 << cnt--);
-    else
-      cnt--;
-	}
-  return ret;
-}
-
 struct ipv4_packet* build_ipv4_packet (struct ipv4_packet *ip, uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data)
 {
 	//setting on network order
-	ip_set_attr_value (ip->header, IPv4_VERSION_OFFSET, IPv4_VERSION_SIZE, version);
-	ip_set_attr_value (ip->header, IPv4_IHL_OFFSET, IPv4_IHL_SIZE, ihl);
-	ip_set_attr_value (ip->header, IPv4_DSCP_OFFSET, IPv4_DSCP_SIZE, dscp);
-	ip_set_attr_value (ip->header, IPv4_ECN_OFFSET, IPv4_ECN_SIZE, ecn);
-	ip_set_attr_value (ip->header, IPv4_TOTAL_LENGTH_OFFSET, IPv4_TOTAL_LENGTH_SIZE, total_length);
-	ip_set_attr_value (ip->header, IPv4_IDENTIFICATION_OFFSET, IPv4_IDENTIFICATION_SIZE, identification);
-	ip_set_attr_value (ip->header, IPv4_FLAGS_OFFSET, IPv4_FLAGS_SIZE, flags);
-	ip_set_attr_value (ip->header, IPv4_FRAGMENT_OFFSET_OFFSET, IPv4_FRAGMENT_OFFSET_SIZE, fragment_offset);
-	ip_set_attr_value (ip->header, IPv4_TIME_TO_LIVE_OFFSET, IPv4_TIME_TO_LIVE_SIZE, time_to_live);
-	ip_set_attr_value (ip->header, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE, protocol);
-	ip_set_attr_value (ip->header, IPv4_SOURCE_IP_ADDRESS_OFFSET, IPv4_SOURCE_IP_ADDRESS_SIZE, source_ip);
-	ip_set_attr_value (ip->header, IPv4_DESTINATION_IP_ADDRESS_OFFSET, IPv4_DESTINATION_IP_ADDRESS_SIZE, destination_ip);
-	ip_set_attr_value (ip->header, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, 0x0);
-	ip_set_attr_value (ip->header, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, checksum (ip->header));
+	set_bits_attr_value (ip->header, IPv4_VERSION_OFFSET, IPv4_VERSION_SIZE, version);
+	set_bits_attr_value (ip->header, IPv4_IHL_OFFSET, IPv4_IHL_SIZE, ihl);
+	set_bits_attr_value (ip->header, IPv4_DSCP_OFFSET, IPv4_DSCP_SIZE, dscp);
+	set_bits_attr_value (ip->header, IPv4_ECN_OFFSET, IPv4_ECN_SIZE, ecn);
+	set_bits_attr_value (ip->header, IPv4_TOTAL_LENGTH_OFFSET, IPv4_TOTAL_LENGTH_SIZE, total_length);
+	set_bits_attr_value (ip->header, IPv4_IDENTIFICATION_OFFSET, IPv4_IDENTIFICATION_SIZE, identification);
+	set_bits_attr_value (ip->header, IPv4_FLAGS_OFFSET, IPv4_FLAGS_SIZE, flags);
+	set_bits_attr_value (ip->header, IPv4_FRAGMENT_OFFSET_OFFSET, IPv4_FRAGMENT_OFFSET_SIZE, fragment_offset);
+	set_bits_attr_value (ip->header, IPv4_TIME_TO_LIVE_OFFSET, IPv4_TIME_TO_LIVE_SIZE, time_to_live);
+	set_bits_attr_value (ip->header, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE, protocol);
+	set_bits_attr_value (ip->header, IPv4_SOURCE_IP_ADDRESS_OFFSET, IPv4_SOURCE_IP_ADDRESS_SIZE, source_ip);
+	set_bits_attr_value (ip->header, IPv4_DESTINATION_IP_ADDRESS_OFFSET, IPv4_DESTINATION_IP_ADDRESS_SIZE, destination_ip);
+	set_bits_attr_value (ip->header, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, 0x0);
+	set_bits_attr_value (ip->header, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, checksum (ip->header));
   ip->data = data;
 	return ip;
 }
@@ -94,7 +59,7 @@ void recv_ipv4_packet (uint8_t mac[6], uint8_t *data, uint32_t size)
 {
   struct ipv4_packet *packet = kmalloc_u (sizeof (struct ipv4_packet));
   packet = array_to_ipv4 (packet, data, size);
-  switch (ip_get_attr_value (packet, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE))
+  switch (get_bits_attr_value (packet, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE))
   {
     case IPv4_PROTOCOL_ICMP4:
       kprint ("ICMP RECEIVED\n");

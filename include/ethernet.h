@@ -1,6 +1,7 @@
 #ifndef ETHERNET_H
 #define ETHERNET_H
 
+#include <network_utils.h>
 #include <stdint.h>
 #include <rtl8139.h>
 #include <ip.h>
