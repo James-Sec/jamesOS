@@ -14,12 +14,10 @@
 
 #define RX_BUFFER_SIZE 0x3000
 
-
 void rtl8139_init ();
 void rtl8139_send_frame (uint8_t* frame, uint32_t size);
 
 struct rtl8139_dev* rtl8139_device;
-
 
 struct rtl8139_dev
 {

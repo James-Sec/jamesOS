@@ -7,7 +7,7 @@
 #include <ip.h>
 #include <l1_interface.h>
 
-// network byte order
+// in memory network byte order, in integer host byte order
 #define ETHER_TYPE_IPv4 0x0008
 #define ETHER_TYPE_ARP 0x0608
 #define ETHER_TYPE_WOL 0x4208

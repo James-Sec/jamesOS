@@ -42,7 +42,7 @@ void entry ()
   uint8_t mac_dest_addr [] = {0xa4,0x63,0xa1,0x53,0x9d,0x6a};
   uint8_t *james = "JAMES";
   l3_upper_interface (0x05060708, mac_dest_addr, james, 5, L3_PROTOCOL_IPv4, IPv4_DSCP_DF, 0, 6);
-  l2_upper_interface (mac_dest_addr, james, 5, L2_PROTOCOL_ETHERNET2, ETHER_TYPE_IPv4);
+  //l2_upper_interface (mac_dest_addr, james, 5, L2_PROTOCOL_ETHERNET2, ETHER_TYPE_IPv4);
 
 
   /*
