@@ -1,14 +1,18 @@
 #include <icmp.h>
 
-struct icmp4* build_icmp4 (struct icmp4* icmp, uint8_t type, uint8_t code, uint16_t checksum, uint32_t rest_of_header, uint8_t *data, uint32_t data_size)
+struct icmp4* build_icmp4 (struct icmp4* icmp, uint8_t type, uint8_t code, uint32_t rest_of_header, uint8_t *data, uint32_t data_size)
 {
   icmp->data = kmalloc_u (data_size);
   memcpy (data, icmp->data, data_size);
 
   set_bytes_attr_value (icmp->header, ICMP4_TYPE_OFFSET, ICMP4_TYPE_SIZE, &type);
   set_bytes_attr_value (icmp->header, ICMP4_CODE_OFFSET, ICMP4_CODE_SIZE, &code);
-  set_bytes_attr_value (icmp->header, ICMP4_CHECKSUM_OFFSET, ICMP4_CHECKSUM_SIZE, &checksum);
   set_bytes_attr_value (icmp->header, ICMP4_REST_OF_HEADER_OFFSET, ICMP4_REST_OF_HEADER_SIZE, &rest_of_header);
+
+  uint16_t checksum = 0;
+  set_bytes_attr_value (icmp->header, ICMP4_CHECKSUM_OFFSET, ICMP4_CHECKSUM_SIZE, &checksum);
+  checksum = internet_checksum (icmp, ICMP4_HEADER_SIZE);
+  set_bytes_attr_value (icmp->header, ICMP4_CHECKSUM_OFFSET, ICMP4_CHECKSUM_SIZE, &checksum);
 
   return icmp;
 }
@@ -16,7 +20,7 @@ struct icmp4* build_icmp4 (struct icmp4* icmp, uint8_t type, uint8_t code, uint1
 void send_icmp4_packet (uint32_t ip, uint8_t mac[6], uint8_t type, uint8_t code, uint32_t rest_of_header, uint8_t *data, uint32_t data_size)
 {
   struct icmp4 *icmp = kmalloc_u (sizeof (struct icmp4));
-  build_icmp4 (icmp, type, code, 0x760d, rest_of_header, data, data_size);
+  build_icmp4 (icmp, type, code, rest_of_header, data, data_size);
 
   uint8_t *array = icmp4_to_array (icmp, data_size);
 

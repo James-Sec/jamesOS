@@ -1,2 +1,28 @@
 THE OS WILL WRITE A `SEMANTIC BIG ENDIAN` NUMBER IN THE MEMORY IN A `LITTLE ENDIAN WAY`.
 MORE GENERICALY THE OS WILL WRITE A `SEMANTIC NETWORK BYTE ORDER` NUMBER IN THE MEMORY IN A `HOST BYTE ORDER`.
+
+little endian
+0xabcdef -> First byte in memory:  0xef
+            Seconf byte in memory: 0xcd
+            Third byte in memory:  0xab
+
+
+************MEMORY GROWS UPWARDS************
+uint8_t array[] = {0x01, 0x02, 0x03, 0x04, 0x05}
+in memory (little endian)           in memory (bit endian) 
+0x05                                        0x05           
+0x04                                        0x04
+0x03                                        0x03
+0x02                                        0x02
+0x01                                        0x01
+
+uint32_t array[] = {0x01020304, 0x00000005}
+in memory (little endian)           in memory (bit endian)
+0x00                                        0x05
+0x00                                        0x00
+0x00                                        0x00
+0x05                                        0x00
+0x01                                        0x04
+0x02                                        0x03
+0x03                                        0x02
+0x04                                        0x01

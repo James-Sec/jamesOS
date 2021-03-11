@@ -98,3 +98,9 @@ void set_bytes_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint8_
 {
   memcpy (value, attr + offset, size);
 }
+
+uint16_t internet_checksum (uint8_t* packet, uint32_t size)
+{
+  return 0;
+}
+

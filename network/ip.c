@@ -1,21 +1,5 @@
 #include <ip.h>
 
-static uint16_t checksum (uint8_t* ip)
-{
-	uint32_t sz = sizeof (struct ipv4_packet) / 2;
-	uint16_t* arr = (uint16_t*) ip;
-
-	uint32_t i = 0;
-	uint32_t ans = 0;
-	for (; i < sz; i++)
-		ans += (((*arr) & 0x00ff) << 8) | (((*arr) & 0xff00) >> 8);
-
-	uint32_t tmp = ans >> 16;
-	ans = ans & 0xffff;
-	ans += tmp;
-	return ~ans;
-}
-
 void print_bit_ipv4 (uint8_t* header)
 {
   uint8_t *i = header;
@@ -50,7 +34,9 @@ struct ipv4_packet* build_ipv4_packet (struct ipv4_packet *ip, uint8_t version, 
 	set_bits_attr_value (ip->header, IPv4_SOURCE_IP_ADDRESS_OFFSET, IPv4_SOURCE_IP_ADDRESS_SIZE, source_ip);
 	set_bits_attr_value (ip->header, IPv4_DESTINATION_IP_ADDRESS_OFFSET, IPv4_DESTINATION_IP_ADDRESS_SIZE, destination_ip);
 	set_bits_attr_value (ip->header, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, 0x0);
-	set_bits_attr_value (ip->header, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, checksum (ip->header));
+
+  uint16_t checksum = internet_checksum (ip->header, IPv4_HEADER_SIZE);
+	set_bits_attr_value (ip->header, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, checksum);
   ip->data = data;
 	return ip;
 }
