@@ -11,7 +11,7 @@ struct icmp4* build_icmp4 (struct icmp4* icmp, uint8_t type, uint8_t code, uint3
 
   uint16_t checksum = 0;
   set_bytes_attr_value (icmp->header, ICMP4_CHECKSUM_OFFSET, ICMP4_CHECKSUM_SIZE, &checksum);
-  checksum = internet_checksum (icmp, ICMP4_HEADER_SIZE);
+  checksum = internet_checksum (icmp->header, ICMP4_HEADER_SIZE, icmp->data, data_size);
   set_bytes_attr_value (icmp->header, ICMP4_CHECKSUM_OFFSET, ICMP4_CHECKSUM_SIZE, &checksum);
 
   return icmp;

@@ -99,8 +99,43 @@ void set_bytes_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint8_
   memcpy (value, attr + offset, size);
 }
 
-uint16_t internet_checksum (uint8_t* packet, uint32_t size)
+uint16_t internet_checksum (uint8_t* header, uint32_t header_size, uint8_t *data, uint32_t data_size)
 {
-  return 0;
-}
+  uint32_t i;
+  uint16_t *header_ptr = (uint16_t*) header;
+  uint32_t sum = 0;
+  uint16_t word;
+  for (i = 0 ; i < (header_size / 2); i++)
+  {
+    word = *(header_ptr + i);
+    ntohs (&word);
+    sum += word;
+  }
 
+  uint16_t *data_ptr = (uint16_t*) data;
+  for (i = 0 ; i < (data_size / 2); i++)
+  {
+    word = *(data_ptr + i);
+    ntohs (&word);
+    sum += word;
+  }
+  if (data_size % 2)
+  {
+    word = data_ptr[data_size / 2] & 0xff;
+    ntohs (&word);
+    sum += word;
+  }
+  uint16_t carry_out;
+  do
+  {
+    carry_out = (sum >> 16) & 0xffff;
+    sum += carry_out;
+  }
+  while (carry_out);
+
+  uint16_t ret;
+  ret = sum;
+  ret = ~ret;
+  htons(&ret);
+  return ret;
+}
