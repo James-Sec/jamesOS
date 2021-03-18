@@ -74,7 +74,7 @@ void unblock_task (uint32_t pid)
   tmp = search_task (pid);
   current_task->state = READY_TO_RUN;
   tmp->state = RUNNING;
-  task_switch (tmp);
+  dispatcher (tmp);
   unlock_irq ();
 }
 
@@ -118,7 +118,7 @@ void scheduler ()
 
   if (!ready_to_run_counter)
   {
-    task_switch (idle_task);
+    dispatcher (idle_task);
     return;
   }
 
@@ -138,7 +138,7 @@ void scheduler ()
       break;
   }
   next->state = RUNNING;
-  task_switch (next);
+  dispatcher (next);
 }
 
 void task_entry ()

@@ -3,7 +3,7 @@ C_SOURCES = $(wildcard kcore/*.c libc/*.c drivers/*.c cpu/*.c multitask/*.c kern
 # header files
 HEADERS = $(wildcard include/*.h)
 # list ofobject files to create
-OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o multitask/task_switch.o libc/print_stack_asm.o} 
+OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o multitask/dispatcher.o libc/print_stack_asm.o} 
 
 # set cross compiler
 CC = i686-elf-gcc 

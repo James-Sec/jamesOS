@@ -4,6 +4,9 @@ network/ICMP:
   GET MAC_ADDR FROM ARP TABLE
   REVIEW "IDENTIFIER" AND "SEQUENCE NUMBER" FIELDS IN ECHO REQUEST/REPLY
 
+network/IP:
+  create a mac/ip checks on distinct functions
+
 network:
   FREE() PACKETS;
   VERIFY WHEN UNLOCK INTERRUPTS.

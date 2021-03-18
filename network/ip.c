@@ -45,18 +45,18 @@ void recv_ipv4_packet (uint8_t mac[6], uint8_t *data, uint32_t size)
 {
   struct ipv4_packet *packet = kmalloc_u (sizeof (struct ipv4_packet));
   packet = array_to_ipv4 (packet, data, size);
-  switch (get_bits_attr_value (packet, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE))
+  uint32_t protocol = get_bits_attr_value (packet, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE);
+  struct icmp4* icmp = kmalloc_u (sizeof (struct icmp4*));
+  uint32_t ip = get_bits_attr_value (packet, IPv4_SOURCE_IP_ADDRESS_OFFSET, IPv4_SOURCE_IP_ADDRESS_SIZE);
+  uint32_t data_size = size - IPv4_HEADER_SIZE;
+  switch (protocol)
   {
     case IPv4_PROTOCOL_ICMP4:
       kprint ("ICMP RECEIVED\n");
-      kprint ("ICMP RECEIVED\n");
-      kprint ("ICMP RECEIVED\n");
-      kprint ("ICMP RECEIVED\n");
-      kprint ("ICMP RECEIVED\n");
-      //recv_icmp_packet();
+      array_to_icmp4 (icmp, packet->data, data_size);
+      recv_icmp4_packet (mac, ip, icmp, data_size);
       break;
   }
-
 }
 
 void send_ipv4_packet (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size, uint8_t dscp, uint8_t ecn, uint8_t protocol)
@@ -87,7 +87,7 @@ uint8_t* ipv4_to_array (struct ipv4_packet *ip_packet, uint32_t data_size)
 
 struct ipv4_packet* array_to_ipv4 (struct ipv4_packet* ip_packet, uint8_t* array, uint32_t size)
 {
-  memcpy (array, ip_packet, IPv4_HEADER_SIZE);
+  memcpy (array, ip_packet->header, IPv4_HEADER_SIZE);
   ip_packet->data = kmalloc_u (size - IPv4_HEADER_SIZE);
   memcpy (array + IPv4_HEADER_SIZE, ip_packet->data, size - IPv4_HEADER_SIZE);
 

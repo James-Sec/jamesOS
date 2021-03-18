@@ -15,9 +15,9 @@ struc TCB
   .SLEEP_UNTIL resd 1
 endstruc
 
-global task_switch
+global dispatcher
 
-task_switch:
+dispatcher:
   ;the c compiler pushes the arguments then "call func"
   ;the (call function) pushes the value of the EIP register
   ;push args (5)
