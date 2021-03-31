@@ -1,6 +1,8 @@
+network/ICMP(bugged):
+  ARP PACKET INSIDE ICMP REPLY DATA
+    probably error on pointer handling on multiple received packets
+
 network/ICMP:
-  ADD RECV FUNCION
-  ADD FUNCTION TO CALCULATE CHECKSUM
   GET MAC_ADDR FROM ARP TABLE
   REVIEW "IDENTIFIER" AND "SEQUENCE NUMBER" FIELDS IN ECHO REQUEST/REPLY
 
