@@ -1,3 +1,12 @@
+network/architecture
+  NETWORK STACK ISN'T FIRING INTERUPT WHEN A MESSAGE ARRIVES, BUT MESSAGES ARE BEING WRITTEN TO MEMORY.
+    scenario: ping after an ARP (ping -I tap0 1.2.3.4)
+
+    hint: create a thread for each message handle
+
+      
+
+
 network/ICMP(bugged):
   ARP PACKET INSIDE ICMP REPLY DATA
     probably error on pointer handling on multiple received packets
