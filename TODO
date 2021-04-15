@@ -3,6 +3,8 @@ network/architecture
     scenario: ping after an ARP (ping -I tap0 1.2.3.4)
 
     hint: create a thread for each message handle
+    function prototype for task entrypoint: *void
+    receive the parametrs in create_task
 
       
 
