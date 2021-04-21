@@ -25,6 +25,7 @@ static struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *
   *(new_task->esp + 2) = 0; //esi
   *(new_task->esp + 3) = 0; //ebx
   *(new_task->esp + 4) = func; //ret
+  *(new_task->esp + 5) = 0; //zeroed parameter
 
   return new_task;
 }
@@ -176,4 +177,12 @@ struct tcb* search_task (uint32_t pid)
     if (it->pid == pid)
       return it;
   return 0;
+}
+
+void add_parameter(struct tcb* task, uint32_t arg, uint32_t size)
+{
+  uint32_t tmp = task->esp;
+  memmov(task->esp, (uint8_t*)task->esp - size, 6 * 4);
+  task->esp = (uint32_t*)(tmp - size);
+  memcpy(&arg, task->esp + 6, size);
 }

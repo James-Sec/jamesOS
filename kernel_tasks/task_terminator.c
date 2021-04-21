@@ -13,14 +13,14 @@ void task_terminator ()
     {
       if (tmp->state == TERMINATED)
       {
-        kprintf ("[%s] exterminating %s...\n",2, current_task->pname, tmp->pname);
+        //kprintf ("[%s] exterminating %s...\n",2, current_task->pname, tmp->pname);
         flag = 1;
         if (tmp == head)
           head = tmp->next_task;
         else
           prev->next_task = tmp->next_task;
         kfree (0x1000, tmp);
-        kprintf ("[%s] done.\n", 1, current_task->pname);
+        //kprintf ("[%s] done.\n", 1, current_task->pname);
         break;
       }
       prev = tmp;

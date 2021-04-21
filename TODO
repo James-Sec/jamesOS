@@ -6,8 +6,12 @@ network/architecture
     function prototype for task entrypoint: *void
     receive the parametrs in create_task
 
-      
-
+multitasking:
+  add_parameter function working
+  the first paramater is always ignored, no matter how much is the number of function parameters (hammered)
+  why?????
+  why?????
+  why?????
 
 network/ICMP(bugged):
   ARP PACKET INSIDE ICMP REPLY DATA

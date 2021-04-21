@@ -4,6 +4,6 @@
 #include <stdint.h>
 #include <multitask.h>
 
-uint8_t general_task_function ();
+uint8_t general_task_function (uint32_t x);
 
 #endif
