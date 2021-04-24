@@ -6,6 +6,14 @@ export TARGET=i686-elf
 export PATH="$PREFIX/bin:$PATH"
 
 #CHECK IF VERSION EXISTS/CORRECT USAGE
+if [ ${#1} -eq 0 ]
+then
+  1=2.36.1
+fi
+if [ ${#2} -eq 0 ]
+then
+  2=10.2.0
+fi
 binutils_file=$(curl -I https://ftp.gnu.org/gnu/binutils/binutils-$1.tar.bz2 | grep "200 OK")
 gcc_file=$(curl -I ftp://ftp.mirrorservice.org/sites/sourceware.org/pub/gcc/releases/gcc-$2/gcc-$2.tar.xz | grep "200 OK")
 if [ ${#binutils_file} -gt 0 ]
@@ -50,4 +58,12 @@ make install-gcc
 make install-target-libgcc
 cd ..
 
-printf "FILES INSTALLED UNDER $PWD/opt/cross/\n"
+#Copying to /opt/i686
+sudo cp -r i686-elf/opt/cross /opt/i686-elf
+
+#cleaning
+printf "PLEASE, ONLY CLEAN IF CP COMMAND WAS SUCCESSFULL\n"
+rm -r -I --one-file-system binutils* build* gcc*
+
+printf "FILES INSTALLED UNDER /opt/i686-elf/\n"
+printf "Please, add /opt/i686-elf/bin to your \$PATH\n"
