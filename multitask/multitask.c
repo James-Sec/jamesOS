@@ -179,10 +179,11 @@ struct tcb* search_task (uint32_t pid)
   return 0;
 }
 
-void add_parameter(struct tcb* task, uint32_t arg, uint32_t size)
+void add_parameter(struct tcb* task, uint8_t *arg, uint32_t size)
 {
   uint32_t tmp = task->esp;
-  memmov(task->esp, (uint8_t*)task->esp - size, 6 * 4);
+  memmov(task->esp, (uint8_t*)task->esp - size, INITIAL_PROCESS_STACK_SIZE * 4);
   task->esp = (uint32_t*)(tmp - size);
-  memcpy(&arg, task->esp + 6, size);
+  memset(task->esp + INITIAL_PROCESS_STACK_SIZE, 0, size);
+  memcpy(arg, task->esp + INITIAL_PROCESS_STACK_SIZE, size);
 }

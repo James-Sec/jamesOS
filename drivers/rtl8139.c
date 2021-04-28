@@ -14,10 +14,17 @@ static void rtl8139_receive_frame ()
 
   // getting packet size
   uint16_t *pckt_ptr = (uint16_t*)(rtl8139_device->rx_buffer + current_rx_packet);
-  uint16_t pckt_sz = *(pckt_ptr + 1);
+  uint32_t pckt_sz = *(pckt_ptr + 1);
   pckt_ptr += 2;
 
-  l2_lower_interface (pckt_ptr, pckt_sz, L2_PROTOCOL_ETHERNET2);
+  // network task handler
+  kprintf("pckt_ptr: %x\n", 1, pckt_ptr);
+  kprintf("pckt_sz: %x\n", 1, pckt_sz);
+  kprint("creating network task handler\n");
+  char name[10] = "NETWORK";
+  struct tcb* network_task = create_task(network_handler, name, READY_TO_RUN);
+  add_parameter(network_task, &pckt_sz, 4);
+  add_parameter(network_task, &pckt_ptr, 4);
 
   // updating the packet offset
   current_rx_packet = (current_rx_packet + pckt_sz + 4 + 3) & (~3);

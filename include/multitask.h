@@ -16,6 +16,8 @@
 #define IDLE 4
 #define TERMINATED 5
 
+#define INITIAL_PROCESS_STACK_SIZE 6
+
 struct tcb
 {
   uint32_t *esp;
@@ -42,6 +44,8 @@ void task_termination ();
 void scheduler () ;
 void lock_irq ();
 void unlock_irq ();
+
+void add_parameter(struct tcb* task, uint8_t *arg, uint32_t size);
 
 // global variables
 struct tcb* current_task;

@@ -8,6 +8,9 @@
 #include <paging.h>
 #include <ethernet.h>
 #include <ip.h>
+#include <multitask.h>
+#include <network_handler_task.h>
+#include <general_task.h>
 
 #define VENDOR_ID 0x10EC 
 #define DEVICE_ID 0x8139
