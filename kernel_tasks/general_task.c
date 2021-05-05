@@ -2,7 +2,6 @@
 
 uint8_t general_task_function (uint32_t x)
 {
-  print_stack_asm(13, 0x1c);
   task_entry ();
   uint8_t i;
   kprintf("PARAMETER: %x\n", 1, x);
@@ -12,6 +11,7 @@ uint8_t general_task_function (uint32_t x)
     sleep (3);
   }
   */
+  while (1);
   task_termination ();
 
 }

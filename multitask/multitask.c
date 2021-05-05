@@ -139,6 +139,7 @@ void scheduler ()
       break;
   }
   next->state = RUNNING;
+  kprintf ("selecting task %s\n", 1, next->pname);
   dispatcher (next);
 }
 

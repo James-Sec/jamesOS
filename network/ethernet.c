@@ -23,10 +23,15 @@ void send_ethernet_frame (uint8_t mac[6], uint8_t *data, uint32_t data_size, uin
 
 void recv_ethernet_frame (uint8_t *data, uint32_t size)
 {
+  int i;
+  for (i = 0; i < size; i++)
+    kprintf ("%x ", 1, *(data + i));
+  while (1);
   struct ether_frame *frame = kmalloc_u (sizeof (struct ether_frame));
   frame = array_to_ethernet (frame, data, size);
   uint16_t ether_type;
   get_bytes_attr_value (frame->header, ETHER_TYPE_OFFSET, ETHER_TYPE_SIZE, &ether_type);
+
   switch (ether_type)
   {
     case ETHER_TYPE_IPv4:

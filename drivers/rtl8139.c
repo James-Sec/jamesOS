@@ -20,6 +20,7 @@ static void rtl8139_receive_frame ()
   // network task handler
   kprintf("pckt_ptr: %x\n", 1, pckt_ptr);
   kprintf("pckt_sz: %x\n", 1, pckt_sz);
+
   kprint("creating network task handler\n");
   char name[10] = "NETWORK";
   struct tcb* network_task = create_task(network_handler, name, READY_TO_RUN);
@@ -32,6 +33,7 @@ static void rtl8139_receive_frame ()
 
   // 0x38 == CAPR(CURRENT ADDRESS PACKET READ) PORT
   port_word_out (rtl8139_device->io_base + 0x38, current_rx_packet - 0x10);
+  kprint ("exiting rtl_receive_frame()\n");
 }
 
 static void rtl8139_handler (registers_t *regs)
