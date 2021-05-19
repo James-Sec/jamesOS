@@ -32,7 +32,7 @@ struct tcb
 }__attribute__ ((packed));
 
 // global functions
-struct tcb* create_task (uint8_t (*func) (void), char *pname, uint8_t state);
+struct tcb* create_task (uint8_t (*func) (void), char *pname, uint8_t state, uint32_t argc, uint8_t *argp);
 struct tcb* search_task (uint32_t pid);
 void multitask_init ();
 void print_task (struct tcb*);
@@ -40,12 +40,12 @@ void unblock_task (uint32_t pid);
 void block_task (uint8_t reason);
 void sleep (uint32_t ticks);
 void task_entry ();
-void task_termination ();
+void task_termination (uint32_t argc, uint8_t *argp);
 void scheduler () ;
 void lock_irq ();
 void unlock_irq ();
 
-void add_parameter(struct tcb* task, uint8_t *arg, uint32_t size);
+//void add_parameter(struct tcb* task, uint8_t *arg, uint32_t size);
 
 // global variables
 struct tcb* current_task;

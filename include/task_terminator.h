@@ -4,6 +4,6 @@
 #include <multitask.h>
 #include <paging.h>
 
-void task_terminator ();
+void task_terminator (uint32_t argc, uint8_t* argp);
 
 #endif

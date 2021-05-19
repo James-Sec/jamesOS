@@ -35,9 +35,8 @@ void entry ()
   asm volatile ("cli");
   multitask_init ();
 
-  struct tcb* anderson = create_task (general_task_function, "ANDERSON", READY_TO_RUN);
-  uint32_t x = 37;
-  add_parameter(anderson, &x, 4);
+  //struct tcb* anderson = create_task (general_task_function, "ANDERSON", READY_TO_RUN, 7, 11);
+  //add_parameter(anderson, &x, 4);
   //create_task (general_task_function, "CAROLINA", READY_TO_RUN);
   asm volatile ("sti");
 
@@ -51,5 +50,5 @@ void entry ()
   uint8_t *james = "JAMES";
   l3_upper_interface (0x0a0a0a0a, mac_dest_addr, james, 5, L3_PROTOCOL_ICMP4, ICMP4_ECHO_REQUEST_TYPE, ICMP4_ECHO_REQUEST_CODE, 0x01000200);
   */
-  task_termination ();
+  task_termination (0, 0);
 }

@@ -70,7 +70,7 @@ static void fill (uint32_t begin, uint32_t size, uint8_t value)
 
 }
 
-void kfree (uint32_t size, uint32_t addr)
+void kfree (uint32_t addr, uint32_t size)
 {
   uint32_t byte = (uint32_t)addr;
   fill (byte, size, 0);

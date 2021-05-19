@@ -8,15 +8,18 @@ static void pit_callback (registers_t *regs)
   if (multitasking_on)
   {
     struct tcb* x = head;
+    uint32_t flag = 0;
     do
     {
       if (x->state == SLEEPING && x->sleep_until < tick)
         unblock_task (x->pid);
+      if (x->state == READY_TO_RUN)
+        ++flag;
       x = x->next_task;
     }
     while (x);
 
-    if (!(tick % 99) && current_task->pid != 0) {
+    if (!(tick % 99) && flag) {
       lock_irq ();
       scheduler ();
       unlock_irq ();

@@ -13,7 +13,7 @@
 #define HEAP_LIMIT 0x171000
 
 void kheap_init ();
-void kfree (uint32_t size, uint32_t addr);
+void kfree (uint32_t addr, uint32_t size);
 uint32_t kmalloc (uint32_t sz);
 uint32_t kmalloc_u (uint32_t sz);
 

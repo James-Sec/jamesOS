@@ -168,15 +168,8 @@ static void page_fault_handler (registers_t* regs)
   if (!present) kprint_debug ("page not present\n", LIGHT_GREEN);
   if (rw) kprint_debug ("page is read only\n", LIGHT_GREEN);
   if (user) kprint_debug ("page is read only\n", LIGHT_GREEN);
-  // it should not be commented (just for test)
-  // kprint_debug ("halting...", LIGHT_GREEN);
-  //asm volatile ("cli");
-  //asm volatile ("hlt");
-
-  // just for test (it will generate only three page faults)
-  static int t = 0; 
-  t++;
-  while (1);
-  if (t == 3) 
-    alloc_frame (get_page (faulting_addr, 1, kernel_directory), 0, 0);
+  
+   kprint_debug ("halting...", LIGHT_GREEN);
+  asm volatile ("cli");
+  asm volatile ("hlt");
 }

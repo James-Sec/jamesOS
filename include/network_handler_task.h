@@ -4,6 +4,6 @@
 #include <stdint.h>
 #include <l2_interface.h>
 
-void network_handler();
+void network_handler(uint32_t argc, uint8_t* argp);
 
 #endif
