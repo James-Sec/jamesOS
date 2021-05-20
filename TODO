@@ -1,17 +1,17 @@
+network/
+  REVIEW KFREE
+  after a while of receiving packets the system hangs and do  not reboot
+  increasing number of mapped pages causes to page fault on a mapped one
+  ?
+
 network/architecture
-  NETWORK STACK ISN'T FIRING INTERUPT WHEN A MESSAGE ARRIVES, BUT MESSAGES ARE BEING WRITTEN TO MEMORY.
+  NETWORK STACK ISN'T FIRING INTERUPT WHEN THE FIRST? MESSAGE ARRIVES, BUT MESSAGES ARE BEING WRITTEN TO MEMORY.
+    ONLY IN SPECIF CASES WHICH ARE UNKNOWN UNTIL THIS DATE
     scenario: ping after an ARP (ping -I tap0 1.2.3.4)
 
     hint: create a thread for each message handle
     function prototype for task entrypoint: *void
     receive the parametrs in create_task
-
-multitasking:
-  add_parameter function working
-  the first paramater is always ignored, no matter how much is the number of function parameters (hammered)
-  why?????
-  why?????
-  why?????
 
 network/ICMP(bugged):
   ARP PACKET INSIDE ICMP REPLY DATA
