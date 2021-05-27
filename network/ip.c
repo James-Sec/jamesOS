@@ -46,17 +46,18 @@ void recv_ipv4_packet (uint8_t mac[6], uint8_t *data, uint32_t size)
   struct ipv4_packet *packet = kmalloc_u (sizeof (struct ipv4_packet));
   packet = array_to_ipv4 (packet, data, size);
   uint32_t protocol = get_bits_attr_value (packet, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE);
-  struct icmp4* icmp = kmalloc_u (sizeof (struct icmp4*));
   uint32_t ip = get_bits_attr_value (packet, IPv4_SOURCE_IP_ADDRESS_OFFSET, IPv4_SOURCE_IP_ADDRESS_SIZE);
   uint32_t data_size = size - IPv4_HEADER_SIZE;
   switch (protocol)
   {
     case IPv4_PROTOCOL_ICMP4:
       kprint ("ICMP RECEIVED\n");
-      array_to_icmp4 (icmp, packet->data, data_size);
-      recv_icmp4_packet (mac, ip, icmp, data_size);
+      //recv_icmp4_packet (mac, ip, packet->data, data_size);
       break;
   }
+
+  kfree (packet->data, data_size);
+  kfree (packet, IPv4_HEADER_SIZE);
 }
 
 void send_ipv4_packet (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size, uint8_t dscp, uint8_t ecn, uint8_t protocol)
@@ -69,6 +70,9 @@ void send_ipv4_packet (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
 
   uint8_t *array = ipv4_to_array (packet, data_size);
   l2_upper_interface (mac, array, IPv4_HEADER_SIZE + data_size, L2_PROTOCOL_ETHERNET2, ETHER_TYPE_IPv4);
+
+  kfree (packet, sizeof (struct ipv4_packet));
+  kfree (array, IPv4_HEADER_SIZE + data_size);
 }
 
 void set_ip_addr (uint32_t ip)

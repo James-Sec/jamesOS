@@ -19,13 +19,12 @@ void send_ethernet_frame (uint8_t mac[6], uint8_t *data, uint32_t data_size, uin
   uint8_t* ethernet_array = ethernet_to_array (ether, data_size);
   l1_upper_interface (ethernet_array, data_size + ETHER_HEADER_SIZE, L1_RTL8139_ID);
 
+  kfree (ether, sizeof (struct ether_frame));
+  kfree (ethernet_array, ETHER_HEADER_SIZE + data_size);
 }
 
 void recv_ethernet_frame (uint8_t *data, uint32_t size)
 {
-  int i;
-  for (i = 0; i < size; i++)
-    kprintf ("%x ", 1, *(data + i));
   struct ether_frame *frame = kmalloc_u (sizeof (struct ether_frame));
   frame = array_to_ethernet (frame, data, size);
   uint16_t ether_type;
@@ -47,12 +46,15 @@ void recv_ethernet_frame (uint8_t *data, uint32_t size)
       kprint ("undefined protocol\n");
       break;
   }
+
+  kfree (frame->data, size - ETHER_HEADER_SIZE);
+  kfree (frame, ETHER_HEADER_SIZE);
 }
 
 uint8_t* ethernet_to_array (struct ether_frame *frame, uint32_t data_size)
 {
   uint8_t *array = kmalloc_u (data_size + ETHER_HEADER_SIZE);
-  memcpy (frame, array,ETHER_HEADER_SIZE);
+  memcpy (frame, array, ETHER_HEADER_SIZE);
   memcpy (frame->data, array + ETHER_HEADER_SIZE, data_size);
   
   return array;

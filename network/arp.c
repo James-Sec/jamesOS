@@ -28,6 +28,7 @@ static void send_arp_reply (struct arp_t* arp)
   build_arp_packet (new_arp, 0x0100, 0x0008, 6, 4, 0x0200, &rtl8139_device->mac_addr, &arp->header[ARP_TPA_OFFSET], &arp->header[ARP_SHA_OFFSET], &arp->header[ARP_SPA_OFFSET]);
 
   send_ethernet_frame (&new_arp->header[ARP_THA_OFFSET], new_arp, ARP_HEADER_SIZE, ETHER_TYPE_ARP);
+  kfree ((uint8_t*)new_arp, sizeof (struct arp_t));
 }
 
 void send_arp_request (uint32_t ip)
@@ -47,6 +48,7 @@ void send_arp_request (uint32_t ip)
   build_arp_packet (new_arp, 0x0100, 0x0800, 6, 4, 0x0200, rtl8139_device->mac_addr,sip, 0, dip);
 
   send_ethernet_frame (&new_arp->header[ARP_THA_OFFSET], new_arp, ARP_HEADER_SIZE, ETHER_TYPE_ARP);
+  kfree ((uint8_t*)new_arp, sizeof (struct arp_t));
 }
 
 static void recv_arp_request (struct arp_t* arp)
@@ -63,7 +65,7 @@ static void recv_arp_request (struct arp_t* arp)
 
     if (target_ip == rtl8139_device->ip_addr)
     {
-			update_arp_table (arp);
+      update_arp_table (arp);
       send_arp_reply (arp);
     }
   }

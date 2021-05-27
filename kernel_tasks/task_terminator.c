@@ -9,11 +9,12 @@ void task_terminator (uint32_t argc, uint8_t *argp)
   {
     uint8_t flag = 0;
     tmp = head;
+    lock_irq();
     while (tmp)
     {
       if (tmp->state == TERMINATED)
       {
-        //kprintf ("[%s] exterminating %s...\n",2, current_task->pname, tmp->pname);
+        kprintf ("[%s (%x)] exterminating %s (%x)...\n", 4, current_task->pname, current_task, tmp->pname, tmp);
         flag = 1;
         if (tmp == head)
           head = tmp->next_task;
@@ -26,7 +27,8 @@ void task_terminator (uint32_t argc, uint8_t *argp)
       prev = tmp;
       tmp = tmp->next_task;
     }
-    if (!flag)
-      sleep (10);
+    unlock_irq();
+    if (!flag);
+      //sleep (2);
   }
 }

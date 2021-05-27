@@ -35,9 +35,17 @@ void entry ()
   asm volatile ("cli");
   multitask_init ();
 
-  //struct tcb* anderson = create_task (general_task_function, "ANDERSON", READY_TO_RUN, 7, 11);
-  //add_parameter(anderson, &x, 4);
-  //create_task (general_task_function, "CAROLINA", READY_TO_RUN);
+  /*
+  uint8_t* argp = kmalloc_u(4);
+  *argp = 0x321;
+  struct tcb* anderson = create_task (general_task_function, "ANDERSON", READY_TO_RUN, 4, argp);
+
+  uint8_t* b = kmalloc_u(4);
+  *b = 37;
+  struct tcb* carolina = create_task (general_task_function, "CAROLINA", READY_TO_RUN, 4, b);
+  */
+
+
   asm volatile ("sti");
 
   /*

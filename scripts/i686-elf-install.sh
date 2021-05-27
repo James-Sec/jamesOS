@@ -5,21 +5,23 @@ export PREFIX="$PWD/i686-elf/opt/cross"
 export TARGET=i686-elf
 export PATH="$PREFIX/bin:$PATH"
 
+binutils_ver=$1
+gcc_ver=$gcc_ver
 #CHECK IF VERSION EXISTS/CORRECT USAGE
 if [ ${#1} -eq 0 ]
 then
-  1=2.36.1
+  binutils_ver="2.36.1"
 fi
 if [ ${#2} -eq 0 ]
 then
-  2=10.2.0
+  gcc_ver="10.2.0"
 fi
-binutils_file=$(curl -I https://ftp.gnu.org/gnu/binutils/binutils-$1.tar.bz2 | grep "200 OK")
-gcc_file=$(curl -I ftp://ftp.mirrorservice.org/sites/sourceware.org/pub/gcc/releases/gcc-$2/gcc-$2.tar.xz | grep "200 OK")
+binutils_file=$(curl -I https://ftp.gnu.org/gnu/binutils/binutils-$binutils_ver.tar.bz2 | grep "200 OK")
+gcc_file=$(curl -I ftp://ftp.mirrorservice.org/sites/sourceware.org/pub/gcc/releases/gcc-$gcc_ver/gcc-$gcc_ver.tar.xz | grep "200 OK")
 if [ ${#binutils_file} -gt 0 ]
 then
   # DOWNLOADING BINUTILS
-  wget https://ftp.gnu.org/gnu/binutils/binutils-$1.tar.bz2 -O binutils-$1.tar.bz2
+  wget https://ftp.gnu.org/gnu/binutils/binutils-$binutils_ver.tar.bz2 -O binutils-$binutils_ver.tar.bz2
   printf "Binutils downloaded successfully\n"
 else
   printf "Could not get the binutils file\n"
@@ -29,7 +31,7 @@ fi
 if [ ${#binutils_file} -gt 0 ]
 then
   # DOWNLOADING GCC
-  wget ftp://ftp.mirrorservice.org/sites/sourceware.org/pub/gcc/releases/gcc-$2/gcc-$2.tar.xz -O gcc-$2.tar.xz
+  wget ftp://ftp.mirrorservice.org/sites/sourceware.org/pub/gcc/releases/gcc-$gcc_ver/gcc-$gcc_ver.tar.xz -O gcc-$gcc_ver.tar.xz
   printf "Gcc downloaded successfully\n"
 else
   printf "Could not get the gcc file\n"
@@ -38,20 +40,20 @@ else
 fi
 
 #BUILDING BINUTILS
-tar -jxvf binutils-$1.tar.bz2
+tar -jxvf binutils-$binutils_ver.tar.bz2
 mkdir build-binutils
 cd build-binutils
-../binutils-$1/configure --target=$TARGET --prefix="$PREFIX" --with-sysroot --disable-nls --disable-werror
+../binutils-$binutils_ver/configure --target=$TARGET --prefix="$PREFIX" --with-sysroot --disable-nls --disable-werror
 make
 make install
 cd ..
 
 #BUILDING GCC
-tar -xvf gcc-$2.tar.xz
+tar -xvf gcc-$gcc_ver.tar.xz
 which -- $TARGET-as || echo $TARGET-as is not in the PATH
 mkdir build-gcc
 cd build-gcc
-../gcc-$2/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --enable-languages=c,c++ --without-headers
+../gcc-$gcc_ver/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --enable-languages=c,c++ --without-headers
 make all-gcc
 make all-target-libgcc
 make install-gcc

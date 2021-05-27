@@ -73,7 +73,8 @@ static void fill (uint32_t begin, uint32_t size, uint8_t value)
 void kfree (uint32_t addr, uint32_t size)
 {
   uint32_t byte = (uint32_t)addr;
-  fill (byte, size, 0);
+  uint32_t tmp = (byte - HEAP_BASE);
+  fill (tmp, size, 0);
 }
 
 void print_bit_map (uint32_t size)

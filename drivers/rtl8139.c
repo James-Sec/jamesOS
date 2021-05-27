@@ -7,6 +7,7 @@ uint8_t TSD_array[4] = {0x10, 0x14, 0x18, 0x1C};
 uint32_t current_rx_packet;
 
 
+int JAAAAAAMES = 0;
 static void rtl8139_receive_frame ()
   // specific implementation for test
 {
@@ -17,16 +18,14 @@ static void rtl8139_receive_frame ()
   uint32_t pckt_sz = *(pckt_ptr + 1);
   pckt_ptr += 2;
 
-  // network task handler
-  kprintf("pckt_ptr: %x\n", 1, *(pckt_ptr + 3));
-  kprintf("pckt_sz: %x\n", 1, pckt_sz);
-
   kprint("creating network task handler\n");
   char name[10] = "NETWORK";
   uint8_t *argp = kmalloc_u (pckt_sz);
   memcpy (pckt_ptr, argp, pckt_sz);
 
+  kprintf("ARGP HEAP: %x\n", 1, argp);
   struct tcb* network_task = create_task(network_handler, name, READY_TO_RUN, pckt_sz, argp);
+  kprintf("NETWORK_TASK_ADDR: %x\n", 1, network_task);
 
   // updating the packet offset
   current_rx_packet = (current_rx_packet + pckt_sz + 4 + 3) & (~3);
@@ -35,6 +34,7 @@ static void rtl8139_receive_frame ()
   // 0x38 == CAPR(CURRENT ADDRESS PACKET READ) PORT
   port_word_out (rtl8139_device->io_base + 0x38, current_rx_packet - 0x10);
   kprint ("exiting rtl_receive_frame()\n");
+  kprintf ("JAAAMES: %x\n", 1, ++JAAAAAAMES);
 }
 
 static void rtl8139_handler (registers_t *regs)
