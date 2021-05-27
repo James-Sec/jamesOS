@@ -6,7 +6,7 @@ export TARGET=i686-elf
 export PATH="$PREFIX/bin:$PATH"
 
 binutils_ver=$1
-gcc_ver=$gcc_ver
+gcc_ver=$2
 #CHECK IF VERSION EXISTS/CORRECT USAGE
 if [ ${#1} -eq 0 ]
 then
