@@ -1,11 +1,5 @@
-kheap/
-  first task beign created after 0x7000 bytes from KHEAP_BASE
-  new tasks beign created with a 0x3000 bytes difference
-  uncomment main code that create ANDERSON and CAROLINA tasks and see the magic :(
-
 network/
   enabling the protocol stack to run it raises a page fault after a while of arping
-  the page where the task is beign created do not increase, so... how the fuck
 
 network/architecture
   NETWORK STACK ISN'T FIRING INTERUPT WHEN THE FIRST? MESSAGE ARRIVES, BUT MESSAGES ARE BEING WRITTEN TO MEMORY.

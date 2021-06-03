@@ -25,6 +25,7 @@ void send_ethernet_frame (uint8_t mac[6], uint8_t *data, uint32_t data_size, uin
 
 void recv_ethernet_frame (uint8_t *data, uint32_t size)
 {
+  kprintf ("sizeof (ether_frame): %x\n", 1, sizeof (struct ether_frame));
   struct ether_frame *frame = kmalloc_u (sizeof (struct ether_frame));
   frame = array_to_ethernet (frame, data, size);
   uint16_t ether_type;
@@ -48,7 +49,7 @@ void recv_ethernet_frame (uint8_t *data, uint32_t size)
   }
 
   kfree (frame->data, size - ETHER_HEADER_SIZE);
-  kfree (frame, ETHER_HEADER_SIZE);
+  kfree (frame, sizeof (struct ether_frame));
 }
 
 uint8_t* ethernet_to_array (struct ether_frame *frame, uint32_t data_size)
@@ -63,6 +64,7 @@ uint8_t* ethernet_to_array (struct ether_frame *frame, uint32_t data_size)
 struct ether_frame* array_to_ethernet (struct ether_frame* frame, uint8_t* array, uint32_t size)
 {
   memcpy (array, frame, ETHER_HEADER_SIZE);
+  kprintf ("size - ETHER_HEADER_SIZE: %x\n", 1, size - ETHER_HEADER_SIZE);
   frame->data = kmalloc_u (size - ETHER_HEADER_SIZE);
   memcpy (array + ETHER_HEADER_SIZE, frame->data, size - ETHER_HEADER_SIZE);
 

@@ -52,12 +52,12 @@ void recv_ipv4_packet (uint8_t mac[6], uint8_t *data, uint32_t size)
   {
     case IPv4_PROTOCOL_ICMP4:
       kprint ("ICMP RECEIVED\n");
-      //recv_icmp4_packet (mac, ip, packet->data, data_size);
+      recv_icmp4_packet (mac, ip, packet->data, data_size);
       break;
   }
 
   kfree (packet->data, data_size);
-  kfree (packet, IPv4_HEADER_SIZE);
+  kfree (packet, sizeof (struct ipv4_packet));
 }
 
 void send_ipv4_packet (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size, uint8_t dscp, uint8_t ecn, uint8_t protocol)

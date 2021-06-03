@@ -10,12 +10,16 @@ uint32_t kheap_enable = 0;
 
 uint32_t kmalloc_u (uint32_t sz)
 {
-  return _kmalloc (sz, 0);
+  uint32_t tmp =  _kmalloc (sz, 0);
+  kprintf ("kmallocing %x bytes on %x\n", 2, sz, tmp);
+  return tmp;
 }
 
 uint32_t kmalloc (uint32_t sz)
 {
-  return _kmalloc (sz, 1);
+  uint32_t tmp =  _kmalloc (sz, 1);
+  kprintf ("kmallocing %x bytes on %x\n", 2, sz, tmp);
+  return tmp;
 }
 
 void kheap_init ()
@@ -72,6 +76,7 @@ static void fill (uint32_t begin, uint32_t size, uint8_t value)
 
 void kfree (uint32_t addr, uint32_t size)
 {
+  kprintf ("kfreeing %x bytes on %x\n", 2, size, addr);
   uint32_t byte = (uint32_t)addr;
   uint32_t tmp = (byte - HEAP_BASE);
   fill (tmp, size, 0);

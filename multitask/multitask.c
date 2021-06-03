@@ -10,7 +10,7 @@ static struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *
 {
   struct tcb *new_task = (struct tcb*) kmalloc_u (0x1000);
   new_task->ebp = ((uint32_t)new_task + 0x1000 - 4);
-  new_task->esp = new_task->ebp - 6;
+  new_task->esp = new_task->ebp - 7;
   new_task->page_dir = page_dir;
   new_task->next_task = next_task;
   new_task->pid = pid;
@@ -20,8 +20,8 @@ static struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *
   memcpy (pname, new_task->pname, 32);
 
   //organizing the stack
-  *(new_task->esp + 7) = argp; //argc
-  *(new_task->esp + 6) = argc; //argp
+  *(new_task->esp + 7) = argp; //argp
+  *(new_task->esp + 6) = argc; //argc
   *(new_task->esp + 5) = 0; // zeroed
   *(new_task->esp + 4) = func; //ret
   *(new_task->esp + 3) = 0; //ebx
@@ -29,6 +29,7 @@ static struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *
   *(new_task->esp + 1) = 0; //edi
   *(new_task->esp) = new_task->ebp; //ebp
 
+  kprintf ("%s argp: %x\n", 2, new_task->pname, *(new_task->esp + 7));
   return new_task;
 }
   

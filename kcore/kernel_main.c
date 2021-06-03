@@ -35,20 +35,21 @@ void entry ()
   asm volatile ("cli");
   multitask_init ();
 
+  
   /*
-  uint8_t* argp = kmalloc_u(4);
-  *argp = 0x321;
-  struct tcb* anderson = create_task (general_task_function, "ANDERSON", READY_TO_RUN, 4, argp);
-
+  kprint ("creating carolina\n");
   uint8_t* b = kmalloc_u(4);
   *b = 37;
   struct tcb* carolina = create_task (general_task_function, "CAROLINA", READY_TO_RUN, 4, b);
-  */
 
+  kprint ("creating anderson\n");
+  uint8_t* argp = kmalloc_u(4);
+  *argp = 0x7;
+  struct tcb* anderson = create_task (general_task_function, "ANDERSON", READY_TO_RUN, 4, argp);
 
+  //kprintf ("carolina argp: %x, anderson argp: %x\n", 2, );
   asm volatile ("sti");
 
-  /*
   uint8_t mac_dest_addr [] = {0xa4,0x63,0xa1,0x53,0x9d,0x6a};
   uint8_t *james = "JAMES";
   l3_upper_interface (0x05060708, mac_dest_addr, james, 5, L3_PROTOCOL_IPv4, IPv4_DSCP_DF, 0, 6);

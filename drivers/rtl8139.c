@@ -20,10 +20,10 @@ static void rtl8139_receive_frame ()
 
   kprint("creating network task handler\n");
   char name[10] = "NETWORK";
+  kprintf ("pckt_sz: %d\n", 1, pckt_sz);
   uint8_t *argp = kmalloc_u (pckt_sz);
   memcpy (pckt_ptr, argp, pckt_sz);
 
-  kprintf("ARGP HEAP: %x\n", 1, argp);
   struct tcb* network_task = create_task(network_handler, name, READY_TO_RUN, pckt_sz, argp);
   kprintf("NETWORK_TASK_ADDR: %x\n", 1, network_task);
 
