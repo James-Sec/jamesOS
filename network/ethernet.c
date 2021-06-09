@@ -14,11 +14,13 @@ struct ether_frame* build_ether_frame (struct ether_frame *frame, uint8_t dest [
 void send_ethernet_frame (uint8_t mac[6], uint8_t *data, uint32_t data_size, uint16_t type)
 {
   struct ether_frame* ether = kmalloc_u (sizeof (struct ether_frame));
+  ether->data = kmalloc_u (data_size);
   ether = build_ether_frame (ether, mac, type, data, data_size);
 
   uint8_t* ethernet_array = ethernet_to_array (ether, data_size);
   l1_upper_interface (ethernet_array, data_size + ETHER_HEADER_SIZE, L1_RTL8139_ID);
 
+  kfree (ether->data, data_size);
   kfree (ether, sizeof (struct ether_frame));
   kfree (ethernet_array, ETHER_HEADER_SIZE + data_size);
 }

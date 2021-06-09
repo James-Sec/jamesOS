@@ -1,11 +1,13 @@
-network/
-  enabling the protocol stack to run it raises a page fault after a while of arping
+network/icmp
+  recv are in the old format, the function is completly bugged
+
+network/architecture
+  after a while of receiving packets the OS simply reset or freeze
 
 network/architecture
   NETWORK STACK ISN'T FIRING INTERUPT WHEN THE FIRST? MESSAGE ARRIVES, BUT MESSAGES ARE BEING WRITTEN TO MEMORY.
     ONLY IN SPECIF CASES WHICH ARE UNKNOWN UNTIL THIS DATE
     scenario: ping after an ARP (ping -I tap0 1.2.3.4)
-
     hint: create a thread for each message handle
     function prototype for task entrypoint: *void
     receive the parametrs in create_task

@@ -20,11 +20,16 @@ struct icmp4* build_icmp4 (struct icmp4* icmp, uint8_t type, uint8_t code, uint3
 void send_icmp4_packet (uint32_t ip, uint8_t mac[6], uint8_t type, uint8_t code, uint32_t rest_of_header, uint8_t *data, uint32_t data_size)
 {
   struct icmp4 *icmp = kmalloc_u (sizeof (struct icmp4));
+  icmp->data = kmalloc_u (data_size);
   build_icmp4 (icmp, type, code, rest_of_header, data, data_size);
 
   uint8_t *array = icmp4_to_array (icmp, data_size);
 
   send_ipv4_packet (ip, mac, array, data_size + ICMP4_HEADER_SIZE, IPv4_DSCP_DF, 0, IPv4_PROTOCOL_ICMP4);
+
+  kfree (icmp->data, data_size);
+  kfree (icmp, sizeof (struct icmp4));
+  kfree (array, ICMP4_HEADER_SIZE + data_size);
 }
 
 void recv_icmp4_packet (uint8_t mac[6], uint32_t ip, struct icmp4* icmp, uint32_t size)
@@ -53,6 +58,8 @@ void recv_icmp4_packet (uint8_t mac[6], uint32_t ip, struct icmp4* icmp, uint32_
       send_icmp4_packet (ip, mac, ICMP4_ECHO_REPLY_TYPE, ICMP4_ECHO_REPLY_CODE, rest_of_header, data, size);
       break;
   }
+  kfree (icmp->data, data_size);
+  //kfree (icmp, sizeof (struct icmp4));
 }
 
 uint8_t* icmp4_to_array (struct icmp4 *icmp, uint32_t data_size)
