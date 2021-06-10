@@ -18,7 +18,7 @@ void print_bit_ipv4 (uint8_t* header)
 	kprint ("\n");
 }
 
-struct ipv4_packet* build_ipv4_packet (struct ipv4_packet *ip, uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data)
+struct ipv4_packet* build_ipv4_packet (struct ipv4_packet *ip, uint8_t version, uint8_t ihl, uint8_t dscp, uint8_t ecn, uint16_t total_length, uint16_t identification, uint8_t flags, uint16_t fragment_offset, uint8_t time_to_live, uint8_t protocol, uint32_t source_ip, uint32_t destination_ip, uint8_t* data, uint32_t data_size)
 {
 	//setting on network order
 	set_bits_attr_value (ip->header, IPv4_VERSION_OFFSET, IPv4_VERSION_SIZE, version);
@@ -37,22 +37,23 @@ struct ipv4_packet* build_ipv4_packet (struct ipv4_packet *ip, uint8_t version, 
 
   uint16_t checksum = internet_checksum (ip->header, IPv4_HEADER_SIZE, 0, 0);
 	set_bits_attr_value (ip->header, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, checksum);
-  ip->data = data;
+  memcpy (data, ip->data, data_size);
 	return ip;
 }
 
 void recv_ipv4_packet (uint8_t mac[6], uint8_t *data, uint32_t size)
 {
   struct ipv4_packet *packet = kmalloc_u (sizeof (struct ipv4_packet));
-  packet = array_to_ipv4 (packet, data, size);
+  array_to_ipv4 (packet, data, size);
   uint32_t protocol = get_bits_attr_value (packet, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE);
   uint32_t ip = get_bits_attr_value (packet, IPv4_SOURCE_IP_ADDRESS_OFFSET, IPv4_SOURCE_IP_ADDRESS_SIZE);
   uint32_t data_size = size - IPv4_HEADER_SIZE;
+
   switch (protocol)
   {
     case IPv4_PROTOCOL_ICMP4:
       kprint ("ICMP RECEIVED\n");
-      //recv_icmp4_packet (mac, ip, packet->data, data_size);
+      recv_icmp4_packet (mac, ip, packet->data, data_size);
       break;
   }
 
@@ -67,7 +68,7 @@ void send_ipv4_packet (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
   uint16_t identification = 0;
   uint8_t flags = 0;
   uint16_t fragment_offset = 0;
-  build_ipv4_packet (packet, IPv4_VERSION, IPv4_IHL, dscp, ecn, data_size + IPv4_HEADER_SIZE, identification, flags, fragment_offset, IPv4_TTL, protocol, rtl8139_device->ip_addr, ip, data);
+  build_ipv4_packet (packet, IPv4_VERSION, IPv4_IHL, dscp, ecn, data_size + IPv4_HEADER_SIZE, identification, flags, fragment_offset, IPv4_TTL, protocol, rtl8139_device->ip_addr, ip, data, data_size);
 
   uint8_t *array = ipv4_to_array (packet, data_size);
   l2_upper_interface (mac, array, IPv4_HEADER_SIZE + data_size, L2_PROTOCOL_ETHERNET2, ETHER_TYPE_IPv4);

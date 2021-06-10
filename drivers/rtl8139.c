@@ -15,7 +15,7 @@ static void rtl8139_receive_frame ()
 
   // getting packet size
   uint16_t *pckt_ptr = (uint16_t*)(rtl8139_device->rx_buffer + current_rx_packet);
-  uint32_t pckt_sz = *(pckt_ptr + 1);
+  uint32_t pckt_sz = *(pckt_ptr + 1) - 4;
   pckt_ptr += 2;
 
   kprint("creating network task handler\n");
@@ -28,6 +28,7 @@ static void rtl8139_receive_frame ()
   kprintf("NETWORK_TASK_ADDR: %x\n", 1, network_task);
 
   // updating the packet offset
+  pckt_sz += 4;
   current_rx_packet = (current_rx_packet + pckt_sz + 4 + 3) & (~3);
   current_rx_packet %= RX_BUFFER_SIZE;
 

@@ -101,10 +101,10 @@ void set_bytes_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint8_
 
 uint16_t internet_checksum (uint8_t* header, uint32_t header_size, uint8_t *data, uint32_t data_size)
 {
-  uint32_t i;
+  uint32_t i = 0;
   uint16_t *header_ptr = (uint16_t*) header;
   uint32_t sum = 0;
-  uint16_t word;
+  uint16_t word = 0;
   for (i = 0 ; i < (header_size / 2); i++)
   {
     word = *(header_ptr + i);
@@ -125,17 +125,14 @@ uint16_t internet_checksum (uint8_t* header, uint32_t header_size, uint8_t *data
     ntohs (&word);
     sum += word;
   }
-  uint16_t carry_out;
+  uint16_t carry_out = 0;
   do
   {
     carry_out = (sum >> 16) & 0xffff;
+    sum &= 0xffff;
     sum += carry_out;
   }
   while (carry_out);
 
-  uint16_t ret;
-  ret = sum;
-  ret = ~ret;
-  htons(&ret);
-  return ret;
+  return ~sum;
 }

@@ -1,20 +1,7 @@
-network/icmp
-  recv are in the old format, the function is completly bugged
-
 network/architecture
   after a while of receiving packets the OS simply reset or freeze
 
-network/architecture
-  NETWORK STACK ISN'T FIRING INTERUPT WHEN THE FIRST? MESSAGE ARRIVES, BUT MESSAGES ARE BEING WRITTEN TO MEMORY.
-    ONLY IN SPECIF CASES WHICH ARE UNKNOWN UNTIL THIS DATE
-    scenario: ping after an ARP (ping -I tap0 1.2.3.4)
-    hint: create a thread for each message handle
-    function prototype for task entrypoint: *void
-    receive the parametrs in create_task
-
-network/ICMP(bugged):
-  ARP PACKET INSIDE ICMP REPLY DATA
-    probably error on pointer handling on multiple received packets
+network/UDP?
 
 network/ICMP:
   GET MAC_ADDR FROM ARP TABLE
@@ -22,10 +9,6 @@ network/ICMP:
 
 network/IP:
   create a mac/ip checks on distinct functions
-
-network:
-  FREE() PACKETS;
-  VERIFY WHEN UNLOCK INTERRUPTS.
 
 network/ARP:
   ADD ARP TABLE ENTRY WHEN WE RECEIVE A PACKET FROM AN UNKNOWN HOST
