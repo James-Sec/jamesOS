@@ -26,7 +26,7 @@ init_pm:
   mov gs, ax
 
   ; realocating stack
-  mov ebp, 0x90000 
+  mov ebp, 0xf00000 
   mov esp, ebp
 
   call begin_pm

@@ -5,9 +5,10 @@ void task_terminator (uint32_t argc, uint8_t *argp)
   task_entry ();
   struct tcb* tmp;
   struct tcb* prev;
+  uint8_t flag = 0;
   while (1)
   {
-    uint8_t flag = 0;
+    flag = 0;
     tmp = head;
     lock_irq();
     while (tmp)
@@ -28,7 +29,7 @@ void task_terminator (uint32_t argc, uint8_t *argp)
       tmp = tmp->next_task;
     }
     unlock_irq();
-    if (!flag);
-      //sleep (2);
+    if (!flag)
+      sleep (5);
   }
 }

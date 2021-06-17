@@ -3,11 +3,10 @@
 
 uint8_t TSAD_array[4] = {0x20, 0x24, 0x28, 0x2C};
 uint8_t TSD_array[4] = {0x10, 0x14, 0x18, 0x1C};
+uint32_t full_size = 0;
 
 uint32_t current_rx_packet;
 
-
-int JAAAAAAMES = 0;
 static void rtl8139_receive_frame ()
   // specific implementation for test
 {
@@ -15,27 +14,37 @@ static void rtl8139_receive_frame ()
 
   // getting packet size
   uint16_t *pckt_ptr = (uint16_t*)(rtl8139_device->rx_buffer + current_rx_packet);
-  uint32_t pckt_sz = *(pckt_ptr + 1) - 4;
+  uint32_t pckt_sz = *(pckt_ptr + 1);
+  full_size += pckt_sz;
+  kprintf ("full_size: %d\n", 1, full_size);
   pckt_ptr += 2;
 
-  kprint("creating network task handler\n");
-  char name[10] = "NETWORK";
-  kprintf ("pckt_sz: %d\n", 1, pckt_sz);
-  uint8_t *argp = kmalloc_u (pckt_sz);
-  memcpy (pckt_ptr, argp, pckt_sz);
+  if (pckt_sz > 200 || pckt_sz < 4)
+  {
+    kprint_debug ("SIZE ALERT: ", BLACK | RED);
+    kprintf ("%d, pckt_ptr: %x\n", 2, pckt_sz, pckt_ptr);
+  }
+  else
+  {
+    kprintf ("&pckt_ptr: %x\n", 1, &pckt_ptr);
+    pckt_sz -= 4;
+    kprint("creating network task handler\n");
+    char name[10] = "NETWORK";
+    kprintf ("pckt_sz: %d\n", 1, pckt_sz);
+    uint8_t *argp = kmalloc_u (pckt_sz);
+    memcpy (pckt_ptr, argp, pckt_sz);
 
-  struct tcb* network_task = create_task(network_handler, name, READY_TO_RUN, pckt_sz, argp);
-  kprintf("NETWORK_TASK_ADDR: %x\n", 1, network_task);
+    struct tcb* network_task = create_task(network_handler, name, READY_TO_RUN, pckt_sz, argp);
+    kprintf("NETWORK_TASK_ADDR: %x\n", 1, network_task);
 
-  // updating the packet offset
-  pckt_sz += 4;
-  current_rx_packet = (current_rx_packet + pckt_sz + 4 + 3) & (~3);
-  current_rx_packet %= RX_BUFFER_SIZE;
-
+    // updating the packet offset
+    pckt_sz += 4;
+    current_rx_packet = (current_rx_packet + pckt_sz + 4 + 3) & (~3);
+    current_rx_packet %= RX_BUFFER_SIZE;
+  }
   // 0x38 == CAPR(CURRENT ADDRESS PACKET READ) PORT
   port_word_out (rtl8139_device->io_base + 0x38, current_rx_packet - 0x10);
   kprint ("exiting rtl_receive_frame()\n");
-  kprintf ("JAAAMES: %x\n", 1, ++JAAAAAAMES);
 }
 
 static void rtl8139_handler (registers_t *regs)
@@ -86,7 +95,7 @@ void rtl8139_init ()
   port_byte_out ((uint16_t)(rtl8139_device->io_base + 0x37), 0x10);
   while (port_byte_in ((uint16_t)(rtl8139_device->io_base + 0x37)) & 0x10);
 
-  rtl8139_device->rx_buffer = (uint8_t*) virtual2phys (kernel_directory, kmalloc_u (8192 + 0x1000));
+  rtl8139_device->rx_buffer = (uint8_t*) virtual2phys (kernel_directory, kmalloc (8192 + 0x1000));
   memset (rtl8139_device->rx_buffer, 0, 8192 + 0x1000);
   port_dword_out ((uint16_t)(rtl8139_device->io_base + 0x30), (uint32_t)rtl8139_device->rx_buffer);
 

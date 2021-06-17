@@ -119,6 +119,7 @@ void scheduler ()
 {
   struct tcb* next;
 
+  kprintf ("ready_to_run: %d\n", 1, ready_to_run_counter);
   if (!ready_to_run_counter)
   {
     dispatcher (idle_task);

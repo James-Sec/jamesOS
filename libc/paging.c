@@ -79,7 +79,7 @@ void paging_init () {
   current_directory = kernel_directory;
 
   int i = 0;
-  while (i <= HEAP_LIMIT) 
+  while (i <= 0xf00000) 
   {
     alloc_page (get_page (i, 1, kernel_directory), 0, 0);
     i += 0x1000;
