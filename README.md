@@ -42,3 +42,4 @@
   - [James Molloy's Tutorial](http://www.jamesmolloy.co.uk/tutorial_html)
   - [szhou42's OS](https://github.com/szhou42/osdev)
   - [Samy Pessé's Tutorial/OS](https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System)
+  - [Minirighi](http://minirighi.sourceforge.net/html/index.html)

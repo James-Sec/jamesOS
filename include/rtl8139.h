@@ -15,7 +15,7 @@
 #define VENDOR_ID 0x10EC 
 #define DEVICE_ID 0x8139
 
-#define RX_BUFFER_SIZE 0x3000
+#define RX_BUFFER_SIZE 0x2010
 
 void rtl8139_init ();
 void rtl8139_send_frame (uint8_t* frame, uint32_t size);
@@ -31,5 +31,9 @@ struct rtl8139_dev
   uint32_t ip_addr;
   uint8_t *rx_buffer;
   uint8_t tx_cur;
+  uint32_t rx_cur;
 };
+
+uint16_t RTL8139_BUS;
+uint8_t RTL8139_DEVICE;
 #endif

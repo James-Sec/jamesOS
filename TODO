@@ -1,12 +1,10 @@
-network/architecture
-  after a while of receiving packets the OS simply reset or freeze
-  something deterministic is happen. The stack adrress is something around 0x128000 (it should be an address of a task) and the full size of packets received is something around 7770, 7834
-  test to do: reset the ring buffer after a while
-
 interrupts:
   interrupt process is using the stack of the previous task (it's a good idea to use the "0xf00000" stack;
 
 network/UDP?
+
+network:
+  stack is overflowing when too many tasks
 
 network/ICMP:
   GET MAC_ADDR FROM ARP TABLE
