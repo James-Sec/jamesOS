@@ -30,7 +30,7 @@
 
 struct arp_t
 {
-  uint8_t header [28];
+  uint8_t header [ARP_HEADER_SIZE];
 };
 
 struct arp_table_entry {

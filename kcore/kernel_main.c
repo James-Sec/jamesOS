@@ -12,6 +12,7 @@
 #include <ip.h>
 #include <arp.h>
 #include <icmp.h>
+#include <udp.h>
 #include <l2_interface.h>
 #include <l3_interface.h>
 #include <network_utils.h>
@@ -66,6 +67,24 @@ void entry ()
   uint16_t y = internet_checksum(h, 8, d, 56);
   kprintf ("CHECKSUM: %x\n", 1, y);
   */
+
+  uint8_t mac_dest_addr [] = {0xa0,0x0f,0x70,0xf4,0xa9,0x8b};
+  struct udp_segment *udp = kmalloc_u (sizeof (struct udp_segment));
+
+  udp->data = kmalloc_u (50);
+  uint8_t *j = "jamesjamesjamesjamesjamesjamesjamesjamesjamesjame\n";
+
+  uint16_t port = 5555;
+  uint16_t size =  UDP_HEADER_SIZE + 50;
+  htons (&port);
+  htons (&size);
+  build_udp_segment (udp, port, port, size, j, 50);
+
+
+  uint8_t *array = udp_to_array (udp, 50);
+
+
+ l3_upper_interface (0xc0a80001, mac_dest_addr, array, UDP_HEADER_SIZE + 50, L3_PROTOCOL_IPv4, IPv4_DSCP_DF, 0, IPv4_PROTOCOL_UDP);
 
   task_termination (0, 0);
 }

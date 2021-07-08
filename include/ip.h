@@ -9,6 +9,7 @@
 
 #define IPv4_DATA_MAX_LENGTH 65515
 #define IPv4_HEADER_SIZE 20
+#define IPv6_HEADER_SIZE 60
 
 #define IPv4_VERSION_OFFSET 0
 #define IPv4_IHL_OFFSET 4
@@ -49,13 +50,13 @@
 
 struct ipv6_packet
 {
-  uint8_t header[40];
+  uint8_t header[IPv6_HEADER_SIZE];
   uint8_t *data;
 };
 
 struct ipv4_packet 
 {
-  uint8_t header[20];
+  uint8_t header[IPv4_HEADER_SIZE];
   uint8_t *data;
 };
 

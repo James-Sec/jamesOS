@@ -76,7 +76,7 @@
 
 struct ether_frame
 {
-  uint8_t header [14];
+  uint8_t header [ETHER_HEADER_SIZE];
   uint8_t *data;
 } __attribute__((packed));
 
