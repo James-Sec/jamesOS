@@ -9,7 +9,7 @@ little endian
 
 ************MEMORY GROWS UPWARDS************
 uint8_t array[] = {0x01, 0x02, 0x03, 0x04, 0x05}
-in memory (little endian)           in memory (bit endian) 
+in memory (little endian)           in memory (big endian) 
 0x05                                        0x05           
 0x04                                        0x04
 0x03                                        0x03
@@ -17,7 +17,7 @@ in memory (little endian)           in memory (bit endian)
 0x01                                        0x01
 
 uint32_t array[] = {0x01020304, 0x00000005}
-in memory (little endian)           in memory (bit endian)
+in memory (little endian)           in memory (big endian)
 0x00                                        0x05
 0x00                                        0x00
 0x00                                        0x00

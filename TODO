@@ -1,26 +1,14 @@
-network/UDP?
-
-network:
-  stack is overflowing when too many tasks
-
-interrupts:
-  interrupt process is using the stack of the previous task (it's a good idea to use the "0xf00000" stack;
-
-network/ICMP:
-  GET MAC_ADDR FROM ARP TABLE
-  REVIEW "IDENTIFIER" AND "SEQUENCE NUMBER" FIELDS IN ECHO REQUEST/REPLY
-
-network/IP:
-  create a mac/ip checks on distinct functions
+network/UDP
+  create port table and verification
 
 network/ARP:
   ADD ARP TABLE ENTRY WHEN WE RECEIVE A PACKET FROM AN UNKNOWN HOST
 
+network:
+  GET MAC_ADDR FROM ARP TABLE
+  stack is overflowing when too many tasks
+    interrupt process is using the stack of the previous task (it's a good idea to use the "0xf00000" stack;
+
 network/IP:
+  create a mac/ip checks on distinct functions
   FRAGMENTATION
-
-drivers/pit:
-  ADD GET_TIME FUNCTION
-
-review:
-  "BABY STEP" TUTORIAL

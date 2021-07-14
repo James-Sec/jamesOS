@@ -6,6 +6,7 @@
 #include <vga.h>
 #include <ethernet.h>
 #include <l2_interface.h>
+#include <l4_interface.h>
 
 #define IPv4_DATA_MAX_LENGTH 65515
 #define IPv4_HEADER_SIZE 20
