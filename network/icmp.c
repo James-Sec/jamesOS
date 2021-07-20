@@ -40,24 +40,9 @@ void recv_icmp4_packet (uint8_t mac[6], uint32_t ip, uint8_t* data, uint32_t siz
   uint32_t rest_of_header = 0;
   get_bytes_attr_value (icmp->header, ICMP4_REST_OF_HEADER_OFFSET, ICMP4_REST_OF_HEADER_SIZE, &rest_of_header);
 
-  kprintf("icmp4 HEADER: %x\n", 1, ICMP4_HEADER_SIZE);
-  kprintf("icmp4 DATA: %x\n", 1, size - ICMP4_HEADER_SIZE);
-
-
-  /*
-  kprint("header: ");
-  for (int i = 0; i < ICMP4_HEADER_SIZE; i++)
-    kprintf ("%x ", 1, icmp->header[i]);
-  kprint("\ndata: ");
-  for (int i = 0; i < (size - ICMP4_HEADER_SIZE); i++)
-    kprintf ("%x ", 1, icmp->data[i]);
-  kprint("\n");
-  */
-
   switch (type)
   {
     case ICMP4_ECHO_REQUEST_TYPE:
-      kprint ("sending echo reply...\n");
       send_icmp4_packet (ip, mac, ICMP4_ECHO_REPLY_TYPE, ICMP4_ECHO_REPLY_CODE, rest_of_header, icmp->data, size - ICMP4_HEADER_SIZE);
       break;
   }

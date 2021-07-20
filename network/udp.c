@@ -31,7 +31,10 @@ void recv_udp_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
   struct udp_segment *segment = kmalloc_u (sizeof (struct udp_segment));
   array_to_udp (segment, data, data_size);
 
-  kprintf ("UDP MESSAGE RECEIVED: %s\n", 1, segment->data);
+  uint16_t port;
+  get_bytes_attr_value (segment->header, UDP_DESTINATION_PORT_OFFSET, UDP_DESTINATION_PORT_SIZE, &port);
+  ntohs(&port);
+  forward_segment_to_process (port, segment->data, data_size - UDP_HEADER_SIZE);
 
   kfree (segment->data, data_size - UDP_HEADER_SIZE);
   kfree (segment, sizeof (struct udp_segment));
@@ -52,4 +55,30 @@ uint8_t* udp_to_array (struct udp_segment *udp, uint32_t data_size)
   memcpy (udp->data, array + UDP_HEADER_SIZE, data_size);
 
   return array;
+}
+
+void forward_segment_to_process (uint16_t port, uint8_t* data, uint32_t data_size)
+{
+  if (!udp_port_table [port].pid)
+    return;
+  memcpy(data, udp_port_table [port].data, data_size);
+  soft_unblock_task (udp_port_table [port].pid);
+}
+
+void udp_port_bind (uint16_t port, uint8_t* data)
+{
+  if (udp_port_table [port].pid)
+    return;
+  udp_port_table [port].data = data;
+  udp_port_table [port].pid = current_task->pid;
+}
+
+void udp_port_unbind (uint16_t port)
+{
+  udp_port_table [port].pid = 0;
+}
+
+void task_receive_udp (uint8_t* data)
+{
+  block_task (BLOCKED);
 }

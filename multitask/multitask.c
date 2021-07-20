@@ -29,7 +29,6 @@ static struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *
   *(new_task->esp + 1) = 0; //edi
   *(new_task->esp) = new_task->ebp; //ebp
 
-  kprintf ("%s argp: %x\n", 2, new_task->pname, *(new_task->esp + 7));
   return new_task;
 }
   
@@ -119,7 +118,7 @@ void scheduler ()
 {
   struct tcb* next;
 
-  kprintf ("ready_to_run: %d\n", 1, ready_to_run_counter);
+  kprintf ("ready_to_run: %d, current: %s\n", 2, ready_to_run_counter, current_task->pname);
   if (!ready_to_run_counter)
   {
     dispatcher (idle_task);
@@ -148,7 +147,6 @@ void scheduler ()
 
 void task_entry ()
 {
-  kprintf ("[%s] started.\n", 1, current_task->pname);
   unlock_irq ();
 }
 
@@ -186,13 +184,12 @@ struct tcb* search_task (uint32_t pid)
   return 0;
 }
 
-  /*
-void add_parameter(struct tcb* task, uint8_t *arg, uint32_t size)
+void soft_unblock_task (uint32_t pid)
 {
-  uint32_t tmp = task->esp;
-  memmov(task->esp, (uint8_t*)task->esp - size, INITIAL_PROCESS_STACK_SIZE * 4);
-  task->esp = (uint32_t*)(tmp - size);
-  memset(task->esp + INITIAL_PROCESS_STACK_SIZE, 0, size);
-  memcpy(arg, task->esp + INITIAL_PROCESS_STACK_SIZE, size);
+  lock_irq ();
+  ++ready_to_run_counter;
+  struct tcb *tmp;
+  tmp = search_task (pid);
+  tmp->state = READY_TO_RUN;
+  unlock_irq ();
 }
-  */

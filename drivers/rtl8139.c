@@ -8,29 +8,18 @@ static void rtl8139_reset ();
 // specific implementation for test
 static void rtl8139_receive_frame ()
 {
-  kprint_debug ("frame received, handling...\n", LIGHT_BLUE);
-
   // getting packet size
   uint8_t *pckt_ptr = (uint8_t*)(rtl8139_device->rx_buffer + rtl8139_device->rx_cur);
   uint16_t pckt_sz = *(uint16_t*)(pckt_ptr + 2);
   uint16_t STATUS = *((uint16_t*)pckt_ptr);
 
-  kprintf ("rtl8139_device->rx_cur % : %d\n", 1, (rtl8139_device->rx_cur));
   pckt_ptr += 4;
   pckt_sz -= 4;
 
-  kprintf ("STATUS: %x\n", 1, STATUS);
-  kprint("STATUS: ");
-  for (int8_t i = 15; i >= 0; i--)
-    kprintf("%d ", 1, (STATUS >> i) & 1);
-  kprint("\n");
-
-  kprint("creating network task handler\n");
   char name[10] = "NETWORK";
   uint8_t *argp = kmalloc_u (pckt_sz);
   memcpy (pckt_ptr, argp, pckt_sz);
   struct tcb* network_task = create_task(network_handler, name, READY_TO_RUN, pckt_sz, argp);
-  kprintf("NETWORK_TASK_ADDR: %x\n", 1, network_task);
 
   // updating the packet offset
   pckt_sz += 4;
@@ -39,8 +28,6 @@ static void rtl8139_receive_frame ()
 
   // 0x38 == CAPR(CURRENT ADDRESS PACKET READ) PORT
   port_word_out (rtl8139_device->io_base + 0x38, rtl8139_device->rx_cur - 0x10);
-
-  kprint ("exiting rtl_receive_frame()\n");
 }
 
 static void rtl8139_handler (registers_t *regs)

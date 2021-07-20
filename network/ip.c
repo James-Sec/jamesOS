@@ -52,7 +52,6 @@ void recv_ipv4_packet (uint8_t mac[6], uint8_t *data, uint32_t size)
   switch (protocol)
   {
     case IPv4_PROTOCOL_ICMP4:
-      kprint ("ICMP RECEIVED\n");
       recv_icmp4_packet (mac, ip, packet->data, data_size);
       break;
     case IPv4_PROTOCOL_UDP:

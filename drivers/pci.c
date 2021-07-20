@@ -42,17 +42,14 @@ void pci_get_device (uint16_t vendor_id, uint16_t device_id, uint16_t *bus, uint
       {
         *bus = i;
         *device = j;
-        kprint ("device found\n");
         return;
       }
     }
   }
-  kprint ("no device found\n");
 }
 
 void pci_brute () 
 {
-  kprint ("BRUTING PCI DEVICES\n");
   int i, j;
   for (i = 0; i < 256; i++) {
     for (j = 0; j < 32; j++) {
@@ -71,5 +68,4 @@ void pci_brute ()
       }
     }
   }
-  kprint ("DONE\n");
 }

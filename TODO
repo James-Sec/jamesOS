@@ -1,8 +1,12 @@
-network/UDP
-  create port table and verification
+network/UDP:
+  BUG:
+    When the third message arrives, after sending 2 messages at the same time the second one isn`t process, is causes the os to process the second one and so on
 
 network/ARP:
   ADD ARP TABLE ENTRY WHEN WE RECEIVE A PACKET FROM AN UNKNOWN HOST
+
+network:
+  check every function error return code
 
 network:
   GET MAC_ADDR FROM ARP TABLE

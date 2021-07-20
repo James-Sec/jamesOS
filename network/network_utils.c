@@ -44,8 +44,6 @@ void htonl (uint32_t* lng)
 	tmp += (0x0000ff00 & *lng) << 8;
 	tmp += (0x000000ff & *lng) << 24;
 
-	kprintf ("tmp: %x\n", 1, tmp);
-
 	*lng = tmp;
 }
 

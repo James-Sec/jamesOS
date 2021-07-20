@@ -35,13 +35,11 @@ void recv_ethernet_frame (uint8_t *data, uint32_t size)
   switch (ether_type)
   {
     case ETHER_TYPE_IPv4:
-      kprint ("calling ipv4 handler\n");
-      uint8_t source_addr[6];
+      ;uint8_t source_addr[6];
       get_bytes_attr_value (frame, ETHER_SOURCE_MAC_OFFSET, ETHER_SOURCE_MAC_SIZE, source_addr);
       l3_lower_interface (source_addr, frame->data, size - ETHER_HEADER_SIZE, L3_PROTOCOL_IPv4);
       break;
     case ETHER_TYPE_ARP:
-      kprint ("calling arp handler\n");
       recv_arp_handler ((struct arp_t*) frame->data);
       break;
     default:

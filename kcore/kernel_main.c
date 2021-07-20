@@ -96,5 +96,20 @@ void entry ()
   l3_upper_interface (0x1e1e1e1e, mac_dest_addr, array, UDP_HEADER_SIZE + 50, L3_PROTOCOL_IPv4, IPv4_DSCP_DF, 0, IPv4_PROTOCOL_UDP);
   */
 
+  while(1)
+  {
+    kprintf("kmalloc\n");
+    uint8_t* data = kmalloc_u (100);
+    kprintf("bind\n");
+    udp_port_bind(5555, data);
+    kprintf("recv\n");
+    task_receive_udp ();
+    kprintf("message received: %s\n", 1, data);
+    kprintf("unbind\n");
+    udp_port_unbind(5555);
+    kprintf("kfree\n");
+    kfree (data, 100);
+  }
+
   task_termination (0, 0);
 }

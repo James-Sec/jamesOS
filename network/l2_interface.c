@@ -11,7 +11,6 @@ void l2_upper_interface (uint8_t mac[6], uint8_t *data, uint32_t data_size, uint
       break;
     case L2_PROTOCOL_ARP:
       va_start (ap, 1);
-      kprint("entering l2_interface\n");
       send_arp_request (va_arg (ap, int));
       break;
   }
