@@ -63,6 +63,7 @@ void forward_segment_to_process (uint16_t port, uint8_t* data, uint32_t data_siz
     return;
   memcpy(data, udp_port_table [port].data, data_size);
   soft_unblock_task (udp_port_table [port].pid);
+  udp_port_unbind (port);
 }
 
 void udp_port_bind (uint16_t port, uint8_t* data)

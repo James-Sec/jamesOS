@@ -1,6 +1,6 @@
 network/UDP:
-  BUG:
-    When the third message arrives, after sending 2 messages at the same time the second one isn`t process, is causes the os to process the second one and so on
+  udp buffer error
+  scenario: sending multiple message then sending just one and printing its contents
 
 network/ARP:
   ADD ARP TABLE ENTRY WHEN WE RECEIVE A PACKET FROM AN UNKNOWN HOST

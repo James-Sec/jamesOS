@@ -104,9 +104,7 @@ void entry ()
     udp_port_bind(5555, data);
     kprintf("recv\n");
     task_receive_udp ();
-    kprintf("message received: %s\n", 1, data);
-    kprintf("unbind\n");
-    udp_port_unbind(5555);
+    kprintf("udp segment content: %s\n", 1, data);
     kprintf("kfree\n");
     kfree (data, 100);
   }

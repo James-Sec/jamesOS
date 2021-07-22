@@ -118,7 +118,6 @@ void scheduler ()
 {
   struct tcb* next;
 
-  kprintf ("ready_to_run: %d, current: %s\n", 2, ready_to_run_counter, current_task->pname);
   if (!ready_to_run_counter)
   {
     dispatcher (idle_task);
@@ -141,7 +140,6 @@ void scheduler ()
       break;
   }
   next->state = RUNNING;
-  kprintf ("selecting task %s\n", 1, next->pname);
   dispatcher (next);
 }
 
@@ -155,8 +153,6 @@ void task_termination (uint32_t argc, uint8_t *argp)
   lock_irq ();
   if (argc)
     kfree (argp, argc);
-
-  kprintf ("[%s] terminated.\n", 1, current_task->pname);
   --ready_to_run_counter;
   current_task->state = TERMINATED;
   scheduler ();
@@ -186,10 +182,8 @@ struct tcb* search_task (uint32_t pid)
 
 void soft_unblock_task (uint32_t pid)
 {
-  lock_irq ();
   ++ready_to_run_counter;
   struct tcb *tmp;
   tmp = search_task (pid);
   tmp->state = READY_TO_RUN;
-  unlock_irq ();
 }
