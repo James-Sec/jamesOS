@@ -36,6 +36,8 @@ void entry ()
 
   rtl8139_init ();
 
+  serial_init ();
+
   asm volatile ("cli");
   multitask_init ();
   asm volatile ("sti");
@@ -94,6 +96,8 @@ void entry ()
 
 
   l3_upper_interface (0x1e1e1e1e, mac_dest_addr, array, UDP_HEADER_SIZE + 50, L3_PROTOCOL_IPv4, IPv4_DSCP_DF, 0, IPv4_PROTOCOL_UDP);
+
+  serial_send_string("james\n\x00");
   */
 
   while(1)

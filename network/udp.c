@@ -34,7 +34,9 @@ void recv_udp_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
   uint16_t port;
   get_bytes_attr_value (segment->header, UDP_DESTINATION_PORT_OFFSET, UDP_DESTINATION_PORT_SIZE, &port);
   ntohs(&port);
+  lock_irq ();
   forward_segment_to_process (port, segment->data, data_size - UDP_HEADER_SIZE);
+  unlock_irq ();
 
   kfree (segment->data, data_size - UDP_HEADER_SIZE);
   kfree (segment, sizeof (struct udp_segment));

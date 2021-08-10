@@ -19,6 +19,7 @@
 #include <network_utils.h>
 #include <l3_interface.h>
 #include <ip.h>
+#include <multitask.h>
 
 struct udp_segment
 {

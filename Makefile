@@ -15,7 +15,7 @@ GDB = i686-elf-gdb
 
 # run the os
 run: os-image.bin
-	sudo qemu-system-i386 -fda os-image.bin -netdev tap,id=mynet0,ifname=tap0,script=no,downscript=no -device rtl8139,netdev=mynet0,mac=52:55:00:d1:55:01 -object filter-dump,id=f1,netdev=mynet0,file=dump.dat
+	sudo qemu-system-i386 -fda os-image.bin -netdev tap,id=mynet0,ifname=tap0,script=no,downscript=no -device rtl8139,netdev=mynet0,mac=52:55:00:d1:55:01 -object filter-dump,id=f1,netdev=mynet0,file=dump.dat -serial stdio
 
 # build the image
 build: os-image.bin
