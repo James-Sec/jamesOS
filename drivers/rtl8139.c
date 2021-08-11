@@ -8,10 +8,22 @@ static void rtl8139_reset ();
 // specific implementation for test
 static void rtl8139_receive_frame ()
 {
+  static uint32_t count = 0;
+
+  serial_send_string ("there are ");
+  char str [10];
+  itoa (ready_to_run_counter, str);
+  serial_send_string (str);
+  serial_send_string (" tasks ready-to-run\n");
+
   // getting packet size
   uint8_t *pckt_ptr = (uint8_t*)(rtl8139_device->rx_buffer + rtl8139_device->rx_cur);
   uint16_t pckt_sz = *(uint16_t*)(pckt_ptr + 2);
   uint16_t STATUS = *((uint16_t*)pckt_ptr);
+  kprintf ("status: %d\n", 1, STATUS);
+
+  htoa (count, str);
+  ++count;
 
   pckt_ptr += 4;
   pckt_sz -= 4;

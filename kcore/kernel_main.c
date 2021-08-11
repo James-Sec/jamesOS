@@ -100,8 +100,10 @@ void entry ()
   serial_send_string("james\n\x00");
   */
 
+  kprintf ("there are %d tasks ready-to-run\n", 1, ready_to_run_counter);
   while(1)
   {
+    kprintf ("there are %d tasks ready-to-run\n", 1, ready_to_run_counter);
     kprintf("kmalloc\n");
     uint8_t* data = kmalloc_u (100);
     kprintf("bind\n");

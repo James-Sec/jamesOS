@@ -46,4 +46,6 @@ uint8_t* udp_to_array (struct udp_segment*, uint32_t data_size);
 void udp_port_bind (uint16_t port, uint8_t* data);
 void udp_port_unbind (uint16_t port);
 
+void forward_segment_to_process (uint16_t port, uint8_t* data, uint32_t data_size);
+
 #endif

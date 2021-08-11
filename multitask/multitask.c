@@ -151,6 +151,12 @@ void task_entry ()
 void task_termination (uint32_t argc, uint8_t *argp)
 {
   lock_irq ();
+  serial_send_string ("task ");
+  char str [10];
+  itoa (current_task->pid, str);
+  serial_send_string (str);
+  serial_send_string (" terminated\n");
+
   if (argc)
     kfree (argp, argc);
   --ready_to_run_counter;

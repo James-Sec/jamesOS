@@ -24,7 +24,7 @@ void l4_lower_interface (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t da
   switch (protocol)
   {
     case L4_PROTOCOL_UDP:
-      recv_udp_segment (ip, mac, data, data_size);
+      //recv_udp_segment (ip, mac, data, data_size);
       break;
   }
 }
