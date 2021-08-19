@@ -1,7 +1,6 @@
-network/UDP:
-  udp buffer error
-  scenario: sending multiple message then sending just one and printing its contents
-  we think that the rtl8139 is receiving all the packets (or almost all) but it is not generating all the interrupts. We have to test it and if it is true, we have to handle it in the rtl8139 driver, reseting and discarting this packets for example. 
+network task
+  handle packet in interrupt context (it's faster)
+  l4 delegates
 
 network/ARP:
   ADD ARP TABLE ENTRY WHEN WE RECEIVE A PACKET FROM AN UNKNOWN HOST

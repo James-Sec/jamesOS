@@ -15,7 +15,6 @@ void task_terminator (uint32_t argc, uint8_t *argp)
     {
       if (tmp->state == TERMINATED)
       {
-        kprintf ("[%s (%x)] exterminating %s (%x)...\n", 4, current_task->pname, current_task, tmp->pname, tmp);
         flag = 1;
         if (tmp == head)
           head = tmp->next_task;

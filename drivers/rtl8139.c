@@ -8,38 +8,40 @@ static void rtl8139_reset ();
 // specific implementation for test
 static void rtl8139_receive_frame ()
 {
-  static uint32_t count = 0;
 
-  serial_send_string ("there are ");
-  char str [10];
-  itoa (ready_to_run_counter, str);
-  serial_send_string (str);
-  serial_send_string (" tasks ready-to-run\n");
+  while (!((port_byte_in ((uint16_t)(rtl8139_device->io_base + 0x37))) & 0x1))
+  {
+    // getting packet size
+    uint8_t *pckt_ptr = (uint8_t*)(rtl8139_device->rx_buffer + rtl8139_device->rx_cur);
+    uint16_t pckt_sz = *(uint16_t*)(pckt_ptr + 2);
+    uint16_t STATUS = *((uint16_t*)pckt_ptr);
 
-  // getting packet size
-  uint8_t *pckt_ptr = (uint8_t*)(rtl8139_device->rx_buffer + rtl8139_device->rx_cur);
-  uint16_t pckt_sz = *(uint16_t*)(pckt_ptr + 2);
-  uint16_t STATUS = *((uint16_t*)pckt_ptr);
-  kprintf ("status: %d\n", 1, STATUS);
+    if (STATUS == 0xffff)
+    {
+      rtl8139_reset ();
+      goto rx_error;
+    }
+    
+    pckt_ptr += 4;
+    pckt_sz -= 4;
 
-  htoa (count, str);
-  ++count;
+    char name[10] = "NETWORK";
+    uint8_t *argp = kmalloc_u (pckt_sz);
+    memcpy (pckt_ptr, argp, pckt_sz);
+    struct tcb* network_task = create_task(network_handler, name, READY_TO_RUN, pckt_sz, argp);
 
-  pckt_ptr += 4;
-  pckt_sz -= 4;
 
-  char name[10] = "NETWORK";
-  uint8_t *argp = kmalloc_u (pckt_sz);
-  memcpy (pckt_ptr, argp, pckt_sz);
-  struct tcb* network_task = create_task(network_handler, name, READY_TO_RUN, pckt_sz, argp);
+rx_error:
+    // updating the packet offset
+    pckt_sz += 4;
+    rtl8139_device->rx_cur = (rtl8139_device->rx_cur + pckt_sz + 4 + 3) & (~3);
+    rtl8139_device->rx_cur %= RX_BUFFER_SIZE - 0x10;
 
-  // updating the packet offset
-  pckt_sz += 4;
-  rtl8139_device->rx_cur = (rtl8139_device->rx_cur + pckt_sz + 4 + 3) & (~3);
-  rtl8139_device->rx_cur %= RX_BUFFER_SIZE - 0x10;
+    // 0x38 == CAPR(CURRENT ADDRESS PACKET READ) PORT
+    port_word_out (rtl8139_device->io_base + 0x38, rtl8139_device->rx_cur - 0x10);
+    
+  }
 
-  // 0x38 == CAPR(CURRENT ADDRESS PACKET READ) PORT
-  port_word_out (rtl8139_device->io_base + 0x38, rtl8139_device->rx_cur - 0x10);
 }
 
 static void rtl8139_handler (registers_t *regs)
