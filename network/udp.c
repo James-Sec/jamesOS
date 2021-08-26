@@ -8,7 +8,7 @@ struct udp_segment* build_udp_segment (struct udp_segment *udp, uint16_t source_
   set_bytes_attr_value (udp->header, UDP_LENGTH_OFFSET, UDP_LENGTH_SIZE, &length);
   uint16_t checksum = 0;
   set_bytes_attr_value (udp->header, UDP_CHECKSUM_OFFSET, UDP_CHECKSUM_SIZE, &checksum);
-   //checksum = internet_checksum (udp->header, UDP_HEADER_SIZE, data, data_size);
+  //checksum = internet_checksum (udp->header, UDP_HEADER_SIZE, data, data_size);
   //set_bytes_attr_value (udp->header, UDP_CHECKSUM_OFFSET, UDP_CHECKSUM_SIZE, &checksum);
 
   memcpy (data, udp->data, data_size);
@@ -34,9 +34,7 @@ void recv_udp_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
   uint16_t port;
   get_bytes_attr_value (segment->header, UDP_DESTINATION_PORT_OFFSET, UDP_DESTINATION_PORT_SIZE, &port);
   ntohs(&port);
-  lock_irq ();
   forward_segment_to_process (port, segment->data, data_size - UDP_HEADER_SIZE);
-  unlock_irq ();
 
   kfree (segment->data, data_size - UDP_HEADER_SIZE);
   kfree (segment, sizeof (struct udp_segment));
@@ -65,20 +63,35 @@ void forward_segment_to_process (uint16_t port, uint8_t* data, uint32_t data_siz
     return;
   memcpy(data, udp_port_table [port].data, data_size);
   soft_unblock_task (udp_port_table [port].pid);
-  udp_port_unbind (port);
 }
 
-void udp_port_bind (uint16_t port, uint8_t* data)
+int32_t udp_port_bind (uint16_t port, uint8_t* data)
 {
+  if (!port)
+  {
+    for (uint16_t i = UDP_EPHEMERAL_PORT_BEGIN; i <= UDP_EPHEMERAL_PORT_END; i++)
+    {
+      if (!udp_port_table [i].pid)
+      {
+        udp_port_table [i].pid = current_task->pid;
+        port = i;
+        break;
+      }
+    }
+  }
   if (udp_port_table [port].pid)
-    return;
+    return -1;
   udp_port_table [port].data = data;
   udp_port_table [port].pid = current_task->pid;
+  return port;
 }
 
-void udp_port_unbind (uint16_t port)
+int32_t udp_port_unbind (uint16_t port)
 {
+  if (udp_port_table [port].pid != current_task->pid)
+    return -1;
   udp_port_table [port].pid = 0;
+  return 0;
 }
 
 void task_receive_udp (uint8_t* data)

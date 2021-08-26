@@ -28,7 +28,7 @@ static void rtl8139_receive_frame ()
     char name[10] = "NETWORK";
     uint8_t *argp = kmalloc_u (pckt_sz);
     memcpy (pckt_ptr, argp, pckt_sz);
-    struct tcb* network_task = create_task(network_handler, name, READY_TO_RUN, pckt_sz, argp);
+    l2_lower_interface (argp, pckt_sz, L2_PROTOCOL_ETHERNET2);
 
 
 rx_error:

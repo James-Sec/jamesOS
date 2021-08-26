@@ -19,7 +19,7 @@ static void pit_callback (registers_t *regs)
     }
     while (x);
 
-    if (!(tick % 99) && flag) {
+    if (!(tick % 1) && flag) {
       lock_irq ();
       scheduler ();
       unlock_irq ();

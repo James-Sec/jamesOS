@@ -1,6 +1,5 @@
-network task
-  handle packet in interrupt context (it's faster)
-  l4 delegates
+network:
+  metadata from [layer x-1] to [layer x], this way [layer x] will be able to handle packets in a smarter way
 
 network/ARP:
   ADD ARP TABLE ENTRY WHEN WE RECEIVE A PACKET FROM AN UNKNOWN HOST

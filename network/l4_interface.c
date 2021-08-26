@@ -8,13 +8,7 @@ void l4_upper_interface (uint16_t port, uint32_t ip, uint8_t mac[6], uint8_t *da
     case L4_PROTOCOL_UDP:
       va_start (ap, 1);
       uint16_t source_port = va_arg (ap, int);
-      if (!source_port)
-      {
-        //select an available port
-      }
       send_udp_segment (source_port, port, ip, mac, data, data_size);
-
-      // get source_port
       break;
   }
 }

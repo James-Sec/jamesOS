@@ -100,15 +100,18 @@ void entry ()
   serial_send_string("james\n\x00");
   */
 
+  uint8_t* data = kmalloc_u (100);
+  int32_t port = udp_port_bind(5555, data);
+  htons(&port);
+  uint8_t mac_dest_addr [] = {0xae, 0x1c, 0x54, 0xe3, 0x62, 0x08};
   while(1)
   {
-    
-    uint8_t* data = kmalloc_u (100);
-    udp_port_bind(5555, data);
     task_receive_udp ();
     kprintf("udp segment content: %s\n", 1, data);
-    kfree (data, 100);
+    l4_upper_interface (0xb315, 0xc0a8110c, mac_dest_addr, data, 100, L4_PROTOCOL_UDP, port);
   }
+  udp_port_unbind (port);
+  kfree (data, 100);
 
   task_termination (0, 0);
 }

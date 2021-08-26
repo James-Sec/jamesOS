@@ -15,6 +15,9 @@
 
 #define UDP_TOTAL_PORTS 65535
 
+#define UDP_EPHEMERAL_PORT_BEGIN 32768
+#define UDP_EPHEMERAL_PORT_END 60999
+
 #include <stdint.h>
 #include <network_utils.h>
 #include <l3_interface.h>
@@ -43,8 +46,8 @@ void recv_udp_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
 struct udp_segment* array_to_udp (struct udp_segment *segment, uint8_t *array, uint32_t size);
 uint8_t* udp_to_array (struct udp_segment*, uint32_t data_size);
 
-void udp_port_bind (uint16_t port, uint8_t* data);
-void udp_port_unbind (uint16_t port);
+int32_t udp_port_bind (uint16_t port, uint8_t* data);
+int32_t udp_port_unbind (uint16_t port);
 
 void forward_segment_to_process (uint16_t port, uint8_t* data, uint32_t data_size);
 
