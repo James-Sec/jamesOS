@@ -1,10 +1,10 @@
 # JAMES OS
 
 ## O que é o James OS?
-  James OS é um projeto que busca auxiliar a prática dentro do contexto de sistemas operacionais. Partido do zero, esse projeto apresenta um roteiro para a construção de um sistema operacional modular escrito em C, facilitando o estudo dos mecanismos que o compõe. Cada módulo possui uma interface bem definida, permitindo a construção de um mesmo módulo com diferentes implementações, desde que estes possuam a mesma interface.
+  James OS é um projeto que busca auxiliar a prática dentro do contexto de sistemas operacionais. Partido do zero, esse projeto apresenta um roteiro para a construção de um sistema operacional modular escrito em C, facilitando o estudo dos mecanismos que o compõe. Cada módulo possui uma interface bem definida, permitindo a construção de novos módulos com diferentes implementações, desde que estes preservem a interface.
 
 ## Como este projeto está organizado?
-  Este repositório do GitHub possui duas branches: **Master** e **Develop**. A Branch **Develop** possui o código completo do sistema operacional na sua última versão. A branch **Master** possui os códigos dos módulos, apresentados de maneira incremental. Cada módulo possui seu próprio diretório, que é composto pelo seu código e por um arquivo que possui informações teóricas e descrições de código importantes para o entendimento do módulo em questão.
+  Este repositório do GitHub possui duas branches: **Master** e **Develop**. A branch **Develop** possui o código completo do sistema operacional na sua última versão. A branch **Master** possui os códigos dos módulos, apresentados de maneira incremental. Cada módulo possui seu próprio diretório, que é composto pelo seu código e por um arquivo que apresenta informações teóricas e descrições dos códigos, facilitando o entendimento do módulo em questão.
   
 
 
