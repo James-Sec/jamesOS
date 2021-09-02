@@ -5,6 +5,13 @@
 #include <ethernet.h>
 #include <icmp.h>
 
+struct net_address_set
+{
+  uint8_t mac[6];
+  uint32_t ip;
+  uint16_t port;
+};
+
 void htonb (uint8_t* byte, uint8_t bits);
 void ntohb (uint8_t* byte, uint8_t bits);
 
