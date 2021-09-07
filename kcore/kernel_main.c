@@ -101,16 +101,16 @@ void entry ()
   */
 
   uint8_t* data = kmalloc_u (100);
-  struct net_address_set* dest_addressess;
-  int32_t receive_port = udp_port_bind(5555, data, dest_addressess);
+  struct net_address_set* dest_addresses;
+  int32_t receive_port = udp_port_bind(5555, data, &dest_addresses);
   htons(&receive_port);
   while(1)
   {
     task_receive_udp ();
     kprintf("udp segment content: %s\n", 1, data);
-    uint8_t* mac = dest_addressess->mac;
-    uint32_t ip = dest_addressess->ip;
-    uint16_t port = dest_addressess->port;
+    uint8_t* mac = dest_addresses->mac;
+    uint32_t ip = dest_addresses->ip;
+    uint16_t port = dest_addresses->port;
     l4_upper_interface (port, ip, mac, data, 100, L4_PROTOCOL_UDP, receive_port);
   }
   udp_port_unbind (receive_port);

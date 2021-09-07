@@ -69,7 +69,7 @@ void forward_segment_to_process (uint16_t port, uint8_t* data, uint32_t data_siz
   soft_unblock_task (udp_port_table [port].pid);
 }
 
-int32_t udp_port_bind (uint16_t port, uint8_t* data, struct net_address_set* address)
+int32_t udp_port_bind (uint16_t port, uint8_t* data, struct net_address_set** address)
 {
   if (!port)
   {
@@ -85,6 +85,7 @@ int32_t udp_port_bind (uint16_t port, uint8_t* data, struct net_address_set* add
   }
   if (udp_port_table [port].pid)
     return -1;
+  *address = &udp_port_table[port].net_addresses;
   udp_port_table [port].data = data;
   udp_port_table [port].pid = current_task->pid;
   return port;

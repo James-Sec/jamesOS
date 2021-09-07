@@ -47,7 +47,7 @@ void recv_udp_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
 struct udp_segment* array_to_udp (struct udp_segment *segment, uint8_t *array, uint32_t size);
 uint8_t* udp_to_array (struct udp_segment*, uint32_t data_size);
 
-int32_t udp_port_bind (uint16_t port, uint8_t* data, struct net_address_set* address);
+int32_t udp_port_bind (uint16_t port, uint8_t* data, struct net_address_set** address);
 int32_t udp_port_unbind (uint16_t port);
 
 void forward_segment_to_process (uint16_t port, uint8_t* data, uint32_t data_size, uint16_t source_port, uint32_t source_ip, int8_t* source_mac);
