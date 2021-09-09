@@ -100,6 +100,7 @@ void entry ()
   serial_send_string("james\n\x00");
   */
 
+  /*
   uint8_t* data = kmalloc_u (100);
   struct net_address_set* dest_addresses;
   int32_t receive_port = udp_port_bind(5555, data, &dest_addresses);
@@ -115,6 +116,24 @@ void entry ()
   }
   udp_port_unbind (receive_port);
   kfree (data, 100);
+  */
+
+  sleep (3);
+  //uint32_t ip = 0xc0a80a02;
+  uint32_t i;
+  for (i = 0 ; i < 1e5; i++)
+  {
+    uint32_t ip = 0x1e1e1e1e;
+    uint16_t port = 5555;
+    htons (&port);
+    //uint8_t mac[6] = {0x52,0x54,0x00,0x37,0xc2,0x0c};
+    uint8_t mac[6] = {0x3e,0x2c,0xc0,0x8a,0xb5,0x5b};
+    uint8_t* data = "james\n";
+    jnp_send_message (port, ip, mac, data, 6, L4_PROTOCOL_UDP);
+  }
+
+
+  
 
   task_termination (0, 0);
 }
