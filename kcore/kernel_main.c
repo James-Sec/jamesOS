@@ -118,19 +118,12 @@ void entry ()
   kfree (data, 100);
   */
 
-  sleep (3);
-  //uint32_t ip = 0xc0a80a02;
-  uint32_t i;
-  for (i = 0 ; i < 1e5; i++)
-  {
-    uint32_t ip = 0x1e1e1e1e;
-    uint16_t port = 5555;
-    htons (&port);
-    //uint8_t mac[6] = {0x52,0x54,0x00,0x37,0xc2,0x0c};
-    uint8_t mac[6] = {0x3e,0x2c,0xc0,0x8a,0xb5,0x5b};
-    uint8_t* data = "james\n";
-    jnp_send_message (port, ip, mac, data, 6, L4_PROTOCOL_UDP);
-  }
+  uint32_t ip = 0x1e1e1e1e;
+  uint16_t port = 5555;
+  htons (&port);
+  uint8_t mac[6] = {0x3e,0x2c,0xc0,0x8a,0xb5,0x5b};
+  uint8_t* data2 = "james\n";
+  jnp_send_message (port, ip, mac, data2, 6, L4_PROTOCOL_UDP);
 
 
   
