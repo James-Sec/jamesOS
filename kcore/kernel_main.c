@@ -16,6 +16,7 @@
 #include <l2_interface.h>
 #include <l3_interface.h>
 #include <l4_interface.h>
+#include <l5_interface.h>
 #include <network_utils.h>
 
 
@@ -121,12 +122,11 @@ void entry ()
   uint32_t ip = 0x1e1e1e1e;
   uint16_t port = 5555;
   htons (&port);
-  uint8_t mac[6] = {0x3e,0x2c,0xc0,0x8a,0xb5,0x5b};
-  uint8_t* data2 = "james\n";
-  jnp_send_message (port, ip, mac, data2, 6, L4_PROTOCOL_UDP);
+  uint8_t mac[6] = {0x9a, 0xed, 0x4d, 0x50, 0xd3, 0x8f};
+  uint8_t* data = "james\n";
+  l5_upper_interface (port, ip, mac, data, 6, L5_PROTOCOL_JNP, L4_PROTOCOL_UDP);
+  jnp_recv_message (5555);
 
-
-  
 
   task_termination (0, 0);
 }

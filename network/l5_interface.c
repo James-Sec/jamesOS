@@ -12,14 +12,3 @@ void l5_upper_interface(uint16_t port, uint32_t ip, uint8_t mac[6], uint8_t *dat
       break;
   }
 }
-
-void l5_lower_interface(uint16_t port, uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size, uint8_t protocol)
-{
-  switch (protocol)
-  {
-    case L5_PROTOCOL_JNP:
-      jnp_recv_message (port, ip, mac, data, data_size);
-
-      break;
-  }
-}
