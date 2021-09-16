@@ -2,6 +2,8 @@
 #define L4_INTERFACE_H
 
 #define L4_PROTOCOL_UDP 0
+#define L4_PROTOCOL_TCP 1
+
 #include <stdint.h>
 #include <stdarg.h>
 

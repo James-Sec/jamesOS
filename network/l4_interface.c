@@ -10,6 +10,8 @@ void l4_upper_interface (uint16_t port, uint32_t ip, uint8_t mac[6], uint8_t *da
       uint16_t source_port = va_arg (ap, int);
       send_udp_segment (source_port, port, ip, mac, data, data_size);
       break;
+    case L4_PROTOCOL_TCP:
+      break;
   }
 }
 
@@ -19,6 +21,8 @@ void l4_lower_interface (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t da
   {
     case L4_PROTOCOL_UDP:
       recv_udp_segment (ip, mac, data, data_size);
+      break;
+    case L4_PROTOCOL_TCP:
       break;
   }
 }
