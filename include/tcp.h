@@ -4,7 +4,8 @@
 #include <stdint.h>
 #include <network_utils.h>
 
-#define TCP_HEADER_SIZE 64
+#define TCP_HEADER_MIN_SIZE 20
+#define TCP_HEADER_MAX_SIZE 64
 #define TCP_OPTIONS_OFFSET 20 // BYTE_LIKE
 
 #define TCP_SOURCE_PORT_OFFSET 0
@@ -47,7 +48,7 @@
 
 struct tcp_segment
 {
-  uint8_t header[TCP_HEADER_SIZE];
+  uint8_t header[TCP_HEADER_MAX_SIZE];
   uint8_t *data;
 };
 
@@ -65,7 +66,7 @@ struct tcp_header_bit_field
   uint32_t sequence_number : 32;
   uint32_t ack_number : 32;
   uint32_t data_offset : 4;
-  uint32_t reserverd : 3;
+  uint32_t reserved : 3;
   uint32_t ecn : 1;
   uint32_t cwr : 1;
   uint32_t ece : 1;
@@ -83,6 +84,8 @@ struct tcp_header_bit_field
 struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, struct tcp_header_bit_field *header, uint8_t* options, uint8_t* data, uint32_t data_size);
 
 void tcp_recv_segment();
-void tcp_send_segment();
+void tcp_send_segment (struct tcp_header_bit_field *tcp_header, uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);
+struct tcp_segment* array_to_tcp (struct tcp_segment *segment, uint8_t *array, uint32_t size);
+uint8_t* tcp_to_array (struct tcp_segment *tcp, uint32_t data_size);
 
 #endif
