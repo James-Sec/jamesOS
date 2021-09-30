@@ -18,9 +18,14 @@ struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, struct tcp_heade
   set_bits_attr_value (tcp->header, TCP_SYN_OFFSET, TCP_SYN_SIZE, header->syn);
   set_bits_attr_value (tcp->header, TCP_FIN_OFFSET, TCP_FIN_SIZE, header->fin);
   set_bits_attr_value (tcp->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE, header->window_size);
-  set_bits_attr_value (tcp->header, TCP_CHECKSUM_OFFSET, TCP_CHECKSUM_SIZE, header->checksum);
   set_bits_attr_value (tcp->header, TCP_URGENT_POINTER_OFFSET, TCP_URGENT_POINTER_SIZE, header->urgent_pointer);
-  set_bytes_attr_value (tcp->header, TCP_OPTIONS_OFFSET, header->data_offset, options);
+  set_bytes_attr_value (tcp->header, TCP_OPTIONS_OFFSET, (header->data_offset * 4) - TCP_HEADER_MIN_SIZE, options);
+
+  uint16_t checksum = 0;
+  set_bits_attr_value (tcp->header, TCP_CHECKSUM_OFFSET, TCP_CHECKSUM_SIZE, checksum);
+  checksum = internet_checksum (tcp->header, header->data_offset * 4, data, data_size);
+  set_bits_attr_value (tcp->header, TCP_CHECKSUM_OFFSET, TCP_CHECKSUM_SIZE, checksum);
+
   memcpy(data, tcp->data, data_size);
 }
 
@@ -28,13 +33,23 @@ void tcp_send_segment (struct tcp_header_bit_field *tcp_header, uint32_t ip, uin
 {
   struct tcp_segment *segment = kmalloc_u (sizeof (struct tcp_segment));
   
-  tcp_build_segment (segment, tcp_header, 0, data, data_size);
+  uint8_t * options = kmalloc_u (12);
+  options = "\x02\x04\x05\xb4\x01\x01\x04\x02\x01\x03\x03\x07";
+
+  tcp_build_segment (segment, tcp_header, options, data, data_size);
 
   uint8_t *tcp_array = tcp_to_array (segment, data_size);
 
-  l3_upper_interface (ip, mac, tcp_array, data_size + TCP_HEADER_MIN_SIZE, L3_PROTOCOL_IPv4, 0, 0, IPv4_PROTOCOL_TCP);
+  l3_upper_interface (ip, mac, tcp_array, data_size + (tcp_header->data_offset * 4), L3_PROTOCOL_IPv4, 0, 0, IPv4_PROTOCOL_TCP);
+}
 
-
+void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size) 
+{
+  struct tcp_segment *segment = kmalloc_u (sizeof (struct tcp_segment));
+  array_to_tcp (segment, data, data_size);
+  uint32_t i;
+  uint8_t data_offset = get_bits_attr_value (segment->header, TCP_DATA_OFFSET_OFFSET, TCP_DATA_OFFSET_SIZE);
+  kprint ("TCP RECEIVED\n");
 }
 
 

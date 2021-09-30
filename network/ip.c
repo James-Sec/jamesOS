@@ -56,6 +56,8 @@ void recv_ipv4_packet (uint8_t mac[6], uint8_t *data, uint32_t size)
       break;
     case IPv4_PROTOCOL_UDP:
       l4_lower_interface (ip, mac, packet->data, data_size, L4_PROTOCOL_UDP);
+    case IPv4_PROTOCOL_TCP:
+      l4_lower_interface (ip, mac, packet->data, data_size, L4_PROTOCOL_TCP);
   }
 
   kfree (packet->data, data_size);

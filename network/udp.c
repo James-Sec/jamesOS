@@ -13,7 +13,7 @@ struct udp_segment* build_udp_segment (struct udp_segment *udp, uint16_t source_
   memcpy (data, udp->data, data_size);
 }
 
-void send_udp_segment (uint16_t source_port, uint16_t destination_port, uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size)
+void udp_send_segment (uint16_t source_port, uint16_t destination_port, uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size)
 {
   struct udp_segment *segment = kmalloc_u (sizeof (struct udp_segment));
   segment->data = kmalloc_u (data_size);
@@ -25,7 +25,7 @@ void send_udp_segment (uint16_t source_port, uint16_t destination_port, uint32_t
   kfree (array, UDP_HEADER_SIZE + data_size);
 }
 
-void recv_udp_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size)
+void udp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size)
 {
   struct udp_segment *segment = kmalloc_u (sizeof (struct udp_segment));
   array_to_udp (segment, data, data_size);
@@ -35,7 +35,7 @@ void recv_udp_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
   ntohs(&destination_port);
   uint16_t source_port;
   get_bytes_attr_value (segment->header, UDP_SOURCE_PORT_OFFSET, UDP_SOURCE_PORT_SIZE, &source_port);
-  forward_segment_to_process (destination_port, segment->data, data_size - UDP_HEADER_SIZE, source_port, ip, mac);
+  udp_forward_segment_to_process (destination_port, segment->data, data_size - UDP_HEADER_SIZE, source_port, ip, mac);
 
   kfree (segment->data, data_size - UDP_HEADER_SIZE);
   kfree (segment, sizeof (struct udp_segment));
@@ -58,7 +58,7 @@ uint8_t* udp_to_array (struct udp_segment *udp, uint32_t data_size)
   return array;
 }
 
-void forward_segment_to_process (uint16_t port, uint8_t* data, uint32_t data_size, uint16_t source_port, uint32_t source_ip, int8_t* source_mac)
+void udp_forward_segment_to_process (uint16_t port, uint8_t* data, uint32_t data_size, uint16_t source_port, uint32_t source_ip, int8_t* source_mac)
 {
   if (!udp_port_table [port].pid)
     return;
@@ -99,7 +99,7 @@ int32_t udp_port_unbind (uint16_t port)
   return 0;
 }
 
-void task_receive_udp ()
+void udp_receive ()
 {
   block_task (BLOCKED);
 }

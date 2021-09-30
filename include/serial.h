@@ -9,6 +9,6 @@
 void serial_init ();
 void serial_send_byte (uint8_t ch);
 void serial_send_string (uint8_t* msg);
-void serial_print_hex (uint32_t n, char s[]);
+void serial_print_hex (uint32_t n);
 
 #endif

@@ -29,7 +29,7 @@ void serial_send_string (uint8_t* msg)
     serial_send_byte (msg [pos]);
 }
 
-void serial_print_hex (uint32_t n, char s[])
+void serial_print_hex (uint32_t n)
 {
   char hex_v[12] = "0x????????\n\0";
   char map [16] = "0123456789abcdef";

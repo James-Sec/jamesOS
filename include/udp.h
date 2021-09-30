@@ -40,9 +40,9 @@ struct udp_port_table_entry
 struct udp_port_table_entry udp_port_table [UDP_TOTAL_PORTS];
 
 struct udp_segment* build_udp_segment (struct udp_segment *udp, uint16_t source_port, uint16_t destination_port, uint16_t length, uint8_t* data, uint32_t data_size);
-void send_udp_segment (uint16_t source_port, uint16_t destination_port, uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);
+void udp_send_segment (uint16_t source_port, uint16_t destination_port, uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);
 
-void recv_udp_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);
+void udp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);
 
 struct udp_segment* array_to_udp (struct udp_segment *segment, uint8_t *array, uint32_t size);
 uint8_t* udp_to_array (struct udp_segment*, uint32_t data_size);
@@ -50,6 +50,8 @@ uint8_t* udp_to_array (struct udp_segment*, uint32_t data_size);
 int32_t udp_port_bind (uint16_t port, uint8_t* data, struct net_address_set** address);
 int32_t udp_port_unbind (uint16_t port);
 
-void forward_segment_to_process (uint16_t port, uint8_t* data, uint32_t data_size, uint16_t source_port, uint32_t source_ip, int8_t* source_mac);
+void udp_forward_segment_to_process (uint16_t port, uint8_t* data, uint32_t data_size, uint16_t source_port, uint32_t source_ip, int8_t* source_mac);
+
+void udp_receive ();
 
 #endif
