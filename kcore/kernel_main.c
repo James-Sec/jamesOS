@@ -126,16 +126,15 @@ void entry ()
   uint32_t ip = 0x1e1e1e1e;
   uint16_t port = 5555;
   htons (&port);
-  uint8_t mac[6] = {0x56,0xe8,0x49,0xbf,0xa8,0xaa};
+  uint8_t mac[6] = {0x46, 0xd7, 0x93, 0x5c, 0x13, 0xe8};
   uint8_t* data = "james\n";
   l5_upper_interface (port, ip, mac, data, 6, L5_PROTOCOL_JNP, L4_PROTOCOL_UDP);
-  jnp_recv_message (5555);
-  */
+  //jnp_recv_message (5555);
 
   struct tcp_header_bit_field tcp_header; 
   tcp_header.source_port = 4444;
   tcp_header.destination_port = 5555;
-  tcp_header.sequence_number = 0;
+  tcp_header.sequence_number = 0xdeadbeef;
   tcp_header.ack_number = 0;
   tcp_header.data_offset = 6;
   tcp_header.reserved = 0;
@@ -148,15 +147,13 @@ void entry ()
   tcp_header.rst = 0;
   tcp_header.syn = 1;
   tcp_header.fin = 0;
-  tcp_header.window_size = 777;
+  tcp_header.window_size = 8192;
   tcp_header.checksum = 0x0;
   tcp_header.urgent_pointer = 0;
 
-  uint32_t ip = 0x1e1e1e1e;
-
-  uint8_t mac[6] = {0x56,0xe8,0x49,0xbf,0xa8,0xaa};
-
-  tcp_send_segment (&tcp_header, ip, mac, 0, 0);
+  uint8_t options[10];
+  //tcp_send_segment (&tcp_header, ip, mac, options, 0, 0);
+     */
 
   task_termination (0, 0);
 }

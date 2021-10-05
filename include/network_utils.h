@@ -5,11 +5,30 @@
 #include <ethernet.h>
 #include <icmp.h>
 
+#define PSEUDO_HEADER_SIZE 12
+
+#define PSEUDO_SOURCE_IP_OFFSET 0
+#define PSEUDO_DESTINATION_IP_OFFSET 4
+#define PSEUDO_FIXED_OFFSET 8
+#define PSEUDO_PROTOCOL_OFFSET 9
+#define PSEUDO_SEGMENT_LENGTH_OFFSET 10
+
+#define PSEUDO_SOURCE_IP_SIZE 4
+#define PSEUDO_DESTINATION_IP_SIZE 4
+#define PSEUDO_FIXED_SIZE 1
+#define PSEUDO_PROTOCOL_SIZE 1
+#define PSEUDO_SEGMENT_LENGTH_SIZE 2
+
 struct net_address_set
 {
   uint8_t mac[6];
   uint32_t ip;
   uint16_t port;
+};
+
+struct pseudo_ip
+{
+  uint8_t header[PSEUDO_HEADER_SIZE];
 };
 
 void htonb (uint8_t* byte, uint8_t bits);

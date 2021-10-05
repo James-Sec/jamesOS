@@ -84,7 +84,7 @@ struct tcp_header_bit_field
 struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, struct tcp_header_bit_field *header, uint8_t* options, uint8_t* data, uint32_t data_size);
 
 void tcp_recv_segment();
-void tcp_send_segment (struct tcp_header_bit_field *tcp_header, uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);
+void tcp_send_segment (struct tcp_header_bit_field *tcp_header, uint32_t ip, uint8_t mac[6], uint8_t *options, uint8_t *data, uint32_t data_size);
 struct tcp_segment* array_to_tcp (struct tcp_segment *segment, uint8_t *array, uint32_t size);
 uint8_t* tcp_to_array (struct tcp_segment *tcp, uint32_t data_size);
 

@@ -26,20 +26,17 @@ struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, struct tcp_heade
   checksum = internet_checksum (tcp->header, header->data_offset * 4, data, data_size);
   set_bits_attr_value (tcp->header, TCP_CHECKSUM_OFFSET, TCP_CHECKSUM_SIZE, checksum);
 
-  memcpy(data, tcp->data, data_size);
+  //memcpy(data, tcp->data, data_size);
 }
 
-void tcp_send_segment (struct tcp_header_bit_field *tcp_header, uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size)
+void tcp_send_segment (struct tcp_header_bit_field *tcp_header, uint32_t ip, uint8_t mac[6], uint8_t *options, uint8_t *data, uint32_t data_size)
 {
   struct tcp_segment *segment = kmalloc_u (sizeof (struct tcp_segment));
   
-  uint8_t * options = kmalloc_u (12);
-  options = "\x02\x04\x05\xb4\x01\x01\x04\x02\x01\x03\x03\x07";
-
   tcp_build_segment (segment, tcp_header, options, data, data_size);
 
+  data_size -= PSEUDO_HEADER_SIZE;
   uint8_t *tcp_array = tcp_to_array (segment, data_size);
-
   l3_upper_interface (ip, mac, tcp_array, data_size + (tcp_header->data_offset * 4), L3_PROTOCOL_IPv4, 0, 0, IPv4_PROTOCOL_TCP);
 }
 
@@ -49,6 +46,45 @@ void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
   array_to_tcp (segment, data, data_size);
   uint32_t i;
   uint8_t data_offset = get_bits_attr_value (segment->header, TCP_DATA_OFFSET_OFFSET, TCP_DATA_OFFSET_SIZE);
+  uint8_t syn = get_bits_attr_value (segment->header, TCP_SYN_OFFSET, TCP_SYN_SIZE);
+  if (ip == 0x1e1e1e1e && syn)
+  {
+    kprint ("TCP SYN RECEIVED\n");
+    struct tcp_header_bit_field tcp_header;
+    tcp_header.source_port = get_bits_attr_value (segment->header, TCP_DESTINATION_PORT_OFFSET, TCP_DESTINATION_PORT_SIZE);
+    tcp_header.destination_port = get_bits_attr_value (segment->header, TCP_SOURCE_PORT_OFFSET, TCP_SOURCE_PORT_SIZE);
+    tcp_header.sequence_number = get_bits_attr_value (segment->header, TCP_SEQUENCE_NUMBER_OFFSET, TCP_SEQUENCE_NUMBER_SIZE);
+    tcp_header.ack_number = tcp_header.sequence_number + 1;
+    tcp_header.data_offset = data_offset;
+    tcp_header.reserved = 0;
+    tcp_header.ecn = 0;
+    tcp_header.cwr = 0;
+    tcp_header.ece = 0;
+    tcp_header.urg = 0;
+    tcp_header.ack = 1;
+    tcp_header.psh = 0;
+    tcp_header.rst = 0;
+    tcp_header.syn = 1;
+    tcp_header.fin = 0;
+    tcp_header.window_size = get_bits_attr_value (segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE);
+    tcp_header.checksum = 0x0;
+    tcp_header.urgent_pointer = 0;
+    uint32_t options_size = (data_offset * 4) - TCP_HEADER_MIN_SIZE;
+    uint8_t *options = kmalloc_u (options_size);
+    get_bytes_attr_value (segment->header, TCP_OPTIONS_OFFSET, options_size, options);
+    struct pseudo_ip pseudo;
+    uint32_t src_ip = 0x01020304;
+    uint32_t dst_ip = 0x1e1e1e1e;
+    uint8_t fxd_ip = 0x0;
+    uint8_t prt_ip = 0x06;
+    uint16_t sgl_ip = data_size + options_size + TCP_HEADER_MIN_SIZE;
+    set_bytes_attr_value (pseudo.header, PSEUDO_SOURCE_IP_OFFSET, PSEUDO_SOURCE_IP_SIZE, &src_ip);
+    set_bytes_attr_value (pseudo.header, PSEUDO_DESTINATION_IP_OFFSET, PSEUDO_DESTINATION_IP_SIZE, &dst_ip);
+    set_bytes_attr_value (pseudo.header, PSEUDO_FIXED_OFFSET, PSEUDO_FIXED_SIZE, &fxd_ip);
+    set_bytes_attr_value (pseudo.header, PSEUDO_PROTOCOL_OFFSET, PSEUDO_PROTOCOL_SIZE, &prt_ip);
+    set_bytes_attr_value (pseudo.header, PSEUDO_SEGMENT_LENGTH_OFFSET, PSEUDO_SEGMENT_LENGTH_SIZE, &sgl_ip);
+    tcp_send_segment (&tcp_header, ip, mac, options, &pseudo.header, PSEUDO_HEADER_SIZE);
+  }
   kprint ("TCP RECEIVED\n");
 }
 
