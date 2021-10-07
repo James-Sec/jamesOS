@@ -134,3 +134,12 @@ uint16_t internet_checksum (uint8_t* header, uint32_t header_size, uint8_t *data
 
   return ~sum;
 }
+
+void pseudo_header_calculator(uint32_t source_ip, uint32_t destination_ip, uint8_t fixed, uint8_t protocol, uint16_t length, struct pseudo_ip* pseudo)
+{
+  set_bits_attr_value (pseudo->header, PSEUDO_SOURCE_IP_OFFSET, PSEUDO_SOURCE_IP_SIZE, source_ip);
+  set_bits_attr_value (pseudo->header, PSEUDO_DESTINATION_IP_OFFSET, PSEUDO_DESTINATION_IP_SIZE, destination_ip);
+  set_bits_attr_value (pseudo->header, PSEUDO_FIXED_OFFSET, PSEUDO_FIXED_SIZE, fixed);
+  set_bits_attr_value (pseudo->header, PSEUDO_PROTOCOL_OFFSET, PSEUDO_PROTOCOL_SIZE, protocol);
+  set_bits_attr_value (pseudo->header, PSEUDO_SEGMENT_LENGTH_OFFSET, PSEUDO_SEGMENT_LENGTH_SIZE, length);
+}
