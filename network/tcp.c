@@ -76,7 +76,7 @@ void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
     uint32_t dst_ip = 0x1e1e1e1e;
     uint8_t fxd_ip = 0x0;
     uint8_t prt_ip = 0x6;
-    uint16_t sgl_ip = 0x28;
+    uint16_t sgl_ip = 0x20;
     pseudo_header_calculator(src_ip, dst_ip, fxd_ip, prt_ip, sgl_ip, &pseudo);
     kprintf("printing pseudo header: %x, %x, %x, %x, %x\n", 5, src_ip, dst_ip, fxd_ip, prt_ip, sgl_ip);
     for (uint8_t i = 0; i < PSEUDO_HEADER_SIZE; i++)

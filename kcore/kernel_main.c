@@ -129,7 +129,7 @@ void entry ()
   uint8_t mac[6] = {0x46, 0xd7, 0x93, 0x5c, 0x13, 0xe8};
   uint8_t* data = "james\n";
   l5_upper_interface (port, ip, mac, data, 6, L5_PROTOCOL_JNP, L4_PROTOCOL_UDP);
-  //jnp_recv_message (5555);
+  jnp_recv_message (5555);
 
   struct tcp_header_bit_field tcp_header; 
   tcp_header.source_port = 4444;

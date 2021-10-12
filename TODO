@@ -1,3 +1,6 @@
+network/checksum
+  refac internet checksum interface to receive pseudo ip header
+
 network/ARP:
   ADD ARP TABLE ENTRY WHEN WE RECEIVE A PACKET FROM AN UNKNOWN HOST
 
