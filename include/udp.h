@@ -39,7 +39,7 @@ struct udp_port_table_entry
 
 struct udp_port_table_entry udp_port_table [UDP_TOTAL_PORTS];
 
-struct udp_segment* build_udp_segment (struct udp_segment *udp, uint16_t source_port, uint16_t destination_port, uint16_t length, uint8_t* data, uint32_t data_size);
+struct udp_segment* build_udp_segment (struct udp_segment *udp, uint16_t source_port, uint16_t destination_port, uint16_t length, uint8_t* data, uint32_t data_size, uint8_t *pseudo);
 void udp_send_segment (uint16_t source_port, uint16_t destination_port, uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);
 
 void udp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);

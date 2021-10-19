@@ -35,7 +35,7 @@ struct ipv4_packet* build_ipv4_packet (struct ipv4_packet *ip, uint8_t version, 
 	set_bits_attr_value (ip->header, IPv4_DESTINATION_IP_ADDRESS_OFFSET, IPv4_DESTINATION_IP_ADDRESS_SIZE, destination_ip);
 	set_bits_attr_value (ip->header, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, 0x0);
 
-  uint16_t checksum = internet_checksum (ip->header, IPv4_HEADER_SIZE, 0, 0);
+  uint16_t checksum = internet_checksum (ip->header, IPv4_HEADER_SIZE, 0, 0, 0, 0);
 	set_bits_attr_value (ip->header, IPv4_HEADER_CHECKSUM_OFFSET, IPv4_HEADER_CHECKSUM_SIZE, checksum);
   memcpy (data, ip->data, data_size);
 	return ip;

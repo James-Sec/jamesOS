@@ -59,14 +59,8 @@ struct tcp_port_table_entry
   struct net_address_set net_addresses;
 };
 
-struct tcp_header_bit_field
+struct tcp_flags
 {
-  uint32_t source_port : 16;
-  uint32_t destination_port : 16;
-  uint32_t sequence_number : 32;
-  uint32_t ack_number : 32;
-  uint32_t data_offset : 4;
-  uint32_t reserved : 3;
   uint32_t ecn : 1;
   uint32_t cwr : 1;
   uint32_t ece : 1;
@@ -76,16 +70,22 @@ struct tcp_header_bit_field
   uint32_t rst : 1;
   uint32_t syn : 1;
   uint32_t fin : 1;
-  uint32_t window_size : 16;
-  uint32_t checksum : 16;
-  uint32_t urgent_pointer : 16;
 };
 
-struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, struct tcp_header_bit_field *header, uint8_t* options, uint8_t* data, uint32_t data_size, struct pseudo_ip* pseudo);
+struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, uint16_t source_port, uint16_t destination_port, uint32_t sequence_number, uint32_t ack_number, uint8_t data_offset, uint8_t reserved, uint8_t ecn, uint8_t cwr, uint8_t ece, uint8_t urg, uint8_t ack, uint8_t psh, uint8_t rst, uint8_t syn, uint8_t fin, uint16_t window_size, uint16_t urgent_pointer, uint8_t* options, uint8_t* data, uint32_t data_size, uint32_t ip);
 
-void tcp_recv_segment();
-void tcp_send_segment (struct tcp_header_bit_field *tcp_header, uint32_t ip, uint8_t mac[6], uint8_t *options, uint8_t *data, uint32_t data_size, struct pseudo_ip* pseudo);
+void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);
+void tcp_send_segment (struct tcp_segment *segment,uint32_t data_size, uint32_t ip, uint8_t mac[6]);
+
 struct tcp_segment* array_to_tcp (struct tcp_segment *segment, uint8_t *array, uint32_t size);
 uint8_t* tcp_to_array (struct tcp_segment *tcp, uint32_t data_size);
+
+
+void tcp_threeway_syn_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *segment);
+
+struct tcp_flags* tcp_get_flags (struct tcp_segment *segment);
+uint8_t tcp_recv_threeway_syn (struct tcp_segment *segment);
+uint8_t tcp_recv_threeway_syn_ack (struct tcp_segment *segment);
+uint8_t tcp_recv_threeway_ack (struct tcp_segment *segment);
 
 #endif

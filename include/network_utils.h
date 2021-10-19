@@ -46,8 +46,8 @@ uint32_t get_bits_attr_value (uint8_t* attr, uint32_t offset, uint32_t size);
 void get_bytes_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint8_t* ret);
 void set_bytes_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint8_t* value);
 
-uint16_t internet_checksum (uint8_t* header, uint32_t header_size, uint8_t *data, uint32_t data_size);
+uint16_t internet_checksum (uint8_t* header, uint32_t header_size, uint8_t *data, uint32_t data_size, uint8_t *pseudo, uint32_t pseudo_size);
 
-void pseudo_header_calculator(uint32_t source_ip, uint32_t destination_ip, uint8_t fixed, uint8_t protocol, uint16_t length, struct pseudo_ip* pseudo);
+void pseudo_header_build (uint32_t source_ip, uint32_t destination_ip, uint8_t fixed, uint8_t protocol, uint16_t length, struct pseudo_ip* pseudo);
 
 #endif

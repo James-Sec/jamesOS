@@ -97,7 +97,7 @@ void set_bytes_attr_value (uint8_t* attr, uint32_t offset, uint32_t size, uint8_
   memcpy (value, attr + offset, size);
 }
 
-uint16_t internet_checksum (uint8_t* header, uint32_t header_size, uint8_t *data, uint32_t data_size)
+uint16_t internet_checksum (uint8_t* header, uint32_t header_size, uint8_t *data, uint32_t data_size, uint8_t *pseudo, uint32_t pseudo_size)
 {
   uint32_t i = 0;
   uint16_t *header_ptr = (uint16_t*) header;
@@ -106,6 +106,14 @@ uint16_t internet_checksum (uint8_t* header, uint32_t header_size, uint8_t *data
   for (i = 0 ; i < (header_size / 2); i++)
   {
     word = *(header_ptr + i);
+    ntohs (&word);
+    sum += word;
+  }
+
+  uint16_t *pseudo_ptr = (uint16_t*) pseudo;
+  for (i = 0 ; i < (pseudo_size / 2); i++)
+  {
+    word = *(pseudo_ptr + i);
     ntohs (&word);
     sum += word;
   }
@@ -135,7 +143,7 @@ uint16_t internet_checksum (uint8_t* header, uint32_t header_size, uint8_t *data
   return ~sum;
 }
 
-void pseudo_header_calculator(uint32_t source_ip, uint32_t destination_ip, uint8_t fixed, uint8_t protocol, uint16_t length, struct pseudo_ip* pseudo)
+void pseudo_header_build (uint32_t source_ip, uint32_t destination_ip, uint8_t fixed, uint8_t protocol, uint16_t length, struct pseudo_ip* pseudo)
 {
   set_bits_attr_value (pseudo->header, PSEUDO_SOURCE_IP_OFFSET, PSEUDO_SOURCE_IP_SIZE, source_ip);
   set_bits_attr_value (pseudo->header, PSEUDO_DESTINATION_IP_OFFSET, PSEUDO_DESTINATION_IP_SIZE, destination_ip);

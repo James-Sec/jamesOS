@@ -127,7 +127,7 @@ void entry ()
   uint16_t port = 5555;
   htons (&port);
   uint8_t mac[6] = {0x46, 0xd7, 0x93, 0x5c, 0x13, 0xe8};
-  uint8_t* data = "james\n";
+  uint8_t* data = "jjjjj\n";
   l5_upper_interface (port, ip, mac, data, 6, L5_PROTOCOL_JNP, L4_PROTOCOL_UDP);
   jnp_recv_message (5555);
 
