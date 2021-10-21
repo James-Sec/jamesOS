@@ -20,18 +20,16 @@ struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, uint16_t source_
   set_bits_attr_value (tcp->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE, window_size);
   set_bits_attr_value (tcp->header, TCP_URGENT_POINTER_OFFSET, TCP_URGENT_POINTER_SIZE, urgent_pointer);
   set_bytes_attr_value (tcp->header, TCP_OPTIONS_OFFSET, (data_offset * 4) - TCP_HEADER_MIN_SIZE, options);
-
   struct pseudo_ip pseudo;
   pseudo_header_build (rtl8139_device->ip_addr, ip, 0x0, IPv4_PROTOCOL_TCP, data_size + (data_offset * 4), &pseudo);
   uint16_t checksum = 0;
   set_bits_attr_value (tcp->header, TCP_CHECKSUM_OFFSET, TCP_CHECKSUM_SIZE, checksum);
   checksum = internet_checksum (tcp->header, (data_offset * 4), data, data_size, pseudo.header, PSEUDO_HEADER_SIZE);
   set_bits_attr_value (tcp->header, TCP_CHECKSUM_OFFSET, TCP_CHECKSUM_SIZE, checksum);
-
   memcpy(data, tcp->data, data_size);
 }
 
-void tcp_send_segment (struct tcp_segment *segment,uint32_t data_size, uint32_t ip, uint8_t mac[6])
+void tcp_send_segment (struct tcp_segment *segment, uint32_t data_size, uint32_t ip, uint8_t mac[6])
 {
 
   uint8_t *tcp_array = tcp_to_array (segment, data_size);
@@ -40,37 +38,78 @@ void tcp_send_segment (struct tcp_segment *segment,uint32_t data_size, uint32_t 
 }
 
 
-void tcp_threeway_syn_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *segment)
+/*
+void tcp_threeway_syn_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment)
 {
   kprint ("TCP SYN RECEIVED\n");
-  /*
-  uint8_t data_offset = get_bits_attr_value (segment->header, TCP_DATA_OFFSET_OFFSET, TCP_DATA_OFFSET_SIZE);
-  uint8_t syn = get_bits_attr_value (segment->header, TCP_SYN_OFFSET, TCP_SYN_SIZE);
-  struct tcp_header_bit_field tcp_header;
-  tcp_header.source_port = get_bits_attr_value (segment->header, TCP_DESTINATION_PORT_OFFSET, TCP_DESTINATION_PORT_SIZE);
-  tcp_header.destination_port = get_bits_attr_value (segment->header, TCP_SOURCE_PORT_OFFSET, TCP_SOURCE_PORT_SIZE);
-  tcp_header.sequence_number = get_bits_attr_value (segment->header, TCP_SEQUENCE_NUMBER_OFFSET, TCP_SEQUENCE_NUMBER_SIZE);
-  tcp_header.ack_number = tcp_header.sequence_number + 1;
-  tcp_header.data_offset = data_offset;
-  tcp_header.reserved = 0;
-  tcp_header.ecn = 0;
-  tcp_header.cwr = 0;
-  tcp_header.ece = 0;
-  tcp_header.urg = 0;
-  tcp_header.ack = 1;
-  tcp_header.psh = 0;
-  tcp_header.rst = 0;
-  tcp_header.syn = 1;
-  tcp_header.fin = 0;
-  tcp_header.window_size = get_bits_attr_value (segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE);
-  tcp_header.checksum = 0x0;
-  tcp_header.urgent_pointer = 0;
+  struct tcp_segment* send_segment = kmalloc_u(sizeof(struct tcp_segment));
+  uint32_t data_offset = get_bits_attr_value(recv_segment->header, TCP_DATA_OFFSET_OFFSET, TCP_DATA_OFFSET_SIZE);
   uint32_t options_size = (data_offset * 4) - TCP_HEADER_MIN_SIZE;
-  uint8_t *options = kmalloc_u (options_size);
-  get_bytes_attr_value (segment->header, TCP_OPTIONS_OFFSET, options_size, options);
-  tcp_send_segment (&tcp_header, ip, mac, options, 0, 0);
-  */
+  uint8_t* options = kmalloc_u(options_size);
+  get_bytes_attr_value (recv_segment->header, TCP_OPTIONS_OFFSET, options_size, options);
+  tcp_build_segment (send_segment,
+    get_bits_attr_value(recv_segment->header, TCP_DESTINATION_PORT_OFFSET, TCP_DESTINATION_PORT_SIZE),
+    get_bits_attr_value(recv_segment->header, TCP_SOURCE_PORT_OFFSET, TCP_SOURCE_PORT_SIZE),
+    0,
+    get_bits_attr_value(recv_segment->header, TCP_SEQUENCE_NUMBER_OFFSET, TCP_SEQUENCE_NUMBER_SIZE) + 1,
+    data_offset,
+    get_bits_attr_value(recv_segment->header, TCP_RESERVED_OFFSET, TCP_RESERVED_SIZE),
+    0, 0, 0, 0, 1, 0, 0, 1, 0,
+    get_bits_attr_value(recv_segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE),
+    get_bits_attr_value(recv_segment->header, TCP_URGENT_POINTER_OFFSET, TCP_URGENT_POINTER_SIZE),
+    options, 0, 0, ip);
+  tcp_send_segment (send_segment, 0, ip, mac);
+  kfree(options, options_size);
 }
+
+void tcp_threeway_synack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment)
+{
+  kprint ("TCP SYNACK RECEIVED\n");
+  struct tcp_segment* send_segment = kmalloc_u(sizeof(struct tcp_segment));
+  uint32_t data_offset = get_bits_attr_value(recv_segment->header, TCP_DATA_OFFSET_OFFSET, TCP_DATA_OFFSET_SIZE);
+  uint32_t options_size = (data_offset * 4) - TCP_HEADER_MIN_SIZE;
+  uint8_t* options = kmalloc_u(options_size);
+  get_bytes_attr_value (recv_segment->header, TCP_OPTIONS_OFFSET, options_size, options);
+  tcp_build_segment (send_segment,
+    get_bits_attr_value(recv_segment->header, TCP_DESTINATION_PORT_OFFSET, TCP_DESTINATION_PORT_SIZE),
+    get_bits_attr_value(recv_segment->header, TCP_SOURCE_PORT_OFFSET, TCP_SOURCE_PORT_SIZE),
+    get_bits_attr_value(recv_segment->header, TCP_ACK_NUMBER_OFFSET, TCP_ACK_NUMBER_SIZE),
+    get_bits_attr_value(recv_segment->header, TCP_SEQUENCE_NUMBER_OFFSET, TCP_SEQUENCE_NUMBER_SIZE) + 1,
+    data_offset,
+    get_bits_attr_value(recv_segment->header, TCP_RESERVED_OFFSET, TCP_RESERVED_SIZE),
+    0, 0, 0, 0, 1, 0, 0, 0, 0,
+    get_bits_attr_value(recv_segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE),
+    get_bits_attr_value(recv_segment->header, TCP_URGENT_POINTER_OFFSET, TCP_URGENT_POINTER_SIZE),
+    options, 0, 0, ip);
+  tcp_send_segment (send_segment, 6, ip, mac);
+  kfree(options, options_size);
+}
+
+void tcp_threeway_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment)
+{
+  kprint ("TCP ACK RECEIVED\n");
+  struct tcp_segment* send_segment = kmalloc_u(sizeof(struct tcp_segment));
+  uint32_t data_offset = get_bits_attr_value(recv_segment->header, TCP_DATA_OFFSET_OFFSET, TCP_DATA_OFFSET_SIZE);
+  uint32_t options_size = (data_offset * 4) - TCP_HEADER_MIN_SIZE;
+  uint8_t* options = kmalloc_u(options_size);
+  get_bytes_attr_value (recv_segment->header, TCP_OPTIONS_OFFSET, options_size, options);
+  uint8_t* data = "james\n";
+  send_segment->data = kmalloc_u(6);
+  tcp_build_segment (send_segment,
+    get_bits_attr_value(recv_segment->header, TCP_DESTINATION_PORT_OFFSET, TCP_DESTINATION_PORT_SIZE),
+    get_bits_attr_value(recv_segment->header, TCP_SOURCE_PORT_OFFSET, TCP_SOURCE_PORT_SIZE),
+    get_bits_attr_value(recv_segment->header, TCP_ACK_NUMBER_OFFSET, TCP_ACK_NUMBER_SIZE),
+    get_bits_attr_value(recv_segment->header, TCP_SEQUENCE_NUMBER_OFFSET, TCP_SEQUENCE_NUMBER_SIZE),
+    data_offset,
+    get_bits_attr_value(recv_segment->header, TCP_RESERVED_OFFSET, TCP_RESERVED_SIZE),
+    0, 0, 0, 0, 1, 1, 0, 0, 0,
+    get_bits_attr_value(recv_segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE),
+    get_bits_attr_value(recv_segment->header, TCP_URGENT_POINTER_OFFSET, TCP_URGENT_POINTER_SIZE),
+    options, data, 6, ip);
+  tcp_send_segment (send_segment, 6, ip, mac);
+  kfree(options, options_size);
+}
+*/
 
 void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size) 
 {
@@ -78,15 +117,19 @@ void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
   struct tcp_segment *segment = kmalloc_u (sizeof (struct tcp_segment));
   array_to_tcp (segment, data, data_size);
 
+  /*
   if (tcp_recv_threeway_syn (segment))
     tcp_threeway_syn_handler (ip, mac, segment);
 
   if (tcp_recv_threeway_syn_ack (segment))
-    return ;// tal coisa
+    tcp_threeway_synack_handler (ip, mac, segment);
 
   if (tcp_recv_threeway_ack (segment))
-    return ;// tal coisa
-  
+    tcp_threeway_ack_handler (ip, mac, segment);
+
+  if (tcp_recv_psh_ack (segment) && data_size > 0)
+    kprintf("received: %s\n", 1, segment->data);
+    */
 }
 
 
@@ -171,3 +214,21 @@ uint8_t tcp_recv_threeway_ack (struct tcp_segment *segment)
   kfree (flags, sizeof (struct tcp_flags));
   return ret;
 }
+
+/*
+uint8_t tcp_recv_psh_ack (struct tcp_segment *segment)
+{
+  struct tcp_flags *flags = tcp_get_flags (segment);
+  uint8_t ret = !flags->ecn &&
+                !flags->cwr &&
+                !flags->ece &&
+                !flags->urg &&
+                flags->ack &&
+                flags->psh &&
+                !flags->rst &&
+                !flags->syn && 
+                !flags->fin;
+  kfree (flags, sizeof (struct tcp_flags));
+  return ret;
+}
+*/

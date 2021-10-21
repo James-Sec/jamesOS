@@ -1,5 +1,8 @@
-network/checksum
-  refac internet checksum interface to receive pseudo ip header
+FIX DISK LOAD SIZE ERRORS
+
+network/tcp:
+  test tcp client
+  implement tcp tasks
 
 network/ARP:
   ADD ARP TABLE ENTRY WHEN WE RECEIVE A PACKET FROM AN UNKNOWN HOST

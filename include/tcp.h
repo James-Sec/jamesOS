@@ -87,5 +87,6 @@ struct tcp_flags* tcp_get_flags (struct tcp_segment *segment);
 uint8_t tcp_recv_threeway_syn (struct tcp_segment *segment);
 uint8_t tcp_recv_threeway_syn_ack (struct tcp_segment *segment);
 uint8_t tcp_recv_threeway_ack (struct tcp_segment *segment);
+uint8_t tcp_recv_psh_ack (struct tcp_segment *segment);
 
 #endif
