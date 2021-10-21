@@ -152,14 +152,13 @@ void entry ()
 
   uint8_t options[10];
   //tcp_send_segment (&tcp_header, ip, mac, options, 0, 0);
+  */
   uint32_t ip = 0x1e1e1e1e;
   uint16_t port = 5555;
-  htons (&port);
   uint8_t mac[6] = {0x46, 0xd7, 0x93, 0x5c, 0x13, 0xe8};
   struct tcp_segment* send_segment = kmalloc_u(sizeof(struct tcp_segment));
   tcp_build_segment (send_segment, 5555, port, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 512, 0, 0, 0, 0, ip);
   tcp_send_segment(send_segment, 0, ip, mac);
-  */
 
   task_termination (0, 0);
 }

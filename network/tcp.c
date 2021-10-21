@@ -37,8 +37,6 @@ void tcp_send_segment (struct tcp_segment *segment, uint32_t data_size, uint32_t
   l3_upper_interface (ip, mac, tcp_array, data_size + (data_offset * 4), L3_PROTOCOL_IPv4, 0, 0, IPv4_PROTOCOL_TCP);
 }
 
-
-/*
 void tcp_threeway_syn_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment)
 {
   kprint ("TCP SYN RECEIVED\n");
@@ -81,7 +79,7 @@ void tcp_threeway_synack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segmen
     get_bits_attr_value(recv_segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE),
     get_bits_attr_value(recv_segment->header, TCP_URGENT_POINTER_OFFSET, TCP_URGENT_POINTER_SIZE),
     options, 0, 0, ip);
-  tcp_send_segment (send_segment, 6, ip, mac);
+  tcp_send_segment (send_segment, 0, ip, mac);
   kfree(options, options_size);
 }
 
@@ -109,7 +107,6 @@ void tcp_threeway_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *
   tcp_send_segment (send_segment, 6, ip, mac);
   kfree(options, options_size);
 }
-*/
 
 void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size) 
 {
@@ -117,7 +114,6 @@ void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
   struct tcp_segment *segment = kmalloc_u (sizeof (struct tcp_segment));
   array_to_tcp (segment, data, data_size);
 
-  /*
   if (tcp_recv_threeway_syn (segment))
     tcp_threeway_syn_handler (ip, mac, segment);
 
@@ -129,9 +125,7 @@ void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data
 
   if (tcp_recv_psh_ack (segment) && data_size > 0)
     kprintf("received: %s\n", 1, segment->data);
-    */
 }
-
 
 struct tcp_segment* array_to_tcp (struct tcp_segment *segment, uint8_t *array, uint32_t size)
 {
@@ -215,7 +209,6 @@ uint8_t tcp_recv_threeway_ack (struct tcp_segment *segment)
   return ret;
 }
 
-/*
 uint8_t tcp_recv_psh_ack (struct tcp_segment *segment)
 {
   struct tcp_flags *flags = tcp_get_flags (segment);
@@ -231,4 +224,3 @@ uint8_t tcp_recv_psh_ack (struct tcp_segment *segment)
   kfree (flags, sizeof (struct tcp_flags));
   return ret;
 }
-*/
