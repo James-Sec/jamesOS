@@ -1,8 +1,11 @@
-FIX DISK LOAD SIZE ERRORS
+(FIX DISK LOAD SIZE ERRORS)
 
 network/tcp:
-  test tcp client
-  implement tcp tasks
+  implement connection control feature (udp like client/server table)
+  ---
+  now, tcp needs a flow control/sliding window protocol. need to implement that too
+  handlers for ignored tcp flags (optional)
+  dynamic MSS (optional)
 
 network/ARP:
   ADD ARP TABLE ENTRY WHEN WE RECEIVE A PACKET FROM AN UNKNOWN HOST
