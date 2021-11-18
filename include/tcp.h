@@ -46,6 +46,16 @@
 #define TCP_CHECKSUM_SIZE 16
 #define TCP_URGENT_POINTER_SIZE 16
 
+#define TCP_TOTAL_PORTS 65535
+
+#define TCP_EPHEMERAL_PORT_BEGIN 32768
+#define TCP_EPHEMERAL_PORT_END 60999
+
+#define TCP_STATE_WAITING_THREEWAY_SYN 0
+#define TCP_STATE_WAITING_THREEWAY_SYN_ACK 1
+#define TCP_STATE_WAITING_THREEWAY_ACK 2
+#define TCP_STATE_CONNECTED 3
+
 struct tcp_segment
 {
   uint8_t header[TCP_HEADER_MAX_SIZE];
@@ -57,7 +67,10 @@ struct tcp_port_table_entry
   uint32_t pid;
   uint8_t* data;
   struct net_address_set net_addresses;
+  uint8_t state;
 };
+
+struct tcp_port_table_entry tcp_port_table [TCP_TOTAL_PORTS];
 
 struct tcp_flags
 {
@@ -73,6 +86,11 @@ struct tcp_flags
 };
 
 struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, uint16_t source_port, uint16_t destination_port, uint32_t sequence_number, uint32_t ack_number, uint8_t data_offset, uint8_t reserved, uint8_t ecn, uint8_t cwr, uint8_t ece, uint8_t urg, uint8_t ack, uint8_t psh, uint8_t rst, uint8_t syn, uint8_t fin, uint16_t window_size, uint16_t urgent_pointer, uint8_t* options, uint8_t* data, uint32_t data_size, uint32_t ip);
+
+
+uint32_t tcp_connect (uint16_t src_port, uint16_t dest_port, uint32_t ip, uint8_t mac[6]);
+
+int32_t tcp_bind (uint16_t port, uint8_t* data, struct net_address_set** address);
 
 void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);
 void tcp_send_segment (struct tcp_segment *segment,uint32_t data_size, uint32_t ip, uint8_t mac[6]);

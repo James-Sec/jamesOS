@@ -85,13 +85,14 @@ int32_t udp_port_bind (uint16_t port, uint8_t* data, struct net_address_set** ad
     {
       if (!udp_port_table [i].pid)
       {
-        udp_port_table [i].pid = current_task->pid;
         port = i;
         break;
       }
     }
+    if (!port)
+      return -1;
   }
-  if (udp_port_table [port].pid)
+  else if (udp_port_table [port].pid)
     return -1;
   *address = &udp_port_table[port].net_addresses;
   udp_port_table [port].data = data;
