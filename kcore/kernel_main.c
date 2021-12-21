@@ -166,6 +166,5 @@ void entry ()
   struct net_address_set* net_addresses;
   src_port = tcp_bind (src_port, data, net_addresses);
   tcp_connect (src_port, 5555, ip, mac);
-
   task_termination (0, 0);
 }

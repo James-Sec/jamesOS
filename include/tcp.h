@@ -55,6 +55,7 @@
 #define TCP_STATE_WAITING_THREEWAY_SYN_ACK 1
 #define TCP_STATE_WAITING_THREEWAY_ACK 2
 #define TCP_STATE_CONNECTED 3
+#define TCP_STATE_FIN 4
 
 struct tcp_segment
 {
