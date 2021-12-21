@@ -47,7 +47,8 @@ void recv_ipv4_packet (uint8_t mac[6], uint8_t *data, uint32_t size)
   array_to_ipv4 (packet, data, size);
   uint32_t protocol = get_bits_attr_value (packet, IPv4_PROTOCOL_OFFSET, IPv4_PROTOCOL_SIZE);
   uint32_t ip = get_bits_attr_value (packet, IPv4_SOURCE_IP_ADDRESS_OFFSET, IPv4_SOURCE_IP_ADDRESS_SIZE);
-  uint32_t data_size = size - IPv4_HEADER_SIZE;
+  uint32_t total_length = get_bits_attr_value (packet, IPv4_TOTAL_LENGTH_OFFSET, IPv4_TOTAL_LENGTH_SIZE);
+  uint32_t data_size = total_length - IPv4_HEADER_SIZE;
 
   switch (protocol)
   {

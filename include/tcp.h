@@ -103,10 +103,12 @@ uint8_t tcp_recv_threeway_syn (struct tcp_segment *segment);
 uint8_t tcp_recv_threeway_syn_ack (struct tcp_segment *segment);
 uint8_t tcp_recv_threeway_ack (struct tcp_segment *segment);
 uint8_t tcp_recv_psh_ack (struct tcp_segment *segment);
+uint8_t tcp_recv_fin_ack (struct tcp_segment *segment);
 
 void tcp_threeway_syn_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
 void tcp_threeway_synack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
 void tcp_threeway_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
-void tcp_threeway_psh_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint32_t sequence_number, uint8_t* data, uint32_t data_size);
+void tcp_psh_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint32_t sequence_number, uint8_t* data, uint32_t data_size);
+void tcp_fin_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment);
 
 #endif
