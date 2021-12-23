@@ -1,8 +1,8 @@
 (FIX DISK LOAD SIZE ERRORS)
 
 network/tcp:
-  implement connection control feature (udp like client/server table)
-  ---
+  build TCP architecture (sliding window, control informations, .....)
+
   now, tcp needs a flow control/sliding window protocol. need to implement that too
   handlers for ignored tcp flags (optional)
   dynamic MSS (optional)

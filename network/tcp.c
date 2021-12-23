@@ -29,7 +29,7 @@ struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, uint16_t source_
   memcpy(data, tcp->data, data_size);
 }
 
-int32_t tcp_bind (uint16_t port, uint8_t* data, struct net_address_set** address)
+int32_t tcp_bind (uint16_t port, uint8_t* data)
 {
   if (!port)
   {
@@ -47,8 +47,7 @@ int32_t tcp_bind (uint16_t port, uint8_t* data, struct net_address_set** address
   else if (tcp_port_table [port].pid)
     return -1;
 
-  *address = &tcp_port_table[port].net_addresses;
-  tcp_port_table [port].data = data;
+  tcp_port_table [port].buffer = data;
   tcp_port_table [port].pid = current_task->pid;
   return port;
 }
@@ -56,7 +55,7 @@ int32_t tcp_bind (uint16_t port, uint8_t* data, struct net_address_set** address
 uint32_t tcp_connect (uint16_t src_port, uint16_t dest_port, uint32_t ip, uint8_t mac[6])
 {
   struct tcp_segment *segment = kmalloc_u (sizeof (struct tcp_segment));
-  tcp_build_segment (segment, src_port, dest_port, 0, 0,5, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 65535, 0, 0, 0, 0, ip);
+  tcp_build_segment (segment, src_port, dest_port, 0, 0,TCP_HEADER_MIN_SIZE / 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 65535, 0, 0, 0, 0, ip);
   tcp_send_segment (segment, 0, ip, mac);
   tcp_port_table[src_port].state = TCP_STATE_WAITING_THREEWAY_SYN_ACK;
   block_task (BLOCKED);
@@ -141,13 +140,18 @@ void tcp_threeway_synack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segmen
       get_bits_attr_value(recv_segment->header, TCP_SOURCE_PORT_OFFSET, TCP_SOURCE_PORT_SIZE),
       get_bits_attr_value(recv_segment->header, TCP_ACK_NUMBER_OFFSET, TCP_ACK_NUMBER_SIZE),
       get_bits_attr_value(recv_segment->header, TCP_SEQUENCE_NUMBER_OFFSET, TCP_SEQUENCE_NUMBER_SIZE) + 1,
-      5,
+      TCP_HEADER_MIN_SIZE / 4,
       get_bits_attr_value(recv_segment->header, TCP_RESERVED_OFFSET, TCP_RESERVED_SIZE),
       0, 0, 0, 0, 1, 0, 0, 0, 0,
       get_bits_attr_value(recv_segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE),
       get_bits_attr_value(recv_segment->header, TCP_URGENT_POINTER_OFFSET, TCP_URGENT_POINTER_SIZE),
       0, 0, 0, ip);
     tcp_send_segment (send_segment, 0, ip, mac);
+
+    memcpy (tcp_port_table[port].net_addresses.mac, mac, 6);
+    tcp_port_table[port].net_addresses.ip = ip;
+    tcp_port_table[port].net_addresses.port = get_bits_attr_value (recv_segment->header, TCP_SOURCE_PORT_OFFSET, TCP_SOURCE_PORT_SIZE);
+
     tcp_port_table[port].state = TCP_STATE_CONNECTED;
   }
 }
@@ -158,20 +162,10 @@ void tcp_threeway_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *
   uint16_t port = get_bits_attr_value (recv_segment->header, TCP_DESTINATION_PORT_OFFSET, TCP_DESTINATION_PORT_SIZE);
   if (tcp_port_table[port].state == TCP_STATE_WAITING_THREEWAY_ACK)
   {
-    struct tcp_segment* send_segment = kmalloc_u(sizeof(struct tcp_segment));
-    tcp_build_segment (send_segment,
-      get_bits_attr_value(recv_segment->header, TCP_DESTINATION_PORT_OFFSET, TCP_DESTINATION_PORT_SIZE),
-      get_bits_attr_value(recv_segment->header, TCP_SOURCE_PORT_OFFSET, TCP_SOURCE_PORT_SIZE),
-      get_bits_attr_value(recv_segment->header, TCP_ACK_NUMBER_OFFSET, TCP_ACK_NUMBER_SIZE),
-      get_bits_attr_value(recv_segment->header, TCP_SEQUENCE_NUMBER_OFFSET, TCP_SEQUENCE_NUMBER_SIZE),
-      5,
-      get_bits_attr_value(recv_segment->header, TCP_RESERVED_OFFSET, TCP_RESERVED_SIZE),
-      0, 0, 0, 0, 1, 0, 0, 0, 0,
-      get_bits_attr_value(recv_segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE),
-      get_bits_attr_value(recv_segment->header, TCP_URGENT_POINTER_OFFSET, TCP_URGENT_POINTER_SIZE),
-      0, 0, 0, ip);
+    memcpy (tcp_port_table[port].net_addresses.mac, mac, 6);
+    tcp_port_table[port].net_addresses.ip = ip;
+    tcp_port_table[port].net_addresses.port = get_bits_attr_value (recv_segment->header, TCP_SOURCE_PORT_OFFSET, TCP_SOURCE_PORT_SIZE);
     tcp_port_table[port].state = TCP_STATE_CONNECTED;
-    tcp_send_segment (send_segment, 0, ip, mac);
   }
 }
 
@@ -188,7 +182,7 @@ void tcp_psh_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_
         get_bits_attr_value(recv_segment->header, TCP_SOURCE_PORT_OFFSET, TCP_SOURCE_PORT_SIZE),
         sequence_number,
         get_bits_attr_value(recv_segment->header, TCP_SEQUENCE_NUMBER_OFFSET, TCP_SEQUENCE_NUMBER_SIZE) + data_size,
-        5,
+        TCP_HEADER_MIN_SIZE / 4,
         get_bits_attr_value(recv_segment->header, TCP_RESERVED_OFFSET, TCP_RESERVED_SIZE),
         0, 0, 0, 0, 1, 0, 0, 0, 0,
         get_bits_attr_value(recv_segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE),

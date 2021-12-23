@@ -163,8 +163,7 @@ void entry ()
   uint16_t src_port = 4444;
   uint8_t mac[6] = {0x46, 0xd7, 0x93, 0x5c, 0x13, 0xe8};
   uint8_t *data = kmalloc_u (1000);
-  struct net_address_set* net_addresses;
-  src_port = tcp_bind (src_port, data, net_addresses);
+  src_port = tcp_bind (src_port, data);
   tcp_connect (src_port, 5555, ip, mac);
   task_termination (0, 0);
 }

@@ -66,12 +66,17 @@ struct tcp_segment
 struct tcp_port_table_entry
 {
   uint32_t pid;
-  uint8_t* data;
-  struct net_address_set net_addresses;
   uint8_t state;
+  uint32_t current_byte_tx;
+
+  uint8_t* buffer;
+  uint32_t buffer_offset;
+  struct net_address_set net_addresses;
+  
 };
 
 struct tcp_port_table_entry tcp_port_table [TCP_TOTAL_PORTS];
+
 
 struct tcp_flags
 {
@@ -91,7 +96,7 @@ struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, uint16_t source_
 
 uint32_t tcp_connect (uint16_t src_port, uint16_t dest_port, uint32_t ip, uint8_t mac[6]);
 
-int32_t tcp_bind (uint16_t port, uint8_t* data, struct net_address_set** address);
+int32_t tcp_bind (uint16_t port, uint8_t* data);
 
 void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);
 void tcp_send_segment (struct tcp_segment *segment,uint32_t data_size, uint32_t ip, uint8_t mac[6]);
