@@ -33,6 +33,8 @@ static uint32_t _kmalloc (uint32_t size, uint32_t align)
   uint8_t *i;
   uint32_t count = 0;
   uint32_t end = 0;
+  if (!size)
+    return 0;
   for (i = bitset_base; i < bitset_limit ; i++)
   {
     uint32_t num_bits_from_base = (((uint32_t)i) - BITSET_BASE) * 8;

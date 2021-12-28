@@ -55,7 +55,13 @@
 #define TCP_STATE_WAITING_THREEWAY_SYN_ACK 1
 #define TCP_STATE_WAITING_THREEWAY_ACK 2
 #define TCP_STATE_CONNECTED 3
-#define TCP_STATE_FIN 4
+#define TCP_STATE_FIN_WAIT_1 4
+#define TCP_STATE_FIN_WAIT_2 5
+#define TCP_STATE_CLOSING 6
+#define TCP_STATE_TIME_WAIT 7
+#define TCP_STATE_CLOSE_WAIT 8
+#define TCP_STATE_LAST_ACK 9
+#define TCP_STATE_CLOSED 10
 
 struct tcp_segment
 {
@@ -111,10 +117,14 @@ uint8_t tcp_recv_threeway_ack (struct tcp_segment *segment);
 uint8_t tcp_recv_psh_ack (struct tcp_segment *segment);
 uint8_t tcp_recv_fin_ack (struct tcp_segment *segment);
 
-void tcp_threeway_syn_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
-void tcp_threeway_synack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
-void tcp_threeway_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
-void tcp_psh_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint32_t sequence_number, uint8_t* data, uint32_t data_size);
-void tcp_fin_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment);
+uint8_t tcp_state_threeway_syn_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
+uint8_t tcp_state_threeway_syn_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
+uint8_t tcp_state_threeway_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
+uint8_t tcp_state_psh_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint32_t sequence_number, uint8_t* data, uint32_t data_size);
+uint8_t tcp_state_fin_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment);
+
+uint8_t tcp_send_syn_ack(uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
+uint8_t tcp_send_ack(uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
+uint8_t tcp_send_fin_ack (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
 
 #endif
