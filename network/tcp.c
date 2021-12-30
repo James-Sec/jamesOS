@@ -84,7 +84,7 @@ uint8_t tcp_send_syn_ack(uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_s
       get_bits_attr_value(recv_segment->header, TCP_SOURCE_PORT_OFFSET, TCP_SOURCE_PORT_SIZE),
       0,
       get_bits_attr_value(recv_segment->header, TCP_SEQUENCE_NUMBER_OFFSET, TCP_SEQUENCE_NUMBER_SIZE) + 1,
-      data_offset,
+      (TCP_HEADER_MIN_SIZE / 4) + 1,
       get_bits_attr_value(recv_segment->header, TCP_RESERVED_OFFSET, TCP_RESERVED_SIZE),
       0, 0, 0, 0, 1, 0, 0, 1, 0,
       get_bits_attr_value(recv_segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE),
@@ -164,6 +164,11 @@ uint8_t tcp_state_threeway_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_
 
 uint8_t tcp_state_connected_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size)
 {
+  if (tcp_recv_psh_ack (recv_segment))
+  {
+    tcp_send_ack(ip, mac, recv_segment, data, data_size);
+    return 0;
+  }
   if (tcp_recv_psh_ack (recv_segment))
   {
     tcp_send_ack(ip, mac, recv_segment, data, data_size);
