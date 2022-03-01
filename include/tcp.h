@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <network_utils.h>
+#include <bitmap.h>
 
 #define TCP_HEADER_MIN_SIZE 20
 #define TCP_HEADER_MAX_SIZE 64
@@ -69,6 +70,15 @@ struct tcp_segment
   uint8_t *data;
 };
 
+struct tcp_sliding_window
+{
+  uint32_t next_byte;
+  uint32_t size;
+  uint32_t start_bitmap;
+  uint32_t offset;
+  uint8_t *ring_bitmap;
+};
+
 struct tcp_port_table_entry
 {
   uint32_t pid;
@@ -78,11 +88,11 @@ struct tcp_port_table_entry
   uint8_t* buffer;
   uint32_t buffer_offset;
   struct net_address_set net_addresses;
-  
+
+  struct tcp_sliding_window recv_window;
 };
 
 struct tcp_port_table_entry tcp_port_table [TCP_TOTAL_PORTS];
-
 
 struct tcp_flags
 {

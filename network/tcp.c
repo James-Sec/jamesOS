@@ -191,6 +191,7 @@ void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t segm
   uint16_t port = get_bits_attr_value (segment->header, TCP_DESTINATION_PORT_OFFSET, TCP_DESTINATION_PORT_SIZE);
   uint8_t data_offset = get_bits_attr_value (data, TCP_DATA_OFFSET_OFFSET, TCP_DATA_OFFSET_SIZE);
   uint32_t data_size = segment_size - (data_offset * 4);
+
   kprintf("STATE: %d\n", 1, tcp_port_table[port].state);
   switch (tcp_port_table[port].state)
   {
