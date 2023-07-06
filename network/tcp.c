@@ -31,12 +31,9 @@ struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, uint16_t source_
 
 int32_t tcp_bind (uint16_t port, uint8_t* data)
 {
-  if (!port)
-  {
-    for (uint16_t i = TCP_EPHEMERAL_PORT_BEGIN; i <= TCP_EPHEMERAL_PORT_END; i++)
-    {
-      if (!tcp_port_table [i].pid)
-      {
+  if (!port) {
+    for (uint16_t i = TCP_EPHEMERAL_PORT_BEGIN; i <= TCP_EPHEMERAL_PORT_END; i++) {
+      if (!tcp_port_table [i].pid) {
         port = i;
         break;
       }
@@ -56,9 +53,11 @@ uint32_t tcp_connect (uint16_t src_port, uint16_t dest_port, uint32_t ip, uint8_
 {
   struct tcp_segment *segment = kmalloc_u (sizeof (struct tcp_segment));
   tcp_build_segment (segment, src_port, dest_port, 0, 0,TCP_HEADER_MIN_SIZE / 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 65535, 0, 0, 0, 0, ip);
-  tcp_send_segment (segment, 0, ip, mac);
   tcp_port_table[src_port].state = TCP_STATE_WAITING_THREEWAY_SYN_ACK;
+  tcp_send_segment (segment, 0, ip, mac);
+  kprintf ("blocking %d\n", 1, current_task->pid);
   block_task (BLOCKED);
+  kprint ("ok, i am free\n");
 }
 
 uint32_t tcp_listen (uint16_t src_port, uint16_t dest_port, uint32_t ip, uint8_t mac[6])
@@ -169,11 +168,6 @@ uint8_t tcp_state_connected_handler (uint32_t ip, uint8_t mac[6], struct tcp_seg
     tcp_send_ack(ip, mac, recv_segment, data, data_size);
     return 0;
   }
-  if (tcp_recv_psh_ack (recv_segment))
-  {
-    tcp_send_ack(ip, mac, recv_segment, data, data_size);
-    return 0;
-  }
   if (tcp_recv_fin_ack (recv_segment))
   {
     tcp_send_fin_ack(ip, mac, recv_segment, data, data_size);
@@ -200,8 +194,11 @@ void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t segm
         tcp_port_table[port].state = TCP_STATE_WAITING_THREEWAY_ACK;
       break;
     case TCP_STATE_WAITING_THREEWAY_SYN_ACK:
-      if (tcp_state_threeway_syn_ack_handler (ip, mac, segment, segment->data, data_size))
+      if (tcp_state_threeway_syn_ack_handler (ip, mac, segment, segment->data, data_size)){
         tcp_port_table[port].state = TCP_STATE_CONNECTED;
+  kprintf ("unblocking %d\n",1, tcp_port_table[port].pid);
+	unblock_task(tcp_port_table[port].pid);
+      }
       break;
     case TCP_STATE_WAITING_THREEWAY_ACK:
       if(tcp_state_threeway_ack_handler (ip, mac, segment, segment->data, data_size))

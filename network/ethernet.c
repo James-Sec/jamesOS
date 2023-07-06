@@ -27,7 +27,7 @@ void send_ethernet_frame (uint8_t mac[6], uint8_t *data, uint32_t data_size, uin
 
 void recv_ethernet_frame (uint8_t *data, uint32_t size)
 {
-  kprintf ("ethernet header size: %d\nethernet total_size: %d\n", 2, ETHER_HEADER_SIZE, size);
+  //kprintf ("ethernet header size: %d\nethernet total_size: %d\n", 2, ETHER_HEADER_SIZE, size);
   struct ether_frame *frame = kmalloc_u (sizeof (struct ether_frame));
   frame = array_to_ethernet (frame, data, size);
   uint16_t ether_type;

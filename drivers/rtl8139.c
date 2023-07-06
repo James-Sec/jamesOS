@@ -63,8 +63,9 @@ void rtl8139_send_frame (uint8_t* frame, uint32_t size)
   port_dword_out (rtl8139_device->io_base + TSAD_array[rtl8139_device->tx_cur], frame);
   port_dword_out (rtl8139_device->io_base + TSD_array[rtl8139_device->tx_cur++], size);
 
-  if(rtl8139_device->tx_cur > 3)
+  if(rtl8139_device->tx_cur > 3){
     rtl8139_device->tx_cur = 0;
+  }
 }
 
 void rtl8139_init ()
