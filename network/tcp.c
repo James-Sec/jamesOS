@@ -54,9 +54,11 @@ uint32_t tcp_connect (uint16_t src_port, uint16_t dest_port, uint32_t ip, uint8_
   struct tcp_segment *segment = kmalloc_u (sizeof (struct tcp_segment));
   tcp_build_segment (segment, src_port, dest_port, 0, 0,TCP_HEADER_MIN_SIZE / 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 65535, 0, 0, 0, 0, ip);
   tcp_port_table[src_port].state = TCP_STATE_WAITING_THREEWAY_SYN_ACK;
-  tcp_send_segment (segment, 0, ip, mac);
   kprintf ("blocking %d\n", 1, current_task->pid);
-  block_task (BLOCKED);
+  while(!tcp_port_table[src_port].connection_stablished_or_reseted){
+    tcp_send_segment (segment, 0, ip, mac);
+    sleep(1);
+  }
   kprint ("ok, i am free\n");
 }
 
@@ -196,8 +198,7 @@ void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t segm
     case TCP_STATE_WAITING_THREEWAY_SYN_ACK:
       if (tcp_state_threeway_syn_ack_handler (ip, mac, segment, segment->data, data_size)){
         tcp_port_table[port].state = TCP_STATE_CONNECTED;
-  kprintf ("unblocking %d\n",1, tcp_port_table[port].pid);
-	unblock_task(tcp_port_table[port].pid);
+        tcp_port_table[port].connection_stablished_or_reseted = 1;
       }
       break;
     case TCP_STATE_WAITING_THREEWAY_ACK:

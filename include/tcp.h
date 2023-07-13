@@ -84,6 +84,7 @@ struct tcp_port_table_entry
   uint32_t pid;
   uint8_t state;
   uint32_t current_byte_tx;
+  uint8_t connection_stablished_or_reseted;
 
   uint8_t* buffer;
   uint32_t buffer_offset;

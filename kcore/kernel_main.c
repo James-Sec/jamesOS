@@ -159,22 +159,12 @@ void entry ()
   tcp_build_segment (send_segment, 5555, port, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 512, 0, 0, 0, 0, ip);
   tcp_send_segment(send_segment, 0, ip, mac);
   */
-  sleep (5);
   uint32_t ip = 0x1e1e1e1e;
   uint16_t src_port = 4444;
   uint8_t mac[6] = {0x46, 0xd7, 0x93, 0x5c, 0x13, 0xe8};
   uint8_t *data = kmalloc_u (1000);
   src_port = tcp_bind (src_port, data);
   tcp_connect (src_port, 5555, ip, mac);
-  sleep (5);
-  uint8_t* uwu = "familia #fastandfurious\n";
-	
-  struct tcp_segment *segment = kmalloc_u (sizeof (struct tcp_segment));
-  tcp_build_segment (segment, src_port, 5555, 0, 0,TCP_HEADER_MIN_SIZE / 4, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 65535, 0, 0, uwu, 24, ip);
 
-	kprint ("before");
-  tcp_send_segment (segment, 24, ip, mac);
-	kprint ("after");
-  	
   task_termination (0, 0);
 }
