@@ -36,13 +36,15 @@ void entry ()
 
   paging_init ();
 
-  rtl8139_init ();
-
   serial_init ();
 
   asm volatile ("cli");
   multitask_init ();
   asm volatile ("sti");
+
+  nht_init ();
+
+  rtl8139_init ();
 
 
   /*
@@ -159,6 +161,7 @@ void entry ()
   tcp_build_segment (send_segment, 5555, port, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 512, 0, 0, 0, 0, ip);
   tcp_send_segment(send_segment, 0, ip, mac);
   */
+
   uint32_t ip = 0x1e1e1e1e;
   uint16_t src_port = 4444;
   uint8_t mac[6] = {0x46, 0xd7, 0x93, 0x5c, 0x13, 0xe8};

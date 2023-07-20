@@ -56,6 +56,7 @@ uint32_t tcp_connect (uint16_t src_port, uint16_t dest_port, uint32_t ip, uint8_
   tcp_port_table[src_port].state = TCP_STATE_WAITING_THREEWAY_SYN_ACK;
   kprintf ("blocking %d\n", 1, current_task->pid);
   while(!tcp_port_table[src_port].connection_stablished_or_reseted){
+    kprint ("inside while\n");
     tcp_send_segment (segment, 0, ip, mac);
     sleep(1);
   }
@@ -199,6 +200,7 @@ void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t segm
       if (tcp_state_threeway_syn_ack_handler (ip, mac, segment, segment->data, data_size)){
         tcp_port_table[port].state = TCP_STATE_CONNECTED;
         tcp_port_table[port].connection_stablished_or_reseted = 1;
+        kprint ("set to connected\n");
       }
       break;
     case TCP_STATE_WAITING_THREEWAY_ACK:

@@ -110,5 +110,5 @@ int32_t udp_port_unbind (uint16_t port)
 
 void udp_receive ()
 {
-  block_task (BLOCKED);
+  block_task (BLOCKED, 1);
 }

@@ -59,10 +59,12 @@ void multitask_init ()
 	multitasking_on = 1;
 }
 
-void block_task (uint8_t reason)
+void block_task (uint8_t reason, uint8_t lock)
 {
-  lock_irq ();
+  if (lock)
+    lock_irq ();
   --ready_to_run_counter;
+  kprintf ("ready_to_run : %d\n", 1, ready_to_run_counter);
   current_task->state = reason;
   scheduler ();
   unlock_irq ();
@@ -111,7 +113,7 @@ static void sleep_until (uint32_t ticks)
 
 	// current_task->state = SLEEPING;
 	// the task call scheduler
-	block_task (SLEEPING);
+	block_task (SLEEPING, 1);
 }
 
 void scheduler () 
@@ -120,6 +122,7 @@ void scheduler ()
 
   if (!ready_to_run_counter)
   {
+    kprint ("callind idle\n");
     dispatcher (idle_task);
     return;
   }
@@ -188,8 +191,11 @@ struct tcb* search_task (uint32_t pid)
 
 void soft_unblock_task (uint32_t pid)
 {
-  ++ready_to_run_counter;
   struct tcb *tmp;
   tmp = search_task (pid);
+  if (tmp->state == READY_TO_RUN || tmp->state == RUNNING)
+    return;
+
+  ++ready_to_run_counter;
   tmp->state = READY_TO_RUN;
 }

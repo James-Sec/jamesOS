@@ -38,7 +38,7 @@ void multitask_init ();
 void print_task (struct tcb*);
 void unblock_task (uint32_t pid);
 void soft_unblock_task (uint32_t pid);
-void block_task (uint8_t reason);
+void block_task (uint8_t reason, uint8_t lock);
 void sleep (uint32_t ticks);
 void task_entry ();
 void task_termination (uint32_t argc, uint8_t *argp);
