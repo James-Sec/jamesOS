@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 void bitmap_insert(uint8_t *bitmap, uint32_t position);
+void bitmap_clear(uint8_t *bitmap, uint32_t position);
 
 uint8_t bitmap_read(uint8_t *bitmap, uint32_t position);
 

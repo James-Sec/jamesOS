@@ -6,6 +6,12 @@ void bitmap_insert(uint8_t *bitmap, uint32_t position) {
   bitmap[byte] |= 1 << bit;
 }
 
+void bitmap_clear(uint8_t *bitmap, uint32_t position) {
+  uint32_t byte = position / 8;
+  uint32_t bit = position % 8;
+  bitmap[byte] &= ~(1 << bit);
+}
+
 uint8_t bitmap_read(uint8_t *bitmap, uint32_t position) {
   uint32_t byte = position / 8;
   uint32_t bit = position % 8;
@@ -13,10 +19,13 @@ uint8_t bitmap_read(uint8_t *bitmap, uint32_t position) {
 }
 
 void bitmap_fill(uint8_t *bitmap, uint32_t bitmap_size, uint32_t begin_bit, uint32_t bits_size, uint32_t bit) {
-  for (int i = 0; i < bits_size; i++)
+  for (int32_t i = 0; i < bits_size; i++)
   {
     uint32_t position = (begin_bit + i) % bitmap_size;
-    bitmap_insert(bitmap, position);
+    if (bit)
+      bitmap_insert(bitmap, position);
+    else
+      bitmap_clear(bitmap, position);
   }
 }
 

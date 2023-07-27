@@ -18,7 +18,7 @@ void send_ethernet_frame (uint8_t mac[6], uint8_t *data, uint32_t data_size, uin
   ether = build_ether_frame (ether, mac, type, data, data_size);
 
   uint8_t* ethernet_array = ethernet_to_array (ether, data_size);
-  l1_upper_interface (ethernet_array, data_size + ETHER_HEADER_SIZE, L1_RTL8139_ID);
+  nht_enqueue_send_frame (ethernet_array, data_size + ETHER_HEADER_SIZE);
 
   kfree (ether->data, data_size);
   kfree (ether, sizeof (struct ether_frame));

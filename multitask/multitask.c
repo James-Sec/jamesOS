@@ -64,7 +64,6 @@ void block_task (uint8_t reason, uint8_t lock)
   if (lock)
     lock_irq ();
   --ready_to_run_counter;
-  kprintf ("ready_to_run : %d\n", 1, ready_to_run_counter);
   current_task->state = reason;
   scheduler ();
   unlock_irq ();
@@ -122,7 +121,6 @@ void scheduler ()
 
   if (!ready_to_run_counter)
   {
-    kprint ("callind idle\n");
     dispatcher (idle_task);
     return;
   }

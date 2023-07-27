@@ -64,6 +64,9 @@
 #define TCP_STATE_LAST_ACK 9
 #define TCP_STATE_CLOSED 10
 
+#define TCP_SLIDING_WINDOW_BITMAP_SIZE 128
+#define TCP_SLIDING_WINDOW_SIZE 1024
+
 struct tcp_segment
 {
   uint8_t header[TCP_HEADER_MAX_SIZE];
@@ -72,11 +75,9 @@ struct tcp_segment
 
 struct tcp_sliding_window
 {
-  uint32_t next_byte;
-  uint32_t size;
-  uint32_t start_bitmap;
-  uint32_t offset;
-  uint8_t *ring_bitmap;
+  uint32_t last_acked_byte;
+  uint32_t initial_sequence_number;
+  uint8_t bitmap[TCP_SLIDING_WINDOW_BITMAP_SIZE];
 };
 
 struct tcp_port_table_entry
@@ -135,7 +136,7 @@ uint8_t tcp_state_psh_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segme
 uint8_t tcp_state_fin_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment);
 
 uint8_t tcp_send_syn_ack(uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
-uint8_t tcp_send_ack(uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
+uint8_t tcp_send_ack(uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size, uint32_t ack_number);
 uint8_t tcp_send_fin_ack (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size);
 
 #endif
