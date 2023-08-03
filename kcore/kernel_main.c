@@ -165,9 +165,16 @@ void entry ()
   uint32_t ip = 0x1e1e1e1e;
   uint16_t src_port = 4444;
   uint8_t mac[6] = {0x46, 0xd7, 0x93, 0x5c, 0x13, 0xe8};
-  uint8_t *data = kmalloc_u (1000);
-  src_port = tcp_bind (src_port, data);
+  src_port = tcp_bind (src_port);
   tcp_connect (src_port, 5555, ip, mac);
+
+  uint8_t *data = kmalloc_u (1000);
+
+  while (1) {
+    uint32_t ret = tcp_read (src_port, data, 1000);
+  }
+
+  
 
   task_termination (0, 0);
 }

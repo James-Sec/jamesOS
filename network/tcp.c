@@ -29,7 +29,7 @@ struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, uint16_t source_
   memcpy(data, tcp->data, data_size);
 }
 
-int32_t tcp_bind (uint16_t port, uint8_t* data)
+int32_t tcp_bind (uint16_t port)
 {
   if (!port) {
     for (uint16_t i = TCP_EPHEMERAL_PORT_BEGIN; i <= TCP_EPHEMERAL_PORT_END; i++) {
@@ -44,7 +44,6 @@ int32_t tcp_bind (uint16_t port, uint8_t* data)
   else if (tcp_port_table [port].pid)
     return -1;
 
-  tcp_port_table [port].buffer = data;
   tcp_port_table [port].pid = current_task->pid;
   return port;
 }
@@ -163,40 +162,77 @@ uint8_t tcp_state_threeway_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_
   return 0;
 }
 
+uint32_t tcp_read (uint16_t port, uint8_t *buffer, uint32_t size)
+{
+    lock_irq ();
+  struct tcp_sliding_window *window = &tcp_port_table[port].recv_window;
+
+  uint32_t last_acked_byte = window->last_acked_byte;
+  uint32_t first_byte = window->first_window_byte;
+  uint32_t last_byte = min (first_byte + size -1, last_acked_byte);
+
+  uint32_t bytes_read = 0;
+  for (uint32_t curr_byte = first_byte; curr_byte <= last_byte ; curr_byte ++) {
+    buffer[bytes_read++] = window->buffer[curr_byte % TCP_SLIDING_WINDOW_SIZE];
+    bitmap_clear(window->bitmap, curr_byte % TCP_SLIDING_WINDOW_SIZE);
+    window->first_window_byte ++;
+  }
+
+    unlock_irq ();
+  return bytes_read;
+    
+}
+
 uint8_t tcp_state_connected_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size)
 {
-  // check if it fits in sliding window
-  uint32_t sequence_number = get_bits_attr_value(recv_segment->header, TCP_SEQUENCE_NUMBER_OFFSET, TCP_SEQUENCE_NUMBER_SIZE);
+  if (tcp_recv_psh_ack (recv_segment) || tcp_recv_threeway_ack (recv_segment)) {
+    lock_irq ();
+    // check if it fits in sliding window
+    uint16_t port = get_bits_attr_value (recv_segment->header, TCP_DESTINATION_PORT_OFFSET, TCP_DESTINATION_PORT_SIZE);
+    struct tcp_sliding_window *window = &tcp_port_table[port].recv_window;
+    uint32_t sequence_number = get_bits_attr_value (recv_segment->header, TCP_SEQUENCE_NUMBER_OFFSET, TCP_SEQUENCE_NUMBER_SIZE);
 
-  uint16_t port = get_bits_attr_value (recv_segment->header, TCP_DESTINATION_PORT_OFFSET, TCP_DESTINATION_PORT_SIZE);
-  uint32_t last_acked_byte = tcp_port_table[port].recv_window.last_acked_byte;
-  uint32_t last_possible_byte = last_acked_byte + TCP_SLIDING_WINDOW_SIZE - 1;
-  kprintf("last_acked_byte: %d\n", 1, last_acked_byte);
-  kprintf("sequence_number: %d\n", 1, sequence_number);
-  kprintf("data_size: %d\n", 1, data_size);
-  kprintf("last_possible_byte: %d\n", 1, last_possible_byte);
-  if (sequence_number + data_size > last_possible_byte)
+    uint32_t first_received_byte = get_bits_attr_value(recv_segment->header, TCP_SEQUENCE_NUMBER_OFFSET, TCP_SEQUENCE_NUMBER_SIZE);
+    uint32_t last_received_byte = first_received_byte + data_size - 1;
+    uint32_t last_acked_byte = window->last_acked_byte;
+    uint32_t first_possible_byte = window->first_window_byte;
+    uint32_t last_possible_byte = first_possible_byte + TCP_SLIDING_WINDOW_SIZE - 1;
+
+
+    if (first_received_byte > last_possible_byte)
+      goto end_unlock;
+
+    if (last_received_byte < last_acked_byte) {
+      tcp_send_ack(ip, mac, recv_segment->header, data, data_size, last_acked_byte);
+      goto end_unlock;
+    }
+
+    uint32_t curr_byte = max (last_acked_byte, first_received_byte);
+    uint32_t last_byte = min (last_possible_byte, last_received_byte);
+
+    while (curr_byte <= last_byte) {
+      if (bitmap_read(window->bitmap, curr_byte % TCP_SLIDING_WINDOW_SIZE))
+        goto end_while;
+
+      bitmap_set(window->bitmap, curr_byte % TCP_SLIDING_WINDOW_SIZE);
+      window->buffer[curr_byte % TCP_SLIDING_WINDOW_SIZE] = data[curr_byte - sequence_number];
+
+end_while:
+      curr_byte++;
+    }
+
+    // send the higher ack byte possible
+    if (last_acked_byte < curr_byte) {
+      last_acked_byte = curr_byte;
+      tcp_send_ack(ip, mac, recv_segment->header, data, data_size, last_acked_byte);
+      window->last_acked_byte = last_acked_byte;
+    }
+
+end_unlock:
+    unlock_irq ();
     return 0;
-
-  // process unreceived bytes
-  // save bytes received to array and mark into bitmap
-  if (sequence_number >= last_acked_byte) {
-    bitmap_fill(tcp_port_table[port].recv_window.bitmap, TCP_SLIDING_WINDOW_SIZE, sequence_number, data_size, 1);
   }
 
-  while (bitmap_read(tcp_port_table[port].recv_window.bitmap, last_acked_byte % TCP_SLIDING_WINDOW_SIZE)) {
-    bitmap_clear(tcp_port_table[port].recv_window.bitmap, last_acked_byte % TCP_SLIDING_WINDOW_SIZE);
-    last_acked_byte++;
-  }
-
-  // send the higher ack byte possible
-  tcp_port_table[port].recv_window.last_acked_byte = last_acked_byte;
-
-  if (tcp_recv_psh_ack (recv_segment))
-  {
-    tcp_send_ack(ip, mac, recv_segment, data, data_size, last_acked_byte);
-    return 0;
-  }
   if (tcp_recv_fin_ack (recv_segment))
   {
     tcp_send_fin_ack(ip, mac, recv_segment, data, data_size);
@@ -226,8 +262,8 @@ void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t segm
       if (tcp_state_threeway_syn_ack_handler (ip, mac, segment, segment->data, data_size)){
         tcp_port_table[port].state = TCP_STATE_CONNECTED;
         tcp_port_table[port].connection_stablished_or_reseted = 1;
-        tcp_port_table[port].recv_window.initial_sequence_number = sequence_number;
         tcp_port_table[port].recv_window.last_acked_byte = sequence_number + 1;
+        tcp_port_table[port].recv_window.first_window_byte = sequence_number + 1;
       }
       break;
     case TCP_STATE_WAITING_THREEWAY_ACK:

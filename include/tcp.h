@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <network_utils.h>
 #include <bitmap.h>
+#include <minmax.h>
 
 #define TCP_HEADER_MIN_SIZE 20
 #define TCP_HEADER_MAX_SIZE 64
@@ -76,8 +77,9 @@ struct tcp_segment
 struct tcp_sliding_window
 {
   uint32_t last_acked_byte;
-  uint32_t initial_sequence_number;
+  uint32_t first_window_byte;
   uint8_t bitmap[TCP_SLIDING_WINDOW_BITMAP_SIZE];
+  uint8_t *buffer;
 };
 
 struct tcp_port_table_entry
@@ -87,8 +89,6 @@ struct tcp_port_table_entry
   uint32_t current_byte_tx;
   uint8_t connection_stablished_or_reseted;
 
-  uint8_t* buffer;
-  uint32_t buffer_offset;
   struct net_address_set net_addresses;
 
   struct tcp_sliding_window recv_window;
@@ -114,7 +114,8 @@ struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, uint16_t source_
 
 uint32_t tcp_connect (uint16_t src_port, uint16_t dest_port, uint32_t ip, uint8_t mac[6]);
 
-int32_t tcp_bind (uint16_t port, uint8_t* data);
+int32_t tcp_bind (uint16_t port);
+uint32_t tcp_read (uint16_t port, uint8_t *buffer, uint32_t size);
 
 void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t data_size);
 void tcp_send_segment (struct tcp_segment *segment,uint32_t data_size, uint32_t ip, uint8_t mac[6]);

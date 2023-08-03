@@ -1,6 +1,6 @@
 #include <bitmap.h>
 
-void bitmap_insert(uint8_t *bitmap, uint32_t position) {
+void bitmap_set(uint8_t *bitmap, uint32_t position) {
   uint32_t byte = position / 8;
   uint32_t bit = position % 8;
   bitmap[byte] |= 1 << bit;
@@ -23,7 +23,7 @@ void bitmap_fill(uint8_t *bitmap, uint32_t bitmap_size, uint32_t begin_bit, uint
   {
     uint32_t position = (begin_bit + i) % bitmap_size;
     if (bit)
-      bitmap_insert(bitmap, position);
+      bitmap_set(bitmap, position);
     else
       bitmap_clear(bitmap, position);
   }
