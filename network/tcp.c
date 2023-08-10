@@ -68,6 +68,7 @@ void tcp_send_segment (struct tcp_segment *segment, uint32_t data_size, uint32_t
   uint8_t *tcp_array = tcp_to_array (segment, data_size);
   uint16_t data_offset = get_bits_attr_value (segment->header, TCP_DATA_OFFSET_OFFSET, TCP_DATA_OFFSET_SIZE);
   l3_upper_interface (ip, mac, tcp_array, data_size + (data_offset * 4), L3_PROTOCOL_IPv4, 0, 0, IPv4_PROTOCOL_TCP);
+  kfree(segment, data_size);
 }
 
 uint8_t tcp_send_syn_ack(uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size)
@@ -85,7 +86,7 @@ uint8_t tcp_send_syn_ack(uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_s
       data_offset,
       get_bits_attr_value(recv_segment->header, TCP_RESERVED_OFFSET, TCP_RESERVED_SIZE),
       0, 0, 0, 0, 1, 0, 0, 1, 0,
-      get_bits_attr_value(recv_segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE),
+      TCP_SLIDING_WINDOW_SIZE,
       get_bits_attr_value(recv_segment->header, TCP_URGENT_POINTER_OFFSET, TCP_URGENT_POINTER_SIZE),
       options, 0, 0, ip);
   tcp_send_segment (send_segment, 0, ip, mac);
@@ -106,10 +107,12 @@ uint8_t tcp_send_ack(uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segme
       TCP_HEADER_MIN_SIZE / 4,
       get_bits_attr_value(recv_segment->header, TCP_RESERVED_OFFSET, TCP_RESERVED_SIZE),
       0, 0, 0, 0, 1, 0, 0, 0, 0,
-      get_bits_attr_value(recv_segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE),
+      TCP_SLIDING_WINDOW_SIZE,
       get_bits_attr_value(recv_segment->header, TCP_URGENT_POINTER_OFFSET, TCP_URGENT_POINTER_SIZE),
       0, 0, 0, ip);
   tcp_send_segment (send_segment, 0, ip, mac);
+
+  kfree(send_segment, sizeof(struct tcp_segment));
 }
 
 uint8_t tcp_send_fin_ack (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size)
@@ -127,10 +130,12 @@ uint8_t tcp_send_fin_ack (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_
       data_offset,
       get_bits_attr_value(recv_segment->header, TCP_RESERVED_OFFSET, TCP_RESERVED_SIZE),
       0, 0, 0, 0, 1, 0, 0, 0, 1,
-      get_bits_attr_value(recv_segment->header, TCP_WINDOW_SIZE_OFFSET, TCP_WINDOW_SIZE_SIZE),
+      TCP_SLIDING_WINDOW_SIZE,
       get_bits_attr_value(recv_segment->header, TCP_URGENT_POINTER_OFFSET, TCP_URGENT_POINTER_SIZE),
       options, 0, 0, ip);
   tcp_send_segment (send_segment, 0, ip, mac);
+
+  kfree(send_segment, sizeof(struct tcp_segment));
   kfree(options, options_size);
 }
 
@@ -296,6 +301,9 @@ void tcp_recv_segment (uint32_t ip, uint8_t mac[6], uint8_t *data, uint32_t segm
       tcp_port_table[port].state = TCP_STATE_CLOSED;
       break;
   }
+
+  kfree (segment->data, segment_size - (data_offset * 4));
+  kfree (segment, sizeof (struct tcp_segment));
 }
 
 struct tcp_segment* array_to_tcp (struct tcp_segment *segment, uint8_t *array, uint32_t size)

@@ -10,10 +10,10 @@ static void update_arp_table (struct arp_t* arp) {
       return ;
     }
   }
-  
-	memcpy (&arp->header [ARP_SPA_OFFSET], &arp_table [arp_table_size].ip_addr, 4);
-	memcpy (&arp->header [ARP_SHA_OFFSET], arp_table [arp_table_size].mac_addr, 6);
-	arp_table_size++;
+
+  memcpy (&arp->header [ARP_SPA_OFFSET], &arp_table [arp_table_size].ip_addr, 4);
+  memcpy (&arp->header [ARP_SHA_OFFSET], arp_table [arp_table_size].mac_addr, 6);
+  arp_table_size++;
 }
 
 static void recv_arp_reply (struct arp_t* arp)

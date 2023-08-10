@@ -18,7 +18,8 @@ void nht_enqueue_recv_frame (uint8_t *frame, uint32_t frame_size)
     return;
   }
 
-  nht_recv_queue [nht_recv_push].frame = frame;
+  nht_recv_queue [nht_recv_push].frame = kmalloc_u (frame_size);
+  memcpy(frame, nht_recv_queue [nht_recv_push].frame, frame_size);
   nht_recv_queue [nht_recv_push].frame_size = frame_size;
   nht_recv_push = queue_pos;
   soft_unblock_task (nht_recv_tcb->pid);
@@ -33,7 +34,8 @@ void nht_enqueue_send_frame (uint8_t *frame, uint32_t frame_size)
     return;
   }
 
-  nht_send_queue [nht_send_push].frame = frame;
+  nht_send_queue [nht_send_push].frame = kmalloc_u (frame_size);
+  memcpy(frame, nht_send_queue [nht_send_push].frame, frame_size);
   nht_send_queue [nht_send_push].frame_size = frame_size;
   nht_send_push = queue_pos;
   soft_unblock_task (nht_send_tcb->pid);

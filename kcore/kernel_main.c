@@ -174,7 +174,5 @@ void entry ()
     uint32_t ret = tcp_read (src_port, data, 1000);
   }
 
-  
-
   task_termination (0, 0);
 }

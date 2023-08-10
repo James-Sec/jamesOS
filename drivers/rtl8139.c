@@ -30,6 +30,8 @@ static void rtl8139_receive_frame ()
 
     nht_enqueue_recv_frame (new_frame, pckt_sz);
 
+    kfree(new_frame, pckt_sz);
+
     /*
     char name[10] = "NETWORK";
     uint8_t *argp = kmalloc_u (pckt_sz);
