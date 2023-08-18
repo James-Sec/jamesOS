@@ -1,7 +1,6 @@
 #include <multitask.h>
 
 static struct tcb* _create_task (struct page_directory_t *page_dir, struct tcb *next_task, uint32_t pid, uint8_t state, char *pname, uint8_t (*func) (uint32_t,uint8_t*), uint32_t argc, uint8_t *argp);
-static void sleep_until (uint32_t ticks);
 
 uint32_t last_pid = 1;
 uint32_t lock_irq_counter = 0;
@@ -100,7 +99,7 @@ void sleep (uint32_t seconds)
 	sleep_until ((seconds * 100) + tick);
 }
 
-static void sleep_until (uint32_t ticks)
+void sleep_until (uint32_t ticks)
 {
 
 	// if time has already passed

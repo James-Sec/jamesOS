@@ -87,11 +87,9 @@ void nht_send_handler (uint32_t argc, uint8_t *argp)
 
 void nht_init ()
 {
-   kprint ("creating nht_recv_task\n");
    nht_recv_tcb = create_task (nht_recv_handler,
        "nht_recv_hander", READY_TO_RUN, 0, 0);
 
-   kprint ("creating nht_send_task\n");
    nht_send_tcb = create_task (nht_send_handler,
        "nht_send_hander", READY_TO_RUN, 0, 0);
 }

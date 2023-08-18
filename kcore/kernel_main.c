@@ -44,6 +44,8 @@ void entry ()
 
   nht_init ();
 
+  tcp_sender_init ();
+
   rtl8139_init ();
 
 

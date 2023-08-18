@@ -74,12 +74,18 @@ struct tcp_segment
   uint8_t *data;
 };
 
-struct tcp_sliding_window
+struct tcp_send_sliding_window
+{
+  uint32_t last_acked_byte;
+  uint32_t window_size;
+};
+
+struct tcp_recv_sliding_window
 {
   uint32_t last_acked_byte;
   uint32_t first_window_byte;
   uint8_t bitmap[TCP_SLIDING_WINDOW_BITMAP_SIZE];
-  uint8_t *buffer;
+  uint8_t buffer[TCP_SLIDING_WINDOW_SIZE];
 };
 
 struct tcp_port_table_entry
@@ -91,10 +97,12 @@ struct tcp_port_table_entry
 
   struct net_address_set net_addresses;
 
-  struct tcp_sliding_window recv_window;
+  struct tcp_recv_sliding_window *recv_window;
+  struct tcp_send_sliding_window *send_window;
 };
 
 struct tcp_port_table_entry tcp_port_table [TCP_TOTAL_PORTS];
+//struct tcp_port_table_entry *tcp_port_table;
 
 struct tcp_flags
 {
