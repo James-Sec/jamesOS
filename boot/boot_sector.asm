@@ -2,7 +2,7 @@
 [org 0x7c00]
 
 ; the memory offset where we will load our kernel
-KERNEL_OFFSET equ 0x7e00
+KERNEL_OFFSET equ 0x20000
 
 ; the BIOS loads the current drive identifier in dl register
 mov [BOOT_DRIVE], dl
@@ -25,7 +25,7 @@ jmp $
 
 %include "boot/print_string_rm.asm"
 %include "boot/print_string_pm.asm"
-%include "boot/print_hex.asm"
+;%include "boot/print_hex.asm"
 %include "boot/switch_to_protected_mode.asm"
 %include "boot/disk_load.asm"
 
@@ -36,12 +36,18 @@ load_kernel:
   call print_string_rm
 
   ; reading the kernel from the storage device
-  mov bx, 0
+  mov bx, 0x2000
   mov es, bx ;segment
-  mov bx, KERNEL_OFFSET ;offset
-  mov dh, 64 ;number of sectors
+  mov bx, 0 ;offset
+  mov dh, 128 ;number of sectors
   mov dl, [BOOT_DRIVE] ;set the driver to read
   call disk_load
+
+  ;mov dx, [es:bx + 0x84c3 - 0x200]
+  ;call print_hex
+
+  ;jmp $
+
   ret
 
 [bits 32] ; 32 bits instructions

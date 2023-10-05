@@ -19,6 +19,8 @@
 #include <l4_interface.h>
 #include <l5_interface.h>
 #include <network_utils.h>
+#include <serial.h>
+#include <tcp_sender.h>
 
 
 void entry ()
@@ -170,7 +172,7 @@ void entry ()
   src_port = tcp_bind (src_port);
   tcp_connect (src_port, 5555, ip, mac);
 
-  uint8_t *data = kmalloc_u (1000);
+  uint8_t *data = (uint8_t*)kmalloc_u (1000);
 
   while (1) {
     uint32_t ret = tcp_read (src_port, data, 1000);

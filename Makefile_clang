@@ -25,7 +25,7 @@ os-image.bin: boot/boot_sector.bin kcore/kernel_main.bin
 
 # creating the binary kernel
 kcore/kernel_main.bin: kcore/kernel_entry.o ${OBJ}
-	ld.lld -z muldefs -o $@ -Ttext 0x7e00 $^ --oformat binary -z notext
+	ld.lld -z muldefs -o $@ -Ttext 0x20000 $^ --oformat binary -z notext
 
 # compiling c source codes
 %.o: %.c ${HEADERS}

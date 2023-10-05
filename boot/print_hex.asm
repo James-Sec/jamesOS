@@ -1,3 +1,4 @@
+[bits 16] ; 16 bits instructions
 ; print a word size value in hexadeciaml (word = 16 bits)
 ; this function analyses 4 bits at a time, because each algarism in hex is equivalent to 4 algarism in binary
 ; dx contains the value that will be printed

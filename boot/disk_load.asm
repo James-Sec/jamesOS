@@ -1,3 +1,5 @@
+[bits 16]
+%include "boot/print_hex.asm"
 ; load sectors from a storage device
 ; dh contains the numbers of sectors
 ; dl contains the device
@@ -25,6 +27,15 @@ disk_load:
 disk_error_1:
   mov bx, DISK_ERROR_MSG_1
   call print_string_rm
+
+  mov ah, 0x1
+  mov dl, 0x0
+  int 0x13
+
+  xor dx, dx
+  mov dl, ah
+  call print_hex
+
   jmp $
 
 disk_error_2:
