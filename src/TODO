@@ -1,0 +1,23 @@
+(FIX DISK LOAD SIZE ERRORS)
+
+network/tcp:
+  build TCP architecture (sliding window, control informations, .....)
+
+  now, tcp needs a flow control/sliding window protocol. need to implement that too
+  handlers for ignored tcp flags (optional)
+  dynamic MSS (optional)
+
+network/ARP:
+  ADD ARP TABLE ENTRY WHEN WE RECEIVE A PACKET FROM AN UNKNOWN HOST
+
+network:
+  check every function error return code
+
+network:
+  GET MAC_ADDR FROM ARP TABLE
+  stack is overflowing when too many tasks
+    interrupt process is using the stack of the previous task (it's a good idea to use the "0xf00000" stack;
+
+network/IP:
+  create a mac/ip checks on distinct functions
+  FRAGMENTATION

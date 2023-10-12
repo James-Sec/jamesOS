@@ -1,0 +1,3 @@
+After all initialization procedures, the heap occupated in this ranges:
+0x11f000 - 0x11f21f
+0x120000 - 0x128fff
