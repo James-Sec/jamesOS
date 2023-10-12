@@ -26,7 +26,10 @@ struct tcp_segment* tcp_build_segment (struct tcp_segment *tcp, uint16_t source_
   set_bits_attr_value (tcp->header, TCP_CHECKSUM_OFFSET, TCP_CHECKSUM_SIZE, checksum);
   checksum = internet_checksum (tcp->header, (data_offset * 4), data, data_size, pseudo.header, PSEUDO_HEADER_SIZE);
   set_bits_attr_value (tcp->header, TCP_CHECKSUM_OFFSET, TCP_CHECKSUM_SIZE, checksum);
-  memcpy(data, tcp->data, data_size);
+  if (data_size) {
+    tcp->data = kmalloc_u (data_size);
+    memcpy(data, tcp->data, data_size);
+  }
 }
 
 int32_t tcp_bind (uint16_t port)
@@ -61,12 +64,22 @@ uint32_t tcp_connect (uint16_t src_port, uint16_t dest_port, uint32_t ip, uint8_
   }
 }
 
-uint32_t tcp_listen (uint16_t src_port, uint16_t dest_port, uint32_t ip, uint8_t mac[6])
+uint32_t tcp_listen (uint16_t port)
 {
+  tcp_port_table[port].state = TCP_STATE_WAITING_THREEWAY_SYN;
 }
 
 void tcp_send_segment (struct tcp_segment *segment, uint32_t data_size, uint32_t ip, uint8_t mac[6])
 {
+  if (!data_size) {
+    uint8_t *tcp_array = tcp_to_array (segment, data_size);
+    uint16_t data_offset = get_bits_attr_value (segment->header, TCP_DATA_OFFSET_OFFSET, TCP_DATA_OFFSET_SIZE);
+    l3_upper_interface (ip, mac, tcp_array, data_size + (data_offset * 4), L3_PROTOCOL_IPv4, 0, 0, IPv4_PROTOCOL_TCP);
+    kfree(segment, data_size);
+
+    return;
+  }
+
   tcp_sender_enqueue (segment, data_size, ip, mac);
 }
 
@@ -168,7 +181,7 @@ uint8_t tcp_state_threeway_ack_handler (uint32_t ip, uint8_t mac[6], struct tcp_
 
 uint32_t tcp_read (uint16_t port, uint8_t *buffer, uint32_t size)
 {
-    lock_irq ();
+  lock_irq ();
   struct tcp_recv_sliding_window *window = tcp_port_table[port].recv_window;
 
   uint32_t last_acked_byte = window->last_acked_byte;
@@ -176,20 +189,28 @@ uint32_t tcp_read (uint16_t port, uint8_t *buffer, uint32_t size)
   uint32_t last_byte = min (first_byte + size -1, last_acked_byte);
 
   uint32_t bytes_read = 0;
-  for (uint32_t curr_byte = first_byte; curr_byte <= last_byte ; curr_byte ++) {
+  for (uint32_t curr_byte = first_byte; curr_byte < last_byte ; curr_byte ++) {
     buffer[bytes_read++] = window->buffer[curr_byte % TCP_SLIDING_WINDOW_SIZE];
     bitmap_clear(window->bitmap, curr_byte % TCP_SLIDING_WINDOW_SIZE);
     window->first_window_byte ++;
   }
 
-    unlock_irq ();
+  unlock_irq ();
   return bytes_read;
-    
+
 }
 
 uint8_t tcp_state_connected_handler (uint32_t ip, uint8_t mac[6], struct tcp_segment *recv_segment, uint8_t* data, uint32_t data_size)
 {
-  if (tcp_recv_psh_ack (recv_segment) || tcp_recv_threeway_ack (recv_segment)) {
+  if (tcp_recv_threeway_ack (recv_segment)) {
+    uint16_t port = get_bits_attr_value (recv_segment->header, TCP_DESTINATION_PORT_OFFSET, TCP_DESTINATION_PORT_SIZE);
+    struct tcp_send_sliding_window *window = tcp_port_table[port].send_window;
+    uint32_t ack_number = get_bits_attr_value (recv_segment->header, TCP_ACK_NUMBER_OFFSET, TCP_ACK_NUMBER_SIZE);
+    window->last_acked_byte = ack_number;
+    return 0;
+  }
+
+  if (tcp_recv_psh_ack (recv_segment)) {
     lock_irq ();
     // check if it fits in sliding window
     uint16_t port = get_bits_attr_value (recv_segment->header, TCP_DESTINATION_PORT_OFFSET, TCP_DESTINATION_PORT_SIZE);
@@ -247,6 +268,7 @@ end_unlock:
 void tcp_init_window (uint16_t port, uint32_t sequence_number, uint16_t window_size)
 {
   struct tcp_port_table_entry *port_struct = &tcp_port_table[port];
+
   struct tcp_recv_sliding_window *recv_window = kmalloc_u (sizeof(struct tcp_recv_sliding_window));
   struct tcp_send_sliding_window *send_window = kmalloc_u (sizeof(struct tcp_send_sliding_window));
 
@@ -258,7 +280,7 @@ void tcp_init_window (uint16_t port, uint32_t sequence_number, uint16_t window_s
   recv_window->first_window_byte = sequence_number + 1;
   
   //send window
-  send_window->last_acked_byte = 0;
+  send_window->last_acked_byte = 1;
   if (window_size < TCP_SLIDING_WINDOW_SIZE)
     send_window->window_size = window_size;
   else

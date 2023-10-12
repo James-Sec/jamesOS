@@ -169,13 +169,25 @@ void entry ()
   uint32_t ip = 0x1e1e1e1e;
   uint16_t src_port = 4444;
   uint8_t mac[6] = {0x46, 0xd7, 0x93, 0x5c, 0x13, 0xe8};
+  /*
   src_port = tcp_bind (src_port);
   tcp_connect (src_port, 5555, ip, mac);
+  */
 
-  uint8_t *data = (uint8_t*)kmalloc_u (1000);
+  uint8_t *data = kmalloc_u (1000);
 
+  tcp_listen (5555);
+  sleep (1);
   while (1) {
-    uint32_t ret = tcp_read (src_port, data, 1000);
+    uint32_t ret = tcp_read (5555, data, 1000);
+    if (ret) { 
+      struct tcp_segment* send_segment = kmalloc_u(sizeof(struct tcp_segment));
+      struct tcp_recv_sliding_window *window = tcp_port_table[5555].send_window;
+
+      tcp_build_segment (send_segment, 5555,4444 , window->last_acked_byte, 0, 5, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1024, 0, 0, data, ret, ip);
+
+      tcp_send_segment(send_segment, ret, ip, mac);
+    }
   }
 
   task_termination (0, 0);

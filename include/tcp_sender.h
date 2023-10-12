@@ -11,7 +11,7 @@
 
 struct tcp_sender_queue_entry
 {
-  struct tcp_sengment *segment;
+  struct tcp_segment *segment;
   uint32_t data_size;
   uint32_t ip;
   uint8_t mac[6];
