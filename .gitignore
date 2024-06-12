@@ -1,2 +1,3 @@
-i686-elf/*
-!i686-elf/i686-elf-install.sh
+scripts/*
+!scripts/i686-elf-install.sh
+!scripts/tap_config_script.sh
