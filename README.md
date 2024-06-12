@@ -1,39 +1,12 @@
 # JAMES OS
 
-## DEPENDENCIES
-  ### qemu-system-i386 
-     Search for your OS.
-  ### i686-elf-binutils and i686-elf-gcc 
-    $ cd scripts
-    $ ./i686-elf-install.sh BINUTILS-VERSION GCC-VERSION
-    
-  ### GNU MAKE
-     Search for your OS.
-  ### NASM
-     Search for your OS.
+## O que é o James OS?
+  James OS é um projeto que busca auxiliar a prática dentro do contexto de sistemas operacionais. Partido do zero, esse projeto apresenta um roteiro para a construção de um sistema operacional modular escrito em C, facilitando o estudo dos mecanismos que o compõe. Cada módulo possui uma interface bem definida, permitindo a construção de novos módulos com diferentes implementações, desde que estes preservem a interface.
+
+## Como este projeto está organizado?
+  Este repositório do GitHub possui duas branches: **Master** e **Develop**. A branch **Develop** possui o código completo do sistema operacional na sua última versão. A branch **Master** possui os códigos dos módulos, apresentados de maneira incremental. Cada módulo possui seu próprio diretório, que é composto pelo seu código e por um arquivo que apresenta informações teóricas e descrições dos códigos, facilitando o entendimento do módulo em questão.
   
-## MAKE
-  * To build:
-    ```
-    $ make build 
-    ```
-  * To run:
-    ```
-    $ make run
-    ```
-  * To clean:
-    ```
-    $ make clean
-    ```
 
-## Under development:
-  * Network stack protocols.
-
-## To be developed:
-  * User space;
-  * Switch to a Microkernel architecture;
-  * Storage device driver;
-  * Filesystem.
 
 ## Resources:
   - [OSDEV](https://wiki.osdev.org)
@@ -42,4 +15,10 @@
   - [James Molloy's Tutorial](http://www.jamesmolloy.co.uk/tutorial_html)
   - [szhou42's OS](https://github.com/szhou42/osdev)
   - [Samy Pessé's Tutorial/OS](https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System)
-  - [Minirighi](http://minirighi.sourceforge.net/html/index.html)
+
+## BOOKS:
+  - [Sistemas Operacionais: Conceitos e Mecanismos - Carlos Maziero](http://wiki.inf.ufpr.br/maziero/doku.php?id=socm:start)
+  - [Operating System DesignOperating System Design The Xinu Approach - Douglas Comer](https://xinu.cs.purdue.edu/)
+  - [Operating Systems Design and Implementation, 3/E - Andrew S. Tanenbaum](https://media.pearsoncmg.com/bc/abp/cs-resources/products/product.html#product,isbn=0131429388)
+  - [Modern Operating Systems - Andrew S. Tanenbaum](https://media.pearsoncmg.com/bc/abp/cs-resources/products/product.html#product,isbn=013359162X)
+  - [Structured Computer Organization - Andrew S. Tanenbaum](https://media.pearsoncmg.com/bc/abp/cs-resources/products/product.html#product,isbn=0132916525)
