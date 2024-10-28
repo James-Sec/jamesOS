@@ -1,0 +1,19 @@
+Breakpoint 2 at 0x11f008
+[+] PAGING paging_init() executado corretamente.
+[+] PAGING first_frame() executado corretamente.
+[+] PAGING set_frame() executado corretamente.
+[+] PAGING clear_frame() executado corretamente.
+[+] PAGING get_page(0x0, 0x0, 0x121000) executado corretamente.
+[+] PAGING get_page(0x1000000, 0x1, 0x121000) executado corretamente.
+[+] PAGING get_page(0x1400000, 0x0, 0x121000) executado corretamente.
+[+] PAGING alloc_page(0x127000, 0x0, 0x0) executado corretamente.
+Breakpoint 3 at 0x20a74: file libc/paging.c, line 50.
+[+] PAGING alloc_page(0x127004, 0x0, 0x0) executado corretamente.
+[+] PAGING get_page(0x1001000, 0x0, 0x121000) executado corretamente.
+[+] PAGING virtual2phys(0x28b8c, 0x1234) executado corretamente.
+[+] PAGING virtual2phys(0x121000, 0xffffffff) executado corretamente.
+[+] PAGING virtual2phys(0x121000, 0x1000000) executado corretamente.
+[+] PAGING virtual2phys(0x121000, 0x1234) executado corretamente.
+Breakpoint 4 at 0x20f08: file libc/string.c, line 13.
+[+] PAGING page_fault_handler() chamado corretamente.
+[Inferior 1 (process 1) detached]

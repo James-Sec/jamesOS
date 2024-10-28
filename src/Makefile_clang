@@ -8,13 +8,13 @@ OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o multitask/dispatcher.o libc/print_stack_
 # set cross compiler
 CC = clang
 # default flags
-CFLAGS= -c -I include --target=i686-pc-none-elf -ffreestanding -fno-builtin -nostdlib -nostdinc++ -march=i686 -fdiagnostics-color
+CFLAGS= -c -I include --target=i686-pc-none-elf -ffreestanding -fno-builtin -nostdlib -nostdinc++ -march=i686 -fdiagnostics-color -Wno-int-conversion -Wno-implicit-function-declaration -Wno-incompatible-function-pointer-types -emit-llvm
 # set gdb
 
 
 # run the os
 run: os-image.bin
-	sudo qemu-system-i386 -fda os-image.bin -netdev tap,id=mynet0,ifname=tap0,script=no,downscript=no -device rtl8139,netdev=mynet0,mac=52:55:00:d1:55:01 -object filter-dump,id=f1,netdev=mynet0,file=dump.dat -serial stdio
+	sudo qemu-system-i386 -fda os-image.bin -netdev tap,id=mynet0,ifname=tap0,script=no,downscript=no -device rtl8139,netdev=mynet0,mac=52:55:00:d1:55:01 -object filter-dump,id=f1,netdev=mynet0,file=dump.dat -serial stdio -s -S
 
 # build the image
 build: os-image.bin

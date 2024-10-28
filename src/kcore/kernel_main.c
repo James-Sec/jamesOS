@@ -50,7 +50,6 @@ void entry ()
 
   rtl8139_init ();
 
-
   /*
      kprint ("creating carolina\n");
      uint8_t* b = kmalloc_u(4);
@@ -166,13 +165,12 @@ void entry ()
   tcp_send_segment(send_segment, 0, ip, mac);
   */
 
+  /*
   uint32_t ip = 0x1e1e1e1e;
   uint16_t src_port = 4444;
   uint8_t mac[6] = {0x46, 0xd7, 0x93, 0x5c, 0x13, 0xe8};
-  /*
   src_port = tcp_bind (src_port);
   tcp_connect (src_port, 5555, ip, mac);
-  */
 
   uint8_t *data = kmalloc_u (1000);
 
@@ -189,6 +187,7 @@ void entry ()
       tcp_send_segment(send_segment, ret, ip, mac);
     }
   }
+  */
 
   task_termination (0, 0);
 }

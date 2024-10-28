@@ -22,6 +22,11 @@ uint32_t kmalloc (uint32_t sz)
   return tmp;
 }
 
+uint32_t malloc(uint32_t sz)
+{
+    return kmalloc_u(sz);
+}
+
 void kheap_init ()
 {
   kheap_enable = 1;
@@ -82,6 +87,11 @@ void kfree (uint32_t addr, uint32_t size)
   uint32_t byte = (uint32_t)addr;
   uint32_t tmp = (byte - HEAP_BASE);
   fill (tmp, size, 0);
+}
+
+void free(void* sz)
+{
+    kprintf("gdb called free. %d\n", 1, sz);
 }
 
 void print_bit_map (uint32_t size)

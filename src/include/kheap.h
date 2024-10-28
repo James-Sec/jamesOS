@@ -17,6 +17,9 @@ void kfree (uint32_t addr, uint32_t size);
 uint32_t kmalloc (uint32_t sz);
 uint32_t kmalloc_u (uint32_t sz);
 
+uint32_t malloc(uint32_t sz);
+void free(void* sz);
+
 void print_bit_map (uint32_t size) ;
 
 #endif
