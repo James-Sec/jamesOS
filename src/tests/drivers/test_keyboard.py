@@ -33,7 +33,7 @@ gdb.execute('call clear_screen()')
 
 ### INFINITE LOOP
 gdb.execute('set $pc = 0x20005')
-gdb.execute('break *0x210aa')
+gdb.execute('break *0x2108a')
 
 def test_key(key, code, expected_press, expected_release):
     cont = threading.Thread(target = gdb.execute, args = ('continue',))

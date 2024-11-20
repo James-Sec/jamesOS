@@ -1,6 +1,7 @@
 import subprocess
 import signal
 import os
+import glob
 import time
 import sys
 import pty
@@ -39,13 +40,34 @@ class JamesTest():
     def GdbStart(self, test_file):
         self.gdb = subprocess.Popen(\
                 ['/usr/bin/gdb', f'--command={test_file}', '--quiet'],\
-                stdin = subprocess.PIPE)
+                stdout = subprocess.PIPE,\
+                stdin = subprocess.PIPE,\
+                stderr = subprocess.PIPE)
 
 
-test = JamesTest()
-test.QemuStart()
+test_results = {}
+for test_file in glob.glob('*/test_*.py'):
+    test = JamesTest()
+    test.QemuStart()
 
-test.GdbStart(sys.argv[1])
-test.gdb.wait()
+    test.GdbStart(test_file)
+    test.gdb.wait()
 
-test.QemuStop()
+    raw_output, _ = test.gdb.communicate()
+    lines = raw_output.split(b'\n')
+    successes = [line for line in lines if line.startswith(b'\x1b[92m')]
+    fails = [line for line in lines if line.startswith(b'\x1b[31m')]
+
+    test_results[test_file] = {
+            'successes': successes,
+            'fails': fails
+            }
+
+    test.QemuStop()
+
+for test_file, results in test_results.items():
+    print(f'<><><> {test_file} <><><>')
+    for result, messages in results.items():
+        print(f'    {result} ({len(messages)})')
+        for message in messages:
+            print(f'    {message.decode()}')

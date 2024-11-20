@@ -1,19 +1,22 @@
-Breakpoint 2 at 0x11f008
-[+] PAGING paging_init() executado corretamente.
-[+] PAGING first_frame() executado corretamente.
-[+] PAGING set_frame() executado corretamente.
-[+] PAGING clear_frame() executado corretamente.
-[+] PAGING get_page(0x0, 0x0, 0x121000) executado corretamente.
-[+] PAGING get_page(0x1000000, 0x1, 0x121000) executado corretamente.
-[+] PAGING get_page(0x1400000, 0x0, 0x121000) executado corretamente.
-[+] PAGING alloc_page(0x127000, 0x0, 0x0) executado corretamente.
-Breakpoint 3 at 0x20a74: file libc/paging.c, line 50.
-[+] PAGING alloc_page(0x127004, 0x0, 0x0) executado corretamente.
-[+] PAGING get_page(0x1001000, 0x0, 0x121000) executado corretamente.
-[+] PAGING virtual2phys(0x28b8c, 0x1234) executado corretamente.
-[+] PAGING virtual2phys(0x121000, 0xffffffff) executado corretamente.
-[+] PAGING virtual2phys(0x121000, 0x1000000) executado corretamente.
-[+] PAGING virtual2phys(0x121000, 0x1234) executado corretamente.
-Breakpoint 4 at 0x20f08: file libc/string.c, line 13.
-[+] PAGING page_fault_handler() chamado corretamente.
+[+] MULTITASKING multitask_init() executado corretamente.
+[+] MULTITASKING create_task(0x1234, 1175555, 0, 1, 0x4312) executado corretamente.
+[+] MULTITASKING lock_irq() executado corretamente.
+[+] MULTITASKING unlock_irq() executado corretamente.
+[+] MULTITASKING unlock_irq() executado corretamente.
+[+] MULTITASKING print_task(0x11f00d) executado corretamente.
+[+] MULTITASKING print_task(0x0) executado corretamente.
+[+] MULTITASKING search_task(0x3) executado corretamente.
+[+] MULTITASKING search_task(1234) executado corretamente.
+[+] MULTITASKING dispatcher(0x11f00d) executado corretamente.
+Breakpoint 2 at 0x22fa7: file multitask/multitask.c, line 143.
+[+] MULTITASKING scheduler() executado corretamente.
+Breakpoint 3 at 0x22f38: file multitask/multitask.c, line 121.
+[+] MULTITASKING task_termination(4, 1191949) executado corretamente.
+Breakpoint 4 at 0x22f38: file multitask/multitask.c, line 121.
+[+] MULTITASKING block_task(0, 1) executado corretamente.
+Breakpoint 5 at 0x22ea0: file multitask/multitask.c, line 79.
+[+] MULTITASKING unblock_task(1) executado corretamente.
+Breakpoint 6 at 0x22f25: file multitask/multitask.c, line 114.
+Breakpoint 7 at 0x22f38: file multitask/multitask.c, line 121.
+[+] MULTITASKING sleep(5) executado corretamente.
 [Inferior 1 (process 1) detached]
