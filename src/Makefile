@@ -10,7 +10,7 @@ OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o multitask/dispatcher.o libc/print_stack_
 CC_BASE_PATH = ./scripts/i686-elf/opt/cross/bin/
 CC = $(CC_BASE_PATH)i686-elf-gcc 
 # default flags
-CFLAGS= -ffreestanding -c -I include -nostdlib -lgcc -w -ggdb3 -fdump-tree-cfg-graph
+CFLAGS= -ffreestanding -c -I include -nostdlib -lgcc -w -ggdb3
 # set gdb
 GDB = i686-elf-gdb
 
@@ -24,7 +24,7 @@ build: os-image.bin
 
 # creating the os-image.bin
 os-image.bin: boot/boot_sector.bin kcore/kernel_main.bin 
-	cat $^ > os-image.bin  
+	cat $^ > os-image.bin
 
 # creating the binary kernel
 kcore/kernel_main.bin: kcore/kernel_entry.o ${OBJ}

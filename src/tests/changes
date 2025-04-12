@@ -1,4 +1,0 @@
-new function calling system
-infinite loop to test interruptions and multitasking
-break on function entry and go SIing to get a execution flow trace
-maybe generate a path GFC
